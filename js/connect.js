@@ -54,6 +54,10 @@ function handlelogin() {
     const password = document.getElementById('password').value;
     const role = document.getElementById('role').value;
     console.log(`BA Number: ${banumber}, Password: ${password}, Role: ${role}`);
+    if (!banumber || !password || !role) {
+        showNotification("Please fill in all fields", "error", "Login Failed");
+        return;
+    }
 
     const dbRef = ref(db, 'users/' + banumber);
     get(dbRef).then((snapshot) => {

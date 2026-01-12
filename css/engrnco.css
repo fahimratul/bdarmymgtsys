@@ -287,6 +287,12 @@ th {
     margin-top: 0.5rem;
 }
 
+.logout {
+    position: absolute;
+    top: 1rem;
+    right: 4.5rem;
+}
+
 /* Responsive */
 @media (max-width: 900px) {
     body {
@@ -298,6 +304,7 @@ th {
     table {
         max-width: 100%;
     }
+
 }
 
 @media (max-width: 640px) {
@@ -341,10 +348,9 @@ th {
         width: 100%;
         text-align: center;
     }
+    .logout{
+        position: static;
+        margin-bottom: 8px;
+    }
 }
 
-.logout {
-    position: absolute;
-    top: 1rem;
-    right: 4.5rem;
-}

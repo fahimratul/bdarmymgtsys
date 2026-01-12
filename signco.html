@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/notification.css">
     <script src ="https://unpkg.com/lucide@latest" ></script>
     <link rel='icon' href='static/logo_small.png' type='image/x-icon' />
-    <title>Sig NCO Inventory</title>
+    <title>Sig Inventory</title>
 </html>
 </head>
 <body>
@@ -19,7 +19,10 @@
         <div class="loading-subtext">Please wait...</div>
     </div>
 
-    <h1> Sig NCO INVENTORY</h1>
+    <h1> SIGNAL INVENTORY</h1>
+    <div class="logout">
+        <button id="logoutButton" class="btn secondary">Logout</button>
+    </div>
     <div class="search-container">
         <div class="library-search-container">
             <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -101,7 +104,7 @@
         lucide.createIcons();
         addItemBtn = document.getElementById('addItemBtn');
         addItemBtn.addEventListener('click', function() {
-            window.location.href = 'additem.html';
+            window.location.href = 'additemsig.html';
         });
         function hideNotification() {
             const toast = document.getElementById("notification-toast");
