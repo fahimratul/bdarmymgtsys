@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Add Inventory Item</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/additem.css">
+</head>
+<body>
+	<div class="shell">
+		<div class="card">
+			<div class="card-header">
+				<div class="title-row">
+					<div>
+						<h1>Add Inventory Item</h1>
+						<p class="subtitle">Capture a new item with quantities for both BANRDB-7 and BANRDB-8 lists.</p>
+					</div>
+					<a class="back-link" href="user.html">&#8592; Back to Inventory</a>
+				</div>
+			</div>
+			<form id="addItemForm">
+				<div class="grid">
+					<div class="field name-field">
+						<label for="name">Nomenclature / Name</label>
+						<input id="name" name="name" type="text" placeholder="e.g., Utility Knife" required>
+                        <p class="inline-hint">Try to avoid / sign in name</p>
+					</div>
+					<div class="field">
+						<label for="authorized">Authorized Unit</label>
+						<input id="authorized" name="authorized" type="text" value="NOS" required>
+					</div>
+					<div class="field">
+						<label for="banrdb7">BANRDB-7 Items</label>
+						<input id="banrdb7" name="banrdb7" type="number" min="0" step="1" value="0" required>
+					</div>
+					<div class="field">
+						<label for="banrdb8">BANRDB-8 Items</label>
+						<input id="banrdb8" name="banrdb8" type="number" min="0" step="1" value="0" required>
+					</div>
+					<div class="field">
+						<label for="issue">Issued</label>
+						<input id="issue" name="issue" type="number" min="0" step="1" value="0" required>
+					</div>
+					<div class="field">
+						<label for="total">Total Items</label>
+						<input id="total" name="total" type="number" min="0" step="1" value="0" readonly>
+						<p class="inline-hint">Auto-calculated (BANRDB-7 + BANRDB-8).</p>
+					</div>
+					<div class="field">
+						<label for="balance">Balance Now</label>
+						<input id="balance" name="balance" type="number" min="0" step="1" value="0" readonly>
+						<p class="inline-hint">Auto-calculated (Total - Issued).</p>
+					</div>
+				</div>
+
+				<div class="actions">
+					<button type="button" class="btn secondary" onclick="window.location.href='user.html'">Cancel</button>
+					<button type="submit" class="btn primary">Save Item</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+    <script type="module" src="js/additem.js" defer></script>
+</body>
+</html>

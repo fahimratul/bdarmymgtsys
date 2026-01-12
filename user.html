@@ -3,12 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/engrnco.css">
+    <script src ="https://unpkg.com/lucide@latest" ></script>
     <title>Login</title>
 </html>
 </head>
 <body>
-    <h1>User Page</h1>
-    <p>Welcome, Storeman!</p>
+    <h1> ENGR NCO INVENTORY</h1>
+    <div class="search-container">
+        <div class="library-search-container">
+            <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            <input type="text" id="librarySearch" class="library-search-input" placeholder="Search Item...">
+        </div>   
+        <button class="additem-btn" id="addItemBtn">Add Item</button> 
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>serial</th>
+                <th>Nomenclature/Name</th>
+                <th>Authorized Unit</th>
+                <th>BANRDB-7 Items</th>
+                <th>BANRDB-8 Items</th>
+                <th>Total Items</th>
+                <th>Issue</th>
+                <th>Balance Now</th>
+            </tr>
+        </thead>
+        <tbody id="inventoryTableBody">
+            <!-- Inventory items will be dynamically inserted here -->
+        </tbody>
+    </table>
+    <script>
+        lucide.createIcons();
+        addItemBtn = document.getElementById('addItemBtn');
+        addItemBtn.addEventListener('click', function() {
+            window.location.href = 'additem.html';
+        });
+    </script>
+    <script type="module" src="engrnco.js" defer></script>
+
 </body> 
+
 </html>
