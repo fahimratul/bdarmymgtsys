@@ -32,6 +32,11 @@ window.addEventListener('DOMContentLoaded', () => {
     console.log('Logged in as BA Number:', baNumber);
 });
 
+// Clear localStorage when the site is closed
+window.addEventListener('beforeunload', () => {
+    localStorage.clear();
+});
+
 
 import {showNotification} from './notification.js';
 console.log("EngrNCO Script Loaded");

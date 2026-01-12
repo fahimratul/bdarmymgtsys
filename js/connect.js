@@ -87,8 +87,10 @@ function handlelogin() {
 const loginButton = document.getElementById('login-button');
 loginButton.addEventListener('click', handlelogin);
 
-
-
+// Clear localStorage when the site is closed
+window.addEventListener('beforeunload', () => {
+    localStorage.clear();
+});
 
 console.log("Event listener added to login button");
 
