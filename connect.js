@@ -72,9 +72,11 @@ function handlelogin() {
             if (userData.password === password && userData.role === role) {
                 console.log("Login successful");
                 if (role === 'storeman') {
+                    localStorage.setItem('baNumber', banumber);
                     window.location.href = 'user.html';
                 }
                 else if (role === 'admin') {
+                    localStorage.setItem('baNumber', banumber);
                     window.location.href = 'admin.html';
                 }
             } else {
@@ -94,6 +96,9 @@ function handlelogin() {
 
 const loginButton = document.getElementById('login-button');
 loginButton.addEventListener('click', handlelogin);
+
+
+
 
 console.log("Event listener added to login button");
 
