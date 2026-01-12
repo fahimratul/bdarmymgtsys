@@ -22,13 +22,16 @@ const db = getDatabase(app);
 console.log(db);
 console.log("Firebase Initialized");
 
+import {showNotification} from './notification.js';
+
+console.log("Add Item Script Loaded");
 
 const form = document.getElementById('addItemForm');
-const banrdb7 = document.getElementById('banrdb7');
-const banrdb8 = document.getElementById('banrdb8');
-const issue = document.getElementById('issue');
 const total = document.getElementById('total');
-const balance = document.getElementById('balance');
+const servicable = document.getElementById('servicable');
+const issue = document.getElementById('issue');
+const unservicable = document.getElementById('unservicable');
+const instore = document.getElementById('instore');
 
 function toNumber(value) {
     const parsed = parseFloat(value);
@@ -36,13 +39,22 @@ function toNumber(value) {
 }
 
 function recalc() {
-    const t = toNumber(banrdb7.value) + toNumber(banrdb8.value);
-    const bal = t - toNumber(issue.value);
-    total.value = Math.max(t, 0);
-    balance.value = Math.max(bal, 0);
+    if(toNumber(servicable.value) > toNumber(total.value)) {
+        showNotification('Servicable quantity cannot exceed Total quantity. Adjusting Servicable to match Total.', 'warning', 'Input Adjusted');
+        servicable.value = total.value;
+    }
+    if(toNumber(issue.value) > toNumber(servicable.value)) {
+        showNotification('Issue quantity cannot exceed Servicable quantity. Adjusting Issue to match Servicable.', 'warning', 'Input Adjusted');
+        issue.value = servicable.value;
+    }
+    const unservicableValue = toNumber(total.value)-toNumber(servicable.value);
+
+    const instoreValue = toNumber(total.value) - toNumber(issue.value);
+    unservicable.value = Math.max(unservicableValue, 0);
+    instore.value = Math.max(instoreValue, 0);
 }
 
-[banrdb7, banrdb8, issue].forEach(input => {
+[total, servicable, issue].forEach(input => {
     input.addEventListener('input', recalc);
 });
 
@@ -55,23 +67,17 @@ form.addEventListener('submit', (event) => {
     const payload = {
         name: form.name.value.trim(),
         authorized: form.authorized.value.trim(),
-        banrdb7: toNumber(form.banrdb7.value),
-        banrdb8: toNumber(form.banrdb8.value),
+        total: toNumber(form.total.value),
+        servicable: toNumber(form.servicable.value),
+        unservicable: toNumber(form.unservicable.value),
         issue: toNumber(form.issue.value),
-        total: toNumber(total.value),
-        balance: toNumber(balance.value)
+        instore: toNumber(form.instore.value)
     };
-    if(payload.total < payload.issue){
-        if(!confirm("Warning: Issued quantity exceeds total available. Balance will be set to 0. Proceed?")){
-            return;
-        }
-        payload.issue = payload.total;
-    }
     console.table(payload);
     writeInventoryItem(payload.name, payload);
     form.reset();
-    banrdb7.value = 0;
-    banrdb8.value = 0;
+    total.value = 0;
+    servicable.value = 0;
     issue.value = 0;
     recalc();
 });
@@ -90,22 +96,23 @@ function writeInventoryItem(name, data) {
     const newname = name.replace(/[\s/]+/g, '_').toLowerCase();
     checkInventoryItem(newname).then((exists) => {
         if (exists) {
-            alert("Item with this name already exists!");
+            console.log("Item with this name already exists:", newname);
+            showNotification("Item with this name already exists. Please choose a different name.", "error", "Error");
         } else {
             set(ref(db, 'engrinventory/' + newname),{
                 name: name,
                 authorized: data.authorized,
-                banrdb7: data.banrdb7,
-                banrdb8: data.banrdb8,
-                issue: data.issue,
                 total: data.total,
-                balance: data.balance
+                servicable: data.servicable,
+                unservicable: data.unservicable,
+                issue: data.issue,
+                instore: data.instore
             });
             console.log("Inventory item added:", newname);
-            alert("Item added successfully!");
+            showNotification("Item added successfully!", "success", "Success");
         }   
         }).catch((error) => {   
             console.error("Error checking item existence:", error);
-            alert("Error adding item. Please try again.");
+            showNotification("Error adding item. Please try again.", "error", "Error");
         });
-}   
+}

@@ -46,6 +46,8 @@ h1 {
 
 .form-group {
     margin-bottom: 25px;
+    position: relative;
+    height: fit-content;
 }
 
 label {
@@ -98,24 +100,6 @@ button:active {
     transform: translateY(0);
 }
 
-.forgot-password {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.forgot-password a {
-    color: #667eea;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-    transition: color 0.3s ease;
-}
-
-.forgot-password a:hover {
-    color: #764ba2;
-    text-decoration: underline;
-}
-
 .form-group select {
     width: 100%;
     padding: 12px 15px;
@@ -123,4 +107,26 @@ button:active {
     border-radius: 8px;
     font-size: 14px;
     cursor: pointer;
+}
+
+.password-toggle{
+    position: relative;
+    top:-45px;
+    left: 85%;
+    cursor: pointer;
+    background: none;
+    border: none;
+    outline: none;
+    width: 24px;
+    height: 24px;
+    color: #333333; 
+}
+
+.password-toggle:hover{
+    color: #667eea;
+    background: none;
+    box-shadow: none;
+}
+.pass{
+    margin-bottom: -20px;
 }

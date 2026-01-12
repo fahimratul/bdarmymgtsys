@@ -4,28 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/notification.css">
+    <link rel='icon' href='static/logo_small.png' type='image/x-icon' />
     <title>Login</title>
 
 </head>
 <body>
+    <div id="notification-toast" class="notification-toast"></div>
     <div class="login-container">
         <h1>Login</h1>
         <div class="form-group">
             <label for="ba-number">BA Number</label>
-            <input type="text" id="ba-number" name="ba-number" required>
+            <input type="text" id="ba-number" name="ba-number" placeholder="Enter your BA number" required>
         </div>
+        <div class="form-group pass">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+            <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+            </button>
+            </div>
         <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-        <div class="form-group">
+            <label for="role">Select Role</label>
             <select name="role" id="role">
-                <option value="storeman">Engr Bk</option>
+                <option value="engrnco">Engr Bk NCO</option>
                 <option value="admin">Battalion Quartermaster</option>
             </select>
         </div>
         <button id="login-button">Login</button>
     </div>
-    <script type="module" src="connect.js" defer></script>
+    <script type="module" src="js/connect.js" defer></script>
+    <script>
+        function togglePassword(inputId) {
+            const passwordInput = document.getElementById(inputId);
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+        }
+        function hideNotification() {
+            const toast = document.getElementById("notification-toast");
+            toast.classList.remove("show");
+        }
+    </script>
 </body>
 </html>

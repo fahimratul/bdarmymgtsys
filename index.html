@@ -4,37 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/home.css">
+    <link rel="icon" type="image/png" href="static/logo.png"/>
     <title>Login</title>
 
 </head>
 <body>
     <div class="main-container">
-        <h1>Welcome to BD Army Store Management System</h1>
-        <p>Please select your login role:</p>
-        <div class="login-mode">
-            <div class="login-card" onclick="handlelogin('cc')">
-               <h2>Contingent Commander</h2>               
-            </div>
-            <div class="login-card">
-                <h2>Officer</h2>
-            </div>
+        <div>
+            <img src="static/logo.png" alt="BD Army Store Logo" class="logo">
+            <h1>Welcome to Bangladesh Army Store Management System</h1>
         </div>
-        <div class="login-mode">
-            <div class="login-card" onclick="handlelogin('storeman')">
-               <h2>Storeman</h2>
+        <div>
+            <p class="login-instruction">Select your login role:</p>
+            <div class="login-mode">
+                <div class="login-card" onclick="handlelogin('cc')">
+                <h2>Contingent Commander</h2>               
+                </div>
+                <div class="login-card" onclick="handlelogin('officer')">
+                    <h2>Officer</h2>
+                </div>
             </div>
-            <div class="login-card" onclick="handlelogin('bqms')">
-               <h2>BQMS</h2>
+            <div class="login-mode">
+                <div class="login-card" onclick="handlelogin('bqms')">
+                <h2>BQMS</h2>
+                </div>
+                <div class="login-card" onclick="handlelogin('mtjconco')">
+                <h2>MT</h2>
+                </div>  
             </div>
-            <div class="login-card" onclick="handlelogin('mtjconco')">
-               <h2>MT JCO/NCO</h2>
-            </div>  
         </div>
 
     </div>
     <script>
         function handlelogin(role) {
-            if(role === 'storeman') {
+            if(role === 'bqms') {
                 window.location.href = 'storeman_login.html';
             } else {
                 alert('Login for ' + role + ' is not implemented yet.');

@@ -33,6 +33,8 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 
+import {showNotification} from './notification.js';
+console.log("EngrNCO Script Loaded");
 
 let dataCache = {};
 let currentEditKey = null;
@@ -179,11 +181,11 @@ function closeEditModal() {
 
 function recalcModalTotals() {
     if(Number(inputs.servicable.value) > Number(inputs.total.value)) {
-        alert('Servicable quantity cannot exceed Total quantity. Adjusting Servicable to match Total.');
+        showNotification('Servicable quantity cannot exceed Total quantity. Adjusting Servicable to match Total.', 'warning', 'Input Adjusted');
         inputs.servicable.value = inputs.total.value;
     }
     if(Number(inputs.issue.value) > Number(inputs.servicable.value)) {
-        alert('Issued quantity cannot exceed Servicable quantity. Adjusting Issued to match Servicable.');
+        showNotification('Issued quantity cannot exceed Servicable quantity. Adjusting Issued to match Servicable.', 'warning', 'Input Adjusted');
         inputs.issue.value = inputs.servicable.value;
     }
     const unservicable = (Number(inputs.total.value) || 0) - (Number(inputs.servicable.value) || 0);
@@ -217,18 +219,14 @@ editForm?.addEventListener('submit', (e) => {
         instore: Number(inputs.instore.value) || 0
     };
     updated.unservicable = updated.total - updated.servicable;
-    if (updated.servicable > updated.total) {
-        if (!confirm('Warning: Servicable quantity exceeds total available. Balance will be set to 0. Proceed?')) {
-            return;
-        }
-        updated.issue = updated.total;
-    }
     updated.instore = Math.max(updated.total - updated.issue, 0);
 
     console.table({ key: currentEditKey, updated });
     update(ref(db, 'engrinventory/' + currentEditKey), updated)
         .then(() => {
             console.log('Data updated successfully');
+            showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
+
             loaditemdata();
         })
         .catch((error) => {
