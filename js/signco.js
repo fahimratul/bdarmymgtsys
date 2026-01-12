@@ -23,7 +23,7 @@ console.log(db);
 console.log("Firebase Initialized");
 
 window.addEventListener('DOMContentLoaded', () => {
-    let baNumber = window.localStorage.getItem('baNumber');
+    let baNumber = sessionStorage.getItem('baNumber');
     if (!baNumber) {
         console.error('BA Number not found in local storage.');
         window.location.href = 'storeman_login.html';
@@ -32,7 +32,7 @@ window.addEventListener('DOMContentLoaded', () => {
     console.log('Logged in as BA Number:', baNumber);
 });
 
-// Clear localStorage when the site is closed
+// Clear sessionStorage when the site is closed
  
 
 
@@ -242,7 +242,7 @@ editForm?.addEventListener('submit', (e) => {
 const logoutButton = document.getElementById('logoutButton');
 
 logoutButton?.addEventListener('click', () => {
-    window.localStorage.removeItem('baNumber');
+    sessionStorage.removeItem('baNumber');
     window.location.href = 'storeman_login.html';
 });
 

@@ -66,15 +66,15 @@ function handlelogin() {
             if (userData.password === password && userData.role === role) {
                 console.log("Login successful");
                 if (role === 'engrnco') {
-                    localStorage.setItem('baNumber', banumber);
+                    sessionStorage.setItem('baNumber', banumber);
                     window.location.href = 'engrnco.html';
                 }
                 else if (role === 'signco') {
-                    localStorage.setItem('baNumber', banumber);
+                    sessionStorage.setItem('baNumber', banumber);
                     window.location.href = 'signco.html';
                 }
                 else if (role === 'admin') {
-                    localStorage.setItem('baNumber', banumber);
+                    sessionStorage.setItem('baNumber', banumber);
                     window.location.href = 'admin.html';
                 }
             } else {
@@ -95,7 +95,7 @@ function handlelogin() {
 const loginButton = document.getElementById('login-button');
 loginButton.addEventListener('click', handlelogin);
 
-// Clear localStorage when the site is closed
+// Clear sessionStorage when the site is closed
  
 
 console.log("Event listener added to login button");
