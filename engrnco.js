@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
 
-import { getDatabase, get, ref } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getDatabase, get, ref, update } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
 
 const firebaseConfig = {
@@ -184,15 +184,29 @@ editForm?.addEventListener('submit', (e) => {
     const updated = {
         ...dataCache[currentEditKey],
         name: inputs.name.value.trim(),
-        authorized: Number(inputs.authorized.value) || 0,
+        authorized: inputs.authorized.value.trim(),
         banrdb7: Number(inputs.banrdb7.value) || 0,
         banrdb8: Number(inputs.banrdb8.value) || 0,
         issue: Number(inputs.issue.value) || 0,
     };
     updated.total = updated.banrdb7 + updated.banrdb8;
+    if (updated.issue > updated.total) {
+        if (!confirm('Warning: Issued quantity exceeds total available. Balance will be set to 0. Proceed?')) {
+            return;
+        }
+        updated.issue = updated.total;
+    }
     updated.balance = Math.max(updated.total - updated.issue, 0);
 
     console.table({ key: currentEditKey, updated });
-    alert('Edit captured. Wire this to Firebase update to persist changes.');
+    update(ref(db, 'engrinventory/' + currentEditKey), updated)
+        .then(() => {
+            console.log('Data updated successfully');
+            loaditemdata();
+        })
+        .catch((error) => {
+            console.error('Error updating data:', error);
+        }); 
+
     closeEditModal();
 });

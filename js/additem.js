@@ -61,7 +61,12 @@ form.addEventListener('submit', (event) => {
         total: toNumber(total.value),
         balance: toNumber(balance.value)
     };
-
+    if(payload.total < payload.issue){
+        if(!confirm("Warning: Issued quantity exceeds total available. Balance will be set to 0. Proceed?")){
+            return;
+        }
+        payload.issue = payload.total;
+    }
     console.table(payload);
     writeInventoryItem(payload.name, payload);
     form.reset();
