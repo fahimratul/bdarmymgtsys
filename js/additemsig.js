@@ -24,6 +24,19 @@ console.log("Firebase Initialized");
 
 import {showNotification} from './notification.js';
 
+
+window.addEventListener('DOMContentLoaded', () => {
+    let baNumber = sessionStorage.getItem('baNumber');
+    if (!baNumber) {
+        console.error('BA Number not found in session storage.');
+        window.location.href = 'index.html';
+        return;
+    }
+    console.log('Logged in as BA Number:', baNumber);
+});
+
+
+
 console.log("Add Item Script Loaded");
 
 const form = document.getElementById('addItemForm');

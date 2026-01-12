@@ -26,6 +26,18 @@ import {showNotification} from './notification.js';
 
 console.log("Add Item Script Loaded");
 
+window.addEventListener('DOMContentLoaded', () => {
+    let baNumber = sessionStorage.getItem('baNumber');
+    if (!baNumber) {
+        console.error('BA Number not found in session storage.');
+        window.location.href = 'index.html';
+        return;
+    }
+    console.log('Logged in as BA Number:', baNumber);
+});
+
+
+
 const form = document.getElementById('addItemForm');
 const total = document.getElementById('total');
 const servicable = document.getElementById('servicable');
