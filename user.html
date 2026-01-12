@@ -33,11 +33,11 @@
                 <th>serial</th>
                 <th>Nomenclature/Name</th>
                 <th>Authorized Unit</th>
-                <th>BANRDB-7 Items</th>
-                <th>BANRDB-8 Items</th>
                 <th>Total Items</th>
-                <th>Issue</th>
-                <th>Balance Now</th>
+                <th>Servicable</th>
+                <th>Unservicable</th>
+                <th>Issued</th>
+                <th>In store</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -64,25 +64,25 @@
                         <input type="text" id="editAuthorized" name="authorized" required>
                     </div>
                     <div class="field">
-                        <label for="editBanrdb7">BANRDB-7 Items</label>
-                        <input type="number" id="editBanrdb7" name="banrdb7" min="0" step="1" required>
+                        <label for="edittotal">Total</label>
+                        <input type="number" id="edittotal" name="total" min="0" step="1" required>
                     </div>
                     <div class="field">
-                        <label for="editBanrdb8">BANRDB-8 Items</label>
-                        <input type="number" id="editBanrdb8" name="banrdb8" min="0" step="1" required>
-                    </div>
-                    <div class="field">
-                        <label for="editTotal">Total Items</label>
-                        <input type="number" id="editTotal" name="total" min="0" step="1" readonly>
-                        <p class="inline-hint">Auto: BANRDB-7 + BANRDB-8</p>
+                        <label for="editservicable">Servicable</label>
+                        <input type="number" id="editServicable" name="servicable" min="0" step="1" required>
                     </div>
                     <div class="field">
                         <label for="editIssue">Issued</label>
                         <input type="number" id="editIssue" name="issue" min="0" step="1" required>
                     </div>
                     <div class="field">
-                        <label for="editBalance">Balance Now</label>
-                        <input type="number" id="editBalance" name="balance" min="0" step="1" readonly>
+                        <label for="editunservicable">Unservicable</label>
+                        <input type="number" id="editunservicable" name="unservicable" min="0" step="1" readonly>
+                        <p class="inline-hint">Auto: Total - Servicable</p>
+                    </div>
+                    <div class="field">
+                        <label for="editinstore">In store</label>
+                        <input type="number" id="editInstore" name="instore" min="0" step="1" readonly>
                         <p class="inline-hint">Auto: Total - Issued</p>
                     </div>
                 </div>

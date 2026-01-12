@@ -43,11 +43,11 @@ const editForm = document.getElementById('editForm');
 const inputs = {
     name: document.getElementById('editName'),
     authorized: document.getElementById('editAuthorized'),
-    banrdb7: document.getElementById('editBanrdb7'),
-    banrdb8: document.getElementById('editBanrdb8'),
-    total: document.getElementById('editTotal'),
+    total: document.getElementById('edittotal'),
+    servicable: document.getElementById('editServicable'),
+    unservicable: document.getElementById('editunservicable'),
     issue: document.getElementById('editIssue'),
-    balance: document.getElementById('editBalance'),
+    instore: document.getElementById('editInstore'),
 };
 
 function loaditemdata() {
@@ -74,22 +74,22 @@ function loaditemdata() {
                 const item = data[key];
                 const name = item.name || '';
                 const authorized = item.authorized ?? '';
-                const banrdb7 = item.banrdb7 ?? 0;
-                const banrdb8 = item.banrdb8 ?? 0;
-                const total = item.total ?? (banrdb7 + banrdb8);
+                const total = item.total ?? 0;
+                const servicable = item.servicable ?? 0;
+                const unservicable = item.unservicable ?? 0;
                 const issue = item.issue ?? 0;
-                const balance = item.balance ?? (total - issue);
+                const instore = item.instore ?? 0;
                 
                 html += `<tr id="${name}" data-key="${key}">
                             <td>${serial}</td>
                             <td>${name}</td>
                             <td>${authorized}</td>
-                            <td>${banrdb7}</td>
-                            <td>${banrdb8}</td>
                             <td>${total}</td>
+                            <td>${servicable}</td>
+                            <td>${unservicable}</td>
                             <td>${issue}</td>
-                            <td>${balance}</td>
-                            <td><button class="edit-btn" data-key="${key}">Edit</button></td>
+                            <td>${instore}</td>
+                            <td><button class="edit-btn" data-key='${key}'>Edit</button></td>
                         </tr>`;
                 serial += 1;
             }
@@ -155,10 +155,12 @@ function openEditModal(key) {
     currentEditKey = key;
 
     inputs.name.value = item.name || '';
-    inputs.authorized.value = item.authorized ?? 0;
-    inputs.banrdb7.value = item.banrdb7 ?? 0;
-    inputs.banrdb8.value = item.banrdb8 ?? 0;
+    inputs.authorized.value = item.authorized ?? 'NOS';
+    inputs.total.value = item.total ?? 0;
+    inputs.servicable.value = item.servicable ?? 0;
+    inputs.unservicable.value = item.unservicable ?? 0;
     inputs.issue.value = item.issue ?? 0;
+    inputs.instore.value = item.instore ?? 0;
     recalcModalTotals();
 
     modal.classList.remove('hidden');
@@ -169,17 +171,28 @@ function closeEditModal() {
     currentEditKey = null;
     editForm.reset();
     inputs.total.value = '';
-    inputs.balance.value = '';
+    inputs.servicable.value = '';
+    inputs.unservicable.value = '';
+    inputs.issue.value = '';
+    inputs.instore.value = '';
 }
 
 function recalcModalTotals() {
-    const total = (Number(inputs.banrdb7.value) || 0) + (Number(inputs.banrdb8.value) || 0);
-    const balance = total - (Number(inputs.issue.value) || 0);
-    inputs.total.value = total;
-    inputs.balance.value = Math.max(balance, 0);
+    if(Number(inputs.servicable.value) > Number(inputs.total.value)) {
+        alert('Servicable quantity cannot exceed Total quantity. Adjusting Servicable to match Total.');
+        inputs.servicable.value = inputs.total.value;
+    }
+    if(Number(inputs.issue.value) > Number(inputs.servicable.value)) {
+        alert('Issued quantity cannot exceed Servicable quantity. Adjusting Issued to match Servicable.');
+        inputs.issue.value = inputs.servicable.value;
+    }
+    const unservicable = (Number(inputs.total.value) || 0) - (Number(inputs.servicable.value) || 0);
+    const instore = (Number(inputs.total.value) || 0) - (Number(inputs.issue.value) || 0);
+    inputs.unservicable.value = Math.max(unservicable, 0);
+    inputs.instore.value = Math.max(instore, 0);
 }
 
-[inputs.banrdb7, inputs.banrdb8, inputs.issue].forEach(el => {
+[inputs.total, inputs.servicable, inputs.issue].forEach(el => {
     el.addEventListener('input', recalcModalTotals);
 });
 
@@ -196,19 +209,21 @@ editForm?.addEventListener('submit', (e) => {
     const updated = {
         ...dataCache[currentEditKey],
         name: inputs.name.value.trim(),
-        authorized: inputs.authorized.value.trim(),
-        banrdb7: Number(inputs.banrdb7.value) || 0,
-        banrdb8: Number(inputs.banrdb8.value) || 0,
+        authorized: inputs.authorized.value,
+        total: Number(inputs.total.value) || 0,
+        servicable: Number(inputs.servicable.value) || 0,
         issue: Number(inputs.issue.value) || 0,
+        unservicable: Number(inputs.unservicable.value) || 0,
+        instore: Number(inputs.instore.value) || 0
     };
-    updated.total = updated.banrdb7 + updated.banrdb8;
-    if (updated.issue > updated.total) {
-        if (!confirm('Warning: Issued quantity exceeds total available. Balance will be set to 0. Proceed?')) {
+    updated.unservicable = updated.total - updated.servicable;
+    if (updated.servicable > updated.total) {
+        if (!confirm('Warning: Servicable quantity exceeds total available. Balance will be set to 0. Proceed?')) {
             return;
         }
         updated.issue = updated.total;
     }
-    updated.balance = Math.max(updated.total - updated.issue, 0);
+    updated.instore = Math.max(updated.total - updated.issue, 0);
 
     console.table({ key: currentEditKey, updated });
     update(ref(db, 'engrinventory/' + currentEditKey), updated)
