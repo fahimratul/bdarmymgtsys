@@ -22,6 +22,18 @@ const db = getDatabase(app);
 console.log(db);
 console.log("Firebase Initialized");
 
+window.addEventListener('DOMContentLoaded', () => {
+    let baNumber = localStorage.getItem('baNumber');
+    if (!baNumber) {
+        console.error('BA Number not found in local storage.');
+        window.location.href = 'storeman_login.html';
+        return;
+    }
+    console.log('Logged in as BA Number:', baNumber);
+});
+
+
+
 let dataCache = {};
 let currentEditKey = null;
 const modal = document.getElementById('editModal');
