@@ -3,29 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/home.css">
     <title>Login</title>
 
 </head>
 <body>
-    <div class="login-container">
-        <h1>Login</h1>
-        <div class="form-group">
-            <label for="ba-number">BA Number</label>
-            <input type="text" id="ba-number" name="ba-number" required>
+    <div class="main-container">
+        <h1>Welcome to BD Army Store Management System</h1>
+        <div class="login-mode">
+            <div class="login-card" onclick="handlelogin('cc')">
+               <h2>Contingent Commander</h2>               
+            </div>
+            <div class="login-card" onclick="handlelogin('lo')"> 
+               <h2>Logistics Officer</h2>               
+            </div>
+            <div class="login-card" onclick="handlelogin('mto')">
+               <h2>Military Transport Officer</h2>
+            </div>
+            <div class="login-card" onclick="handlelogin('storeman')">
+               <h2>Storeman</h2>
+            </div>
+            <div class="login-card" onclick="handlelogin('bqms')">
+               <h2>BQMS</h2>
+            </div>
+            <div class="login-card" onclick="handlelogin('mtjconco')">
+               <h2>MT JCO/NCO</h2>
+            </div>  
         </div>
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-        <div class="form-group">
-            <select name="role" id="role">
-                <option value="storeman">Storeman</option>
-                <option value="admin">Battalion Quartermaster</option>
-            </select>
-        </div>
-        <button id="login-button">Login</button>
+
     </div>
-    <script type="module" src="connect.js" defer></script>
+    <script>
+        function handlelogin(role) {
+            if(role === 'storeman') {
+                window.location.href = 'storeman_login.html';
+            } else {
+                alert('Login for ' + role + ' is not implemented yet.');
+            }
+        }
+
+    </script>
 </body>
 </html>
