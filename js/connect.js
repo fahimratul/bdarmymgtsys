@@ -54,6 +54,10 @@ function handlelogin() {
     const password = document.getElementById('password').value;
     const role = document.getElementById('role').value;
     console.log(`BA Number: ${banumber}, Password: ${password}, Role: ${role}`);
+    if (!banumber || !password || !role) {
+        showNotification("Please fill in all fields", "error", "Login Failed");
+        return;
+    }
 
     const dbRef = ref(db, 'users/' + banumber);
     get(dbRef).then((snapshot) => {
@@ -64,6 +68,10 @@ function handlelogin() {
                 if (role === 'engrnco') {
                     localStorage.setItem('baNumber', banumber);
                     window.location.href = 'engrnco.html';
+                }
+                else if (role === 'signco') {
+                    localStorage.setItem('baNumber', banumber);
+                    window.location.href = 'signco.html';
                 }
                 else if (role === 'admin') {
                     localStorage.setItem('baNumber', banumber);
@@ -87,8 +95,8 @@ function handlelogin() {
 const loginButton = document.getElementById('login-button');
 loginButton.addEventListener('click', handlelogin);
 
-
-
+// Clear localStorage when the site is closed
+ 
 
 console.log("Event listener added to login button");
 

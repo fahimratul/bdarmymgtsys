@@ -23,7 +23,7 @@ console.log(db);
 console.log("Firebase Initialized");
 
 window.addEventListener('DOMContentLoaded', () => {
-    let baNumber = localStorage.getItem('baNumber');
+    let baNumber = window.localStorage.getItem('baNumber');
     if (!baNumber) {
         console.error('BA Number not found in local storage.');
         window.location.href = 'storeman_login.html';
@@ -56,7 +56,7 @@ const inputs = {
 };
 
 function loaditemdata() {
-    const dbRef = ref(db, 'engrinventory/');
+    const dbRef = ref(db, 'siginventory/');
     const loadingOverlay = document.getElementById('loadingOverlay');
 
     get(dbRef).then((snapshot) => {
@@ -225,7 +225,7 @@ editForm?.addEventListener('submit', (e) => {
     updated.instore = Math.max(updated.total - updated.issue, 0);
 
     console.table({ key: currentEditKey, updated });
-    update(ref(db, 'engrinventory/' + currentEditKey), updated)
+    update(ref(db, 'siginventory/' + currentEditKey), updated)
         .then(() => {
             console.log('Data updated successfully');
             showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
@@ -242,7 +242,7 @@ editForm?.addEventListener('submit', (e) => {
 const logoutButton = document.getElementById('logoutButton');
 
 logoutButton?.addEventListener('click', () => {
-    localStorage.removeItem('baNumber');
+    window.localStorage.removeItem('baNumber');
     window.location.href = 'storeman_login.html';
 });
 
