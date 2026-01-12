@@ -4,6 +4,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebas
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
 
 import { getDatabase, set, get, ref } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -20,6 +22,9 @@ appId: "1:960978586847:web:afcee2217a1c3c876ead6a",
 measurementId: "G-H27M1SNMPX"
 };
 
+
+import {showNotification} from './notification.js';
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
@@ -27,18 +32,6 @@ const db = getDatabase(app);
 console.log(db);
 console.log("Firebase Initialized");
 
-
-
-function writeUserData(banumber, password, role) {
-    set(ref(db, 'users/' + banumber), {
-        banumber: banumber,
-        password: password,
-        role: role
-    });
-}
-
-
-console.log("User data written");
 
 
 function readUserData(banumber) {
@@ -54,9 +47,6 @@ function readUserData(banumber) {
     });
 }
 
-readUserData('123456');
-
-console.log("User data read");
 
 function handlelogin() {
     console.log("Login button clicked");
@@ -71,9 +61,9 @@ function handlelogin() {
             const userData = snapshot.val();
             if (userData.password === password && userData.role === role) {
                 console.log("Login successful");
-                if (role === 'storeman') {
+                if (role === 'engrnco') {
                     localStorage.setItem('baNumber', banumber);
-                    window.location.href = 'user.html';
+                    window.location.href = 'engrnco.html';
                 }
                 else if (role === 'admin') {
                     localStorage.setItem('baNumber', banumber);
@@ -81,11 +71,11 @@ function handlelogin() {
                 }
             } else {
                 console.log("Invalid password or role");
-                alert("Invalid BA Number, Password, or Role");
+                showNotification("Invalid password or role", "error", "Login Failed");
             }
         } else {
             console.log("No data available for this BA Number");
-            alert("No data available for this BA Number");
+            showNotification("No data available for this BA Number", "error", "Login Failed");
         }
     }).catch((error) => {
         console.error(error);
