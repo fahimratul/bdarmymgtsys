@@ -342,3 +342,9 @@ th {
         text-align: center;
     }
 }
+
+.logout {
+    position: absolute;
+    top: 1rem;
+    right: 4.5rem;
+}

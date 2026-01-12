@@ -56,7 +56,7 @@ const inputs = {
 };
 
 function loaditemdata() {
-    const dbRef = ref(db, 'engrinventory/');
+    const dbRef = ref(db, 'siginventory/');
     const loadingOverlay = document.getElementById('loadingOverlay');
 
     get(dbRef).then((snapshot) => {
@@ -225,7 +225,7 @@ editForm?.addEventListener('submit', (e) => {
     updated.instore = Math.max(updated.total - updated.issue, 0);
 
     console.table({ key: currentEditKey, updated });
-    update(ref(db, 'engrinventory/' + currentEditKey), updated)
+    update(ref(db, 'siginventory/' + currentEditKey), updated)
         .then(() => {
             console.log('Data updated successfully');
             showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
@@ -238,11 +238,3 @@ editForm?.addEventListener('submit', (e) => {
 
     closeEditModal();
 });
-
-const logoutButton = document.getElementById('logoutButton');
-
-logoutButton?.addEventListener('click', () => {
-    localStorage.removeItem('baNumber');
-    window.location.href = 'storeman_login.html';
-});
-
