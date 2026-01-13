@@ -121,7 +121,9 @@ button:active {
     height: 24px;
     color: #333333; 
 }
-
+#login-button{
+    margin-bottom: 15px;
+}
 .password-toggle:hover{
     color: #667eea;
     background: none;

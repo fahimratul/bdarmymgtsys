@@ -15,11 +15,9 @@ appId: "1:960978586847:web:afcee2217a1c3c876ead6a",
 measurementId: "G-H27M1SNMPX"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const db = getDatabase(app);
-console.log(db);
 console.log("Firebase Initialized");
 
 import {showNotification} from './notification.js';
@@ -28,12 +26,16 @@ console.log("Add Item Script Loaded");
 
 window.addEventListener('DOMContentLoaded', () => {
     let baNumber = sessionStorage.getItem('baNumber');
+    let roleType = sessionStorage.getItem('role_type');
+    console.log('Role Type from sessionStorage:', roleType);
+    
     if (!baNumber) {
         console.error('BA Number not found in session storage.');
         window.location.href = 'index.html';
         return;
     }
     console.log('Logged in as BA Number:', baNumber);
+
 });
 
 
