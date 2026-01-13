@@ -54,15 +54,9 @@ const inputs = {
     issue: document.getElementById('editIssue'),
     instore: document.getElementById('editInstore'),
 };
-let datainfo={
-    total:0,
-    servicable:0,
-    unservicable:0,
-    issue:0,
-    instore:0
-}
+
 function loaditemdata() {
-    const dbRef = ref(db, 'siginventory/');
+    const dbRef = ref(db, 'bkncoinventory/');
     const loadingOverlay = document.getElementById('loadingOverlay');
 
     get(dbRef).then((snapshot) => {
@@ -103,25 +97,13 @@ function loaditemdata() {
                             <td><button class="edit-btn" data-key='${key}'>Edit</button></td>
                         </tr>`;
                 serial += 1;
-                datainfo.total+=total;
-                datainfo.servicable+=servicable;
-                datainfo.unservicable+=unservicable;
-                datainfo.issue+=issue;
-                datainfo.instore+=instore;
             }
         } else {
             html = '<tr><td colspan="9" style="text-align: center; padding: 2rem; color: #666;">No inventory data available</td></tr>';
         }
         
         tableBody.innerHTML = html;
-        if(sessionStorage.getItem('role_type')==='officer'){
-            document.getElementById('totalItems').textContent = datainfo.total;
-            document.getElementById('servicableItems').textContent = datainfo.servicable;
-            document.getElementById('unservicableItems').textContent = datainfo.unservicable;
-            document.getElementById('issuedItems').textContent = datainfo.issue;
-            document.getElementById('inStoreItems').textContent = datainfo.instore;
-            
-        }
+
         // Attach edit handlers
         tableBody.querySelectorAll('.edit-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -243,7 +225,7 @@ editForm?.addEventListener('submit', (e) => {
     updated.instore = Math.max(updated.total - updated.issue, 0);
 
     console.table({ key: currentEditKey, updated });
-    update(ref(db, 'siginventory/' + currentEditKey), updated)
+    update(ref(db, 'bkncoinventory/' + currentEditKey), updated)
         .then(() => {
             console.log('Data updated successfully');
             showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
@@ -259,12 +241,8 @@ editForm?.addEventListener('submit', (e) => {
 
 const logoutButton = document.getElementById('logoutButton');
 
-
-
 logoutButton?.addEventListener('click', () => {
     sessionStorage.removeItem('baNumber');
     window.location.href = 'storeman_login.html';
 });
-
-
 

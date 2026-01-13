@@ -38,10 +38,23 @@
     <script>
         function handlelogin(role) {
             if(role === 'bqms') {
-                window.location.href = 'storeman_login.html';
-            } else {
-                alert('Login for ' + role + ' is not implemented yet.');
+                sessionStorage.setItem('role_type', 'bqms');
+            } 
+            else if(role === 'mtjconco') {
+                sessionStorage.setItem('role_type', 'mtjconco');
             }
+            else if (role === 'cc') {
+                alert('Contingent Commander login is currently disabled');
+                return;
+            }
+            else if (role === 'officer') {
+                sessionStorage.setItem('role_type', 'officer');
+            }
+            else {
+                alert('Invalid role selected');
+                return;
+            }
+            window.location.href = 'storeman_login.html';
         }
 
     </script>

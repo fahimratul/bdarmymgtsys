@@ -73,10 +73,23 @@ function handlelogin() {
                     sessionStorage.setItem('baNumber', banumber);
                     window.location.href = 'signco.html';
                 }
-                else if (role === 'admin') {
+                else if (role === 'bqms') {
                     sessionStorage.setItem('baNumber', banumber);
-                    window.location.href = 'admin.html';
+                    window.location.href = 'bqms.html';
                 }
+                else if (role === 'bknco') {
+                    sessionStorage.setItem('baNumber', banumber);
+                    window.location.href = 'bknco.html';
+                }
+                else if (role === 'mtnco' || role === 'mtjco') {
+                    sessionStorage.setItem('baNumber', banumber);
+                    window.location.href = 'mt_dashboard.html';
+                }
+                else {
+                    console.log("Invalid role selected");
+                    showNotification("Invalid role selected", "error", "Login Failed");
+                }
+
             } else {
                 console.log("Invalid password or role");
                 showNotification("Invalid password or role", "error", "Login Failed");

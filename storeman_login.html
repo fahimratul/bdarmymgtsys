@@ -28,13 +28,9 @@
                 </svg>
             </button>
             </div>
-        <div class="form-group">
+        <div class="form-group" >
             <label for="role">Select Role</label>
             <select name="role" id="role">
-                <option value="">-- Select Role --</option> 
-                <option value="engrnco">Engr Bk NCO</option>
-                <option value="signco">Sig Bk NCO</option>
-                <option value="admin">Battalion Quartermaster</option>
             </select>
         </div>
         <button id="login-button">Login</button>
@@ -50,6 +46,41 @@
             const toast = document.getElementById("notification-toast");
             toast.classList.remove("show");
         }
+        const role_type = sessionStorage.getItem('role_type');
+
+        window.onload = function() {
+            const roleSelect = document.getElementById('role');
+            if (role_type==='officer'){
+                roleSelect.innerHTML = `
+                    <option value="">-- Select Role --</option> 
+                    <option value="engrnco">Cheif Logistic Officer</option>
+                    <option value="bknco">Logistic Officer</option>
+                    <option value="engrnco">Engineer Officer</option>
+                    <option value="signco">Signal Officer</option>
+                    <option value="mtjco">MT Officer</option>
+                `;
+            }
+            else if (role_type==='bqms'){
+                roleSelect.innerHTML = `
+                <option value="">-- Select Role --</option> 
+                <option value="engrnco">Engr Bk NCO</option>
+                <option value="signco">Sig Bk NCO</option>
+                <option value="bknco">Barrack NCO</option>
+                <option value="bqms">Battalion Quartermaster</option>
+                `;
+            }
+            else if (role_type==='mtjconco'){
+                roleSelect.innerHTML = `
+                <option value="">-- Select Role --</option> 
+                <option value="mtjco">MT JCO</option>
+                <option value="mtnco">MT NCO</option>
+                `;
+            }
+        };
+
+
+
+
     </script>
 </body>
 </html>
