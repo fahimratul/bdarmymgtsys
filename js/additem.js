@@ -38,7 +38,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 });
 
-
+const role = sessionStorage.getItem('role');
 
 const form = document.getElementById('addItemForm');
 const total = document.getElementById('total');
