@@ -7,12 +7,11 @@
     <link rel="stylesheet" href="css/notification.css">
     <link rel='icon' href='static/logo_small.png' type='image/x-icon' />
     <title>Login</title>
-
 </head>
 <body>
     <div id="notification-toast" class="notification-toast"></div>
     <div class="login-container">
-        <h1>Login</h1>
+        <h1 id="login-title"></h1>
         <div class="form-group">
             <label for="ba-number">BA Number</label>
             <input type="text" id="ba-number" name="ba-number" placeholder="Enter your BA number" required>
@@ -27,17 +26,12 @@
                     <circle cx="12" cy="12" r="3"></circle>
                 </svg>
             </button>
-            </div>
-        <div class="form-group">
-            <label for="role">Select Role</label>
-            <select name="role" id="role">
-                <option value="">-- Select Role --</option> 
-                <option value="engrnco">Engr Bk NCO</option>
-                <option value="signco">Sig Bk NCO</option>
-                <option value="admin">Battalion Quartermaster</option>
-            </select>
+        </div>
+        <div class="form-group remember-me">
+            <input type="checkbox" id="remember-me"><p> Remember me</p>
         </div>
         <button id="login-button">Login</button>
+        <p onclick="window.location.href='index.html'" style="text-align: center;cursor:pointer">&larr; Go Back</p> 
     </div>
     <script type="module" src="js/connect.js" defer></script>
     <script>
@@ -50,6 +44,24 @@
             const toast = document.getElementById("notification-toast");
             toast.classList.remove("show");
         }
+        window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('baNumber') && localStorage.getItem('password')) {
+                document.getElementById('ba-number').value = localStorage.getItem('baNumber');
+                document.getElementById('password').value = localStorage.getItem('password');
+                document.getElementById('remember-me').checked = true;
+            }
+            const titleElement = document.getElementById('login-title');
+            const roletype=sessionStorage.getItem('role_type');
+            if (roletype ==='bqms') {
+                titleElement.textContent = 'BQMS Login';
+            } else if (roletype ==='mtjconco') {
+                titleElement.textContent = 'MT Login';
+            } else if (roletype ==='officer') {
+                titleElement.textContent = 'Officer Login';
+            } else {
+                titleElement.textContent = 'Login';
+            }
+        });
     </script>
 </body>
 </html>

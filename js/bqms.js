@@ -56,7 +56,7 @@ const inputs = {
 };
 
 function loaditemdata() {
-    const dbRef = ref(db, 'siginventory/');
+    const dbRef = ref(db, 'bqmsinventory/');
     const loadingOverlay = document.getElementById('loadingOverlay');
 
     get(dbRef).then((snapshot) => {
@@ -225,7 +225,7 @@ editForm?.addEventListener('submit', (e) => {
     updated.instore = Math.max(updated.total - updated.issue, 0);
 
     console.table({ key: currentEditKey, updated });
-    update(ref(db, 'siginventory/' + currentEditKey), updated)
+    update(ref(db, 'bqmsinventory/' + currentEditKey), updated)
         .then(() => {
             console.log('Data updated successfully');
             showNotification('Inventory item updated successfully.', 'success', 'Update Successful');

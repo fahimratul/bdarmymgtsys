@@ -24,6 +24,7 @@ console.log("Firebase Initialized");
 
 import {showNotification} from './notification.js';
 
+console.log("Add Item Script Loaded");
 
 window.addEventListener('DOMContentLoaded', () => {
     let baNumber = sessionStorage.getItem('baNumber');
@@ -36,8 +37,6 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 
-
-console.log("Add Item Script Loaded");
 
 const form = document.getElementById('addItemForm');
 const total = document.getElementById('total');
@@ -96,7 +95,7 @@ form.addEventListener('submit', (event) => {
 });
 
 function checkInventoryItem(name) {
-    const dbRef = ref(db, 'siginventory/' + name);
+    const dbRef = ref(db, 'bkncoinventory/' + name);
     return get(dbRef).then((snapshot) => {
         return snapshot.exists();
     }).catch((error) => {
@@ -112,7 +111,7 @@ function writeInventoryItem(name, data) {
             console.log("Item with this name already exists:", newname);
             showNotification("Item with this name already exists. Please choose a different name.", "error", "Error");
         } else {
-            set(ref(db, 'siginventory/' + newname),{
+            set(ref(db, 'bkncoinventory/' + newname),{
                 name: name,
                 authorized: data.authorized,
                 total: data.total,

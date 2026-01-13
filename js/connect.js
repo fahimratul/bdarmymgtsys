@@ -29,57 +29,84 @@ import {showNotification} from './notification.js';
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const db = getDatabase(app);
-console.log(db);
 console.log("Firebase Initialized");
+console.log("Analytics Initialized");
+console.log(sessionStorage.getItem('role_type'));
 
-
-
-function readUserData(banumber) {
-    const dbRef = ref(db, 'users/' + banumber);
-    get(dbRef).then((snapshot) => {
-        if (snapshot.exists()) {
-            console.log(snapshot.val());
-        } else {
-            console.log("No data available");
-        }
-    }).catch((error) => {
-        console.error(error);
-    });
+let ranklist={
+    officer:["lt","capt","Maj","major","ltcol","col","brig","majorgen","ltgen","gen"],
+    bqms:["snk","lcpl","cpl","sgt","wo","swo","mwo"],
+    mtjconco:["snk","lcpl","cpl","sgt","wo","swo","mwo"]
 }
-
+    
 
 function handlelogin() {
     console.log("Login button clicked");
     const banumber = document.getElementById('ba-number').value;
     const password = document.getElementById('password').value;
-    const role = document.getElementById('role').value;
-    console.log(`BA Number: ${banumber}, Password: ${password}, Role: ${role}`);
-    if (!banumber || !password || !role) {
+    const rememberMe = document.getElementById('remember-me').checked;
+
+    if (!banumber || !password) {
         showNotification("Please fill in all fields", "error", "Login Failed");
         return;
     }
 
     const dbRef = ref(db, 'users/' + banumber);
+
+    const role_type = sessionStorage.getItem('role_type');
+
     get(dbRef).then((snapshot) => {
         if (snapshot.exists()) {
             const userData = snapshot.val();
-            if (userData.password === password && userData.role === role) {
-                console.log("Login successful");
-                if (role === 'engrnco') {
+            const role =userData.role;
+            const userRank = userData.rank;
+            if (role_type === 'bqms' && !ranklist.bqms.includes(userRank)) {
+                console.log("Unauthorized rank for BQMS role");
+                showNotification("You are not an authorized BQMS", "error", "Login Failed");
+                return;
+            }
+            else if ((role_type === 'mtjconco') && !ranklist.mtjconco.includes(userRank)) {
+                console.log("Unauthorized rank for MT JCO/NCO role");
+                showNotification("You are not an authorized MT JCO/NCO", "error", "Login Failed");
+                return;
+            }
+            else if (role_type ==='officer' && !ranklist.officer.includes(userRank)) {
+                console.log("Unauthorized rank for Officer role");
+                showNotification("You are not an authorized Officer", "error", "Login Failed");
+                return;
+            }
+            else{
+                if (userData.password === password) {
+                    console.log("Login successful");
                     sessionStorage.setItem('baNumber', banumber);
-                    window.location.href = 'engrnco.html';
+                    sessionStorage.setItem('role', role);
+                    sessionStorage.setItem('username', userData.name);
+                    sessionStorage.setItem('rank', userData.rank);
+                    if (rememberMe) {
+                        localStorage.setItem('baNumber', banumber);
+                        localStorage.setItem('password', password);
+                        console.log("Credentials saved to localStorage");
+                    } else {
+                        localStorage.removeItem('baNumber');
+                        localStorage.removeItem('password');
+                        localStorage.removeItem('role');
+                    }
+                    console.log(`Redirecting to ${role} dashboard`);
+                    if (role_type === 'officer')
+                        window.location.href = 'officer_dashboard.html';
+                    else if (role_type === 'bqms')
+                        window.location.href ='engrnco.html';
+                    else if (role_type === 'mtjconco')
+                        window.location.href ='mtjconco.html';
+                    else {
+                        console.log("Invalid role in database");
+                        showNotification("Invalid role in database", "error", "Login Failed");
+                    }
+
+                } else {
+                    console.log("Invalid password or role");
+                    showNotification("Invalid password or role", "error", "Login Failed");
                 }
-                else if (role === 'signco') {
-                    sessionStorage.setItem('baNumber', banumber);
-                    window.location.href = 'signco.html';
-                }
-                else if (role === 'admin') {
-                    sessionStorage.setItem('baNumber', banumber);
-                    window.location.href = 'admin.html';
-                }
-            } else {
-                console.log("Invalid password or role");
-                showNotification("Invalid password or role", "error", "Login Failed");
             }
         } else {
             console.log("No data available for this BA Number");
@@ -93,10 +120,7 @@ function handlelogin() {
 
 
 const loginButton = document.getElementById('login-button');
-loginButton.addEventListener('click', handlelogin);
-
-// Clear sessionStorage when the site is closed
- 
+loginButton.addEventListener('click', handlelogin); 
 
 console.log("Event listener added to login button");
 

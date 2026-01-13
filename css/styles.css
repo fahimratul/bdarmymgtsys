@@ -121,7 +121,9 @@ button:active {
     height: 24px;
     color: #333333; 
 }
-
+#login-button{
+    margin-bottom: 15px;
+}
 .password-toggle:hover{
     color: #667eea;
     background: none;
@@ -129,4 +131,17 @@ button:active {
 }
 .pass{
     margin-bottom: -20px;
+}
+.remember-me{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9em;
+    color: #555555;
+    margin-bottom: 20px;
+}
+.remember-me input {
+    width: auto;
+    transform: scale(1.2);
+    cursor: pointer;
 }

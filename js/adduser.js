@@ -22,6 +22,16 @@ const db = getDatabase(app);
 
 console.log("Firebase Initialized for Add User");
 
+window.addEventListener('DOMContentLoaded', () => {
+    let baNumber = sessionStorage.getItem('baNumber');
+    if (!baNumber) {
+        console.error('BA Number not found in session storage.');
+        window.location.href = 'index.html';
+        return;
+    }
+    console.log('Logged in as BA Number:', baNumber);
+});
+
 // Handle form submission
 const addUserForm = document.getElementById('add-user-form');
 addUserForm.addEventListener('submit', async (e) => {

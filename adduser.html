@@ -35,7 +35,7 @@
             <div class="form-group">
                 <label for="rank">Select Rank *</label>
                 <select name="rank" id="rank" >
-                    <option value="">-- Select Role --</option>
+                    <option value="">-- Select Rank --</option>
                     <option value="snk">Sainik</option>
                     <option value="lcpl">Lance Corporal</option>
                     <option value="cpl">Corporal</option>
@@ -78,6 +78,7 @@
                     <option value="signco">Storeman (Signal)</option>
                     <option value="engr">Storeman (Engineer)</option>
                     <option value="bqms">Battle Quartermaster Sergeant</option>
+                    <option value="bknco">Barrack NCO</option>
                     <option value="mtnco">MT NCO</option>
                 </select>
             </div>
@@ -119,7 +120,7 @@
         rankTypeRadios.forEach(radio => {
             radio.addEventListener('change', () => {
                 const selectedType = document.querySelector('input[name="rank-type"]:checked').value;
-                rankSelect.innerHTML = '<option value="">-- Select Role --</option>';
+                rankSelect.innerHTML = '<option value="">-- Select Rank --</option>';
                 roleSelect.innerHTML = '<option value="">-- Select Role --</option>';
                 if (selectedType === 'nco') {
                     rankSelect.innerHTML += `
@@ -131,8 +132,9 @@
                     `;
                     roleSelect.innerHTML += `
                         <option value="signco">Storeman (Signal)</option>
-                        <option value="engr">Storeman (Engineer)</option>
-                        <option value="bqms">Battle Quartermaster Sergeant</option>
+                        <option value="engrnco">Storeman (Engineer)</option>
+                        <option value="bqms">Battlion Quartermaster Sergeant</option>
+                        <option value="bknco">Barrack NCO</option>
                         <option value="mtnco">MT NCO</option>
                     `;
 
@@ -144,13 +146,13 @@
                     `;
                     roleSelect.innerHTML += `
                         <option value="signco">Storeman (Signal)</option>
-                        <option value="engr">Storeman (Engineer)</option>
-                        <option value="mtnco">MT JCO</option>
+                        <option value="engrnco">Storeman (Engineer)</option>
+                        <option value="mtjco">MT JCO</option>
                     `;
                 } else if (selectedType === 'officer') {
                     rankSelect.innerHTML += `
                         <option value="lt">Lieutenant</option>
-                        <option value="captain">Captain</option>
+                        <option value="capt">Captain</option>
                         <option value="major">Major</option>
                         <option value="ltcol">Lieutenant Colonel</option>
                         <option value="col">Colonel</option>

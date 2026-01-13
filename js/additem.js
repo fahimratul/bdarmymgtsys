@@ -15,16 +15,30 @@ appId: "1:960978586847:web:afcee2217a1c3c876ead6a",
 measurementId: "G-H27M1SNMPX"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const db = getDatabase(app);
-console.log(db);
 console.log("Firebase Initialized");
 
 import {showNotification} from './notification.js';
 
 console.log("Add Item Script Loaded");
+
+window.addEventListener('DOMContentLoaded', () => {
+    let baNumber = sessionStorage.getItem('baNumber');
+    let roleType = sessionStorage.getItem('role_type');
+    console.log('Role Type from sessionStorage:', roleType);
+    
+    if (!baNumber) {
+        console.error('BA Number not found in session storage.');
+        window.location.href = 'index.html';
+        return;
+    }
+    console.log('Logged in as BA Number:', baNumber);
+
+});
+
+
 
 const form = document.getElementById('addItemForm');
 const total = document.getElementById('total');
@@ -98,8 +112,9 @@ function writeInventoryItem(name, data) {
         if (exists) {
             console.log("Item with this name already exists:", newname);
             showNotification("Item with this name already exists. Please choose a different name.", "error", "Error");
-        } else {
-            set(ref(db, 'engrinventory/' + newname),{
+        } else {    let dbRef;
+            if(role === 'engrnco' || role === 'eo') {
+                set(ref(db, 'engrinventory/' + newname),{
                 name: name,
                 authorized: data.authorized,
                 total: data.total,
@@ -108,6 +123,59 @@ function writeInventoryItem(name, data) {
                 issue: data.issue,
                 instore: data.instore
             });
+            }
+            else if(role === 'signco' || role === 'so') {
+                set(ref(db, 'signinventory/' + newname),{
+                name: name,
+                authorized: data.authorized,
+                total: data.total,
+                servicable: data.servicable,
+                unservicable: data.unservicable,
+                issue: data.issue,
+                instore: data.instore
+            });
+            }
+            else if(role === 'mtnco' || role === 'mtjco' || role === 'mto') {
+                set(ref(db, 'mtinventory/' + newname),{
+                name: name,
+                authorized: data.authorized,
+                total: data.total,
+                servicable: data.servicable,
+                unservicable: data.unservicable,
+                issue: data.issue,
+                instore: data.instore
+            });
+            }
+            else if(role === 'bqms' || role === 'lo') {
+                set(ref(db, 'bqmsinventory/' + newname),{
+                name: name,
+                authorized: data.authorized,
+                total: data.total,
+                servicable: data.servicable,
+                unservicable: data.unservicable,
+                issue: data.issue,
+                instore: data.instore
+            });
+            }
+            else if(role === 'bknco' || role === 'lo') {
+                set(ref(db, 'bkncoinventory/' + newname),{
+                name: name,
+                authorized: data.authorized,
+                total: data.total,
+                servicable: data.servicable,
+                unservicable: data.unservicable,
+                issue: data.issue,
+                instore: data.instore
+            });
+            }
+            else {
+                console.error('Invalid role:', role);
+                showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
+                window.location.href = 'storeman_login.html';
+                return;
+            }
+
+
             console.log("Inventory item added:", newname);
             showNotification("Item added successfully!", "success", "Success");
         }   

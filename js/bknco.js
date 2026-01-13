@@ -55,87 +55,8 @@ const inputs = {
     instore: document.getElementById('editInstore'),
 };
 
-let ranklist ={
-    snk:"Sainik",
-    lcpl:"Lance Corporal",
-    cpl:"Corporal",
-    sgt:"Sergeant",
-    wo:"Warrant Officer",
-    swo:"Senior Warrant Officer",
-    mwo:"Master Warrant Officer",
-    lt:"Lieutenant",
-    capt:"Captain",
-    major:"Major",
-    ltcol:"Lieutenant Colonel",
-    col:"Colonel",
-    brig:"Brigadier",
-    majorgen:"Major General",
-    ltgen:"Lieutenant General",
-    gen:"General"
-};
-
-
-const role = sessionStorage.getItem('role');
-
-
-window.addEventListener('DOMContentLoaded', () => {
-    const username=sessionStorage.getItem('username');
-    const rank=sessionStorage.getItem('rank');
-    const banumber=sessionStorage.getItem('baNumber');
-    document.getElementById('username').textContent='Name: ' + username;
-    document.getElementById('rank').textContent=ranklist[rank] ? 'Rank: ' + ranklist[rank] : 'Rank: ' + rank;
-    document.getElementById('banumber').textContent='BA Number: ' + banumber;
-    const titleElement = document.getElementById('title');
-    if (role === 'engrnco') {
-        titleElement.textContent = 'Engineer NCO Inventory Management';
-    } 
-    else if (role === 'signco') {
-        titleElement.textContent = 'Signal NCO Inventory Management';
-    }
-    else if (role === 'mtnco' || role === 'mtjco') {
-        titleElement.textContent = 'MT NCO/JCO Inventory Management';
-    }
-    else if (role === 'bqms') {
-        titleElement.textContent = 'BQMS Inventory Management';
-    }
-    else if (role === 'bknco') {
-        titleElement.textContent = 'Baking NCO Inventory Management';
-    }
-    else {
-        console.error('Invalid role:', role);
-        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
-        window.location.href = 'storeman_login.html';
-        return;
-    }
-    
-});
-
-
-
-
 function loaditemdata() {
-    let dbRef;
-    if(role === 'engrnco') {
-        dbRef = ref(db, 'engrinventory/');
-    }
-    else if(role === 'signco') {
-        dbRef = ref(db, 'signinventory/');
-    }
-    else if(role === 'mtnco' || role === 'mtjco') {
-        dbRef = ref(db, 'mtinventory/');
-    }
-    else if(role === 'bqms') {
-        dbRef = ref(db, 'bqminventory/');
-    }
-    else if(role === 'bknco') {
-        dbRef = ref(db, 'bkninventory/');
-    }
-    else {
-        console.error('Invalid role:', role);
-        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
-        window.location.href = 'storeman_login.html';
-        return;
-    }
+    const dbRef = ref(db, 'bkncoinventory/');
     const loadingOverlay = document.getElementById('loadingOverlay');
 
     get(dbRef).then((snapshot) => {
@@ -303,9 +224,8 @@ editForm?.addEventListener('submit', (e) => {
     updated.unservicable = updated.total - updated.servicable;
     updated.instore = Math.max(updated.total - updated.issue, 0);
 
-    console.table({ key: currentEditKey, updated });    let dbRef;
-    if(role === 'engrnco') {    
-        update(ref(db, 'engrinventory/' + currentEditKey), updated)
+    console.table({ key: currentEditKey, updated });
+    update(ref(db, 'bkncoinventory/' + currentEditKey), updated)
         .then(() => {
             console.log('Data updated successfully');
             showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
@@ -315,59 +235,7 @@ editForm?.addEventListener('submit', (e) => {
         .catch((error) => {
             console.error('Error updating data:', error);
         }); 
-    }
-    else if(role === 'signco') {
-        update(ref(db, 'signinventory/' + currentEditKey), updated)
-        .then(() => {
-            console.log('Data updated successfully');
-            showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
 
-            loaditemdata();
-        })
-        .catch((error) => {
-            console.error('Error updating data:', error);
-        }); 
-    }
-    else if(role === 'mtnco' || role === 'mtjco') {
-        update(ref(db, 'mtinventory/' + currentEditKey), updated)
-        .then(() => {
-            console.log('Data updated successfully');
-            showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
-            loaditemdata();
-        })
-        .catch((error) => {
-            console.error('Error updating data:', error);
-        });
-    }
-    else if(role === 'bqms') {
-        update(ref(db, 'bqminventory/' + currentEditKey), updated)
-        .then(() => {
-            console.log('Data updated successfully');
-            showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
-            loaditemdata();
-        }
-        )
-        .catch((error) => {
-            console.error('Error updating data:', error);
-        });
-    }
-    else if(role === 'bknco') {
-        update(ref(db, 'bkninventory/' + currentEditKey), updated)
-        .then(() => {
-            console.log('Data updated successfully');
-            showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
-            loaditemdata();
-        })
-        .catch((error) => {
-            console.error('Error updating data:', error);
-        });
-    }
-    else {
-        console.error('Invalid role:', role);
-        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
-        window.location.href = 'storeman_login.html';
-        return;
-    }
     closeEditModal();
 });
 
@@ -377,58 +245,4 @@ logoutButton?.addEventListener('click', () => {
     sessionStorage.removeItem('baNumber');
     window.location.href = 'storeman_login.html';
 });
-
-
-function changePassword() {
-    const baNumber = sessionStorage.getItem('baNumber');
-    if (!baNumber) {
-        console.error('BA Number not found in session storage.');
-        window.location.href = 'storeman_login.html';
-        return;
-    }
-    const currentPassword = document.getElementById('password').value;
-    const newPassword = document.getElementById('new-password').value;    
-    const confirmPassword = document.getElementById('confirm-password').value;
-    if (newPassword !== confirmPassword) {
-        showNotification("New passwords do not match", "error", "Validation Error");
-        return;
-    }
-    if (newPassword.length < 6) {
-        showNotification("New password must be at least 6 characters long", "error", "Validation Error");
-        return;
-    }
-    const userRef = ref(db, 'users/' + baNumber);
-    get(userRef).then((snapshot) => {
-        const userData = snapshot.val();
-        if (userData) {
-            if (userData.password !== currentPassword) {
-                showNotification("Current password is incorrect", "error", "Validation Error");
-                return;
-            }
-            update(userRef, { password: newPassword })
-                .then(() => {
-                    showNotification("Password changed successfully", "success", "Success");
-                    sessionStorage.clear();
-                    window.location.href = 'storeman_login.html';
-                })
-                .catch((error) => {
-                    console.error("Error updating password:", error);
-                    showNotification("Error updating password", "error", "Update Failed");
-                });
-        } else {
-            showNotification("User data not found", "error", "Error");
-        }
-    }).catch((error) => {
-        console.error("Error fetching user data:", error);
-        showNotification("Error fetching user data", "error", "Error");
-    });
-}
-
-document.getElementById('passwordChangeSubmitBtn')?.addEventListener('click', changePassword);
-
-
-
-
-
-
 
