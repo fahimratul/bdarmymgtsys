@@ -92,24 +92,15 @@ function handlelogin() {
                         localStorage.removeItem('role');
                     }
                     console.log(`Redirecting to ${role} dashboard`);
-                    if (role === 'engrnco') {
-                        window.location.href = 'engrnco.html';
-                    }
-                    else if (role === 'signco') {
-                        window.location.href = 'signco.html';
-                    }
-                    else if (role === 'bqms') {
-                        window.location.href = 'bqms.html';
-                    }
-                    else if (role === 'bknco') {
-                        window.location.href = 'bknco.html';
-                    }
-                    else if (role === 'mtnco' || role === 'mtjco') {
-                        window.location.href = 'mt_dashboard.html';
-                    }
+                    if (role_type === 'officer')
+                        window.location.href = 'officer_dashboard.html';
+                    else if (role_type === 'bqms')
+                        window.location.href ='engrnco.html';
+                    else if (role_type === 'mtjconco')
+                        window.location.href ='mtjconco.html';
                     else {
-                        console.log("Invalid role selected");
-                        showNotification("Invalid role selected", "error", "Login Failed");
+                        console.log("Invalid role in database");
+                        showNotification("Invalid role in database", "error", "Login Failed");
                     }
 
                 } else {

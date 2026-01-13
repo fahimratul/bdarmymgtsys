@@ -24,20 +24,82 @@ console.log("Firebase Initialized");
 
 window.addEventListener('DOMContentLoaded', () => {
     let baNumber = sessionStorage.getItem('baNumber');
+    let role_type = sessionStorage.getItem('role_type');
+    if (!role_type) { 
+        console.error('Role type not found in session storage.');
+        alert('Session expired or unauthorized access. Please log in again.');
+        window.location.href = 'storeman_login.html';
+        return;
+    }
+    if( role_type !== 'officer'){ 
+        console.error('Unauthorized role type:', role_type);
+        alert('Unauthorized access. Please log in with the correct credentials.');
+        window.location.href = 'storeman_login.html';
+        return;
+    }
     if (!baNumber) {
         console.error('BA Number not found in local storage.');
+        alert('Session expired. Please log in again.');
         window.location.href = 'storeman_login.html';
         return;
     }
     console.log('Logged in as BA Number:', baNumber);
 });
 
+let ranklist ={
+    snk:"Sainik",
+    lcpl:"Lance Corporal",
+    cpl:"Corporal",
+    sgt:"Sergeant",
+    wo:"Warrant Officer",
+    swo:"Senior Warrant Officer",
+    mwo:"Master Warrant Officer",
+    lt:"Lieutenant",
+    capt:"Captain",
+    major:"Major",
+    ltcol:"Lieutenant Colonel",
+    col:"Colonel",
+    brig:"Brigadier",
+    majorgen:"Major General",
+    ltgen:"Lieutenant General",
+    gen:"General"
+};
+
+
 // Clear sessionStorage when the site is closed
  
+const role = sessionStorage.getItem('role');
+
+
+window.addEventListener('DOMContentLoaded', () => {
+    const username=sessionStorage.getItem('username');
+    const rank=sessionStorage.getItem('rank');
+    const banumber=sessionStorage.getItem('baNumber');
+    document.getElementById('username').textContent='Name: ' + username;
+    document.getElementById('rank').textContent=ranklist[rank] ? 'Rank: ' + ranklist[rank] : 'Rank: ' + rank;
+    document.getElementById('banumber').textContent='BA Number: ' + banumber;
+    const titleElement = document.getElementById('title');
+    if (role === 'eo') {
+        titleElement.textContent = 'Engineer Officer Inventory Management';
+    } 
+    else if (role === 'so') {
+        titleElement.textContent = 'Signal Officer Inventory Management';
+    }
+    else if (role === 'mto') {
+        titleElement.textContent = 'Military Transport Officer Inventory Management';
+    }
+    else {
+        console.error('Invalid role:', role);
+        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
+        window.location.href = 'storeman_login.html';
+        return;
+    }
+    
+});
 
 
 import {showNotification} from './notification.js';
-console.log("EngrNCO Script Loaded");
+console.log("Officer Script Loaded");
 
 let dataCache = {};
 let currentEditKey = null;
@@ -54,15 +116,32 @@ const inputs = {
     issue: document.getElementById('editIssue'),
     instore: document.getElementById('editInstore'),
 };
-let datainfo={
-    total:0,
-    servicable:0,
-    unservicable:0,
-    issue:0,
-    instore:0
-}
+
 function loaditemdata() {
-    const dbRef = ref(db, 'siginventory/');
+    let datainfo={
+        total:0,
+        servicable:0,
+        unservicable:0,
+        issue:0,
+        instore:0
+    };
+    let dbRef;
+    if(role === 'eo') {
+        dbRef = ref(db, 'engrinventory/');
+    }
+    else if(role === 'so') {
+        dbRef = ref(db, 'signinventory/');
+    }
+    else if(role === 'mto') {
+        dbRef = ref(db, 'mtinventory/');
+    }
+    else {
+        console.error('Invalid role:', role);
+        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
+        alert('Invalid role. Please log in again.');
+        window.location.href = 'storeman_login.html';
+        return;
+    }
     const loadingOverlay = document.getElementById('loadingOverlay');
 
     get(dbRef).then((snapshot) => {
@@ -114,14 +193,12 @@ function loaditemdata() {
         }
         
         tableBody.innerHTML = html;
-        if(sessionStorage.getItem('role_type')==='officer'){
-            document.getElementById('totalItems').textContent = datainfo.total;
-            document.getElementById('servicableItems').textContent = datainfo.servicable;
-            document.getElementById('unservicableItems').textContent = datainfo.unservicable;
-            document.getElementById('issuedItems').textContent = datainfo.issue;
-            document.getElementById('inStoreItems').textContent = datainfo.instore;
+        document.getElementById('totalItems').textContent = datainfo.total;
+        document.getElementById('servicableItems').textContent = datainfo.servicable;
+        document.getElementById('unservicableItems').textContent = datainfo.unservicable;
+        document.getElementById('issuedItems').textContent = datainfo.issue;
+        document.getElementById('inStoreItems').textContent = datainfo.instore;
             
-        }
         // Attach edit handlers
         tableBody.querySelectorAll('.edit-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -243,7 +320,22 @@ editForm?.addEventListener('submit', (e) => {
     updated.instore = Math.max(updated.total - updated.issue, 0);
 
     console.table({ key: currentEditKey, updated });
-    update(ref(db, 'siginventory/' + currentEditKey), updated)
+
+    if(role === 'eo') {
+        update(ref(db, 'engrinventory/' + currentEditKey), updated)
+            .then(() => {
+                console.log('Data updated successfully');
+                showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
+
+                loaditemdata();
+            })
+            .catch((error) => {
+                console.error('Error updating data:', error);
+            }); 
+
+    }
+    else if(role === 'so') {    
+        update(ref(db, 'siginventory/' + currentEditKey), updated)
         .then(() => {
             console.log('Data updated successfully');
             showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
@@ -253,7 +345,26 @@ editForm?.addEventListener('submit', (e) => {
         .catch((error) => {
             console.error('Error updating data:', error);
         }); 
+    }
+    else if(role === 'mto') {
+        update(ref(db, 'mtinventory/' + currentEditKey), updated)
+        .then(() => {
+            console.log('Data updated successfully');
+            showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
 
+            loaditemdata();
+        })
+        .catch((error) => {
+            console.error('Error updating data:', error);
+        }); 
+    }
+    else {
+        console.error('Invalid role:', role);
+        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
+        alert('Invalid role. Please log in again.');
+        window.location.href = 'storeman_login.html';
+        return;
+    }
     closeEditModal();
 });
 
@@ -263,6 +374,9 @@ const logoutButton = document.getElementById('logoutButton');
 
 logoutButton?.addEventListener('click', () => {
     sessionStorage.removeItem('baNumber');
+    sessionStorage.removeItem('role_type');
+    sessionStorage.removeItem('username');
+    sessionStorage.removeItem('rank');
     window.location.href = 'storeman_login.html';
 });
 

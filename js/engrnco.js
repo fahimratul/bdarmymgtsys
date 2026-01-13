@@ -85,6 +85,29 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('username').textContent='Name: ' + username;
     document.getElementById('rank').textContent=ranklist[rank] ? 'Rank: ' + ranklist[rank] : 'Rank: ' + rank;
     document.getElementById('banumber').textContent='BA Number: ' + banumber;
+    const titleElement = document.getElementById('title');
+    if (role === 'engrnco') {
+        titleElement.textContent = 'Engineer NCO Inventory Management';
+    } 
+    else if (role === 'signco') {
+        titleElement.textContent = 'Signal NCO Inventory Management';
+    }
+    else if (role === 'mtnco' || role === 'mtjco') {
+        titleElement.textContent = 'MT NCO/JCO Inventory Management';
+    }
+    else if (role === 'bqms') {
+        titleElement.textContent = 'BQMS Inventory Management';
+    }
+    else if (role === 'bknco') {
+        titleElement.textContent = 'Baking NCO Inventory Management';
+    }
+    else {
+        console.error('Invalid role:', role);
+        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
+        window.location.href = 'storeman_login.html';
+        return;
+    }
+    
 });
 
 

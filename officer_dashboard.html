@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/offr.css">
     <link rel="stylesheet" href="css/notification.css">
+    <link rel="stylesheet" href="css/adduser.css">
     <script src ="https://unpkg.com/lucide@latest" ></script>
     <link rel='icon' href='static/logo_small.png' type='image/x-icon' />
-    <title>Sig Inventory</title>
+    <title>Offr Inventory</title>
 </html>
 </head>
 <body>
@@ -19,9 +20,19 @@
         <div class="loading-subtext">Please wait...</div>
     </div>
 
-    <h1> SIGNAL INVENTORY</h1>
-    <div class="logout">
-        <button id="logoutButton" class="btn secondary">Logout</button>
+    <h1 id="title"></h1>
+    <div class="topdown-menu" onclick="popupmenu()">
+        <div class="userIcon">
+            <i data-lucide="user"></i>
+        </div>
+        <p>User Info</p>
+    </div>
+    <div class="topdown-container" id="userInfoContainer" style="display: none;">
+        <h3 id ="username"></h3>
+        <h4 id ="rank"></h4>
+        <h4 id ="banumber"></h4>
+        <button class="btn primary" id="changePasswordBtn" onclick="passwordChangeModal()">Change Password</button>
+        <button class="btn secondary" id="logoutButton" onclick="logout()">Logout</button>        
     </div>
     <div class="dashboard-card">
         <div class="card">
@@ -69,7 +80,7 @@
                 <p>In Store Items</p>
             </div>
         </div>
-            <div class="card">
+            <div class="card" onclick="window.location.href='additem.html'" style="cursor: pointer;">
                 <div class="card-icon">
                     <i data-lucide="plus-circle"></i>
                 </div>
@@ -88,11 +99,11 @@
                 </div>
             </div>
             
-            <div class="card">
+            <div class="card" onclick="OpenUserManagement()" style="cursor: pointer;">
                 <div class="card-icon">
                     <i data-lucide="user-plus"></i>
                 </div>
-                <div class="card-info"  onclick="OpenUserManagement()" style="cursor: pointer;">
+                <div class="card-info">
                     <h2 id="userManagement">User Management</h2>
                     <p></p>
                 </div>
@@ -174,12 +185,62 @@
             </form>
         </div>
     </div>
+        <div id="changePasswordModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Change Password</h2>
+                <button class="modal-close" onclick="closeModal()"  aria-label="Close">&times;</button>
+            </div>
+                <div class="modal-grid">
+                    <div class="form-group pass">
+                        <label for="password" class="form-label"> Current Password *</label>
+                        <input type="password" id="password" class="form-input" placeholder="Enter password" >
+                        <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="form-group pass">
+                        <label for="new-password" class="form-label">New Password *</label>
+                        <input type="password" id="new-password" class="form-input" placeholder="Enter password" >
+                        <button type="button" class="password-toggle" onclick="togglePassword('new-password')">
+                            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="form-group pass">
+                        <label for="confirm-password" class="form-label">Confirm Password *</label>
+                        <input type="password" id="confirm-password" class="form-input" placeholder="Confirm password">
+                        <button type="button" class="password-toggle" onclick="togglePassword('confirm-password')">
+                            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                
+                
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn secondary" onclick="closeModal()">Cancel</button>
+                    <button id="passwordChangeSubmitBtn" class="btn primary">Change Password</button>
+                </div>
+        </div>
+    </div>
 
     <script>
         lucide.createIcons();
         addItemBtn = document.getElementById('addItemBtn');
         addItemBtn.addEventListener('click', function() {
-            window.location.href = 'additemsig.html';
+            window.location.href = 'additem.html';
         });
         function hideNotification() {
             const toast = document.getElementById("notification-toast");
@@ -188,11 +249,33 @@
         function OpenUserManagement(){
             window.location.href = 'user_management.html';
         }
+                function popupmenu() {
+            const userInfoContainer = document.getElementById('userInfoContainer');
+            if (userInfoContainer.style.display === 'none' || userInfoContainer.style.display === '') {
+                userInfoContainer.style.display = 'flex';
+            } else {
+                userInfoContainer.style.display = 'none';
+            }
+        }
+        function togglePassword(inputId) {
+            const passwordInput = document.getElementById(inputId);
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+        }
+
+        function closeModal() {
+            const changePasswordModal = document.getElementById('changePasswordModal'); 
+            changePasswordModal.classList.add('hidden');
+        }
+        function passwordChangeModal() {
+            const changePasswordModal = document.getElementById('changePasswordModal');
+            changePasswordModal.classList.remove('hidden');
+            const userInfoContainer = document.getElementById('userInfoContainer');
+            userInfoContainer.style.display = 'none';
+            console.log('Password Change Modal Opened');
+        }
     </script>
-    <script type="module" src="js/signco.js" defer></script>
-
-
-    
+    <script type="module" src="js/officer.js" defer></script>
 
 </body> 
 

@@ -10,11 +10,12 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: flex-start  !important;
     align-items: center;
     min-height: 100vh;
     margin-top: 1rem;
     padding: 0 1.5rem;
+    background: #f9fafb !important;
 }
 .page-title {
     text-align: center;
@@ -46,8 +47,11 @@ body {
 .library-search-container {
     position: relative;
     margin: 2rem 0 1.5rem;
+    width: 100%;
 }
-
+.additem-btn{
+    white-space: nowrap;
+}
 .search-icon {
     position: absolute;
     left: 1rem;
@@ -360,6 +364,65 @@ th {
 .back-link:hover {
     transform: translateY(-2px);
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+.topdown-menu{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: fit-content;
+    max-width: 90vw;
+    margin-bottom: 1rem;
+    gap: 1rem;
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    border: #9ca3af 1px solid;
+}
+
+.userIcon{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    transition: background 0.3s ease;
+}
+.topdown-menu p{
+    font-weight: 600;
+    color: #1f2933;
+}
+
+.topdown-menu:hover .userIcon{
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+.topdown-menu:hover{
+    color: #111827;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+.topdown-container{
+    position: absolute;
+    top: 5rem;
+    right: 1.5rem;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 1rem 1.5rem;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.topdown-container h3, .topdown-container h4{
+    color: #1f2933;
+    font-weight: 600;
 }
 
 
