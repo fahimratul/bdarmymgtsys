@@ -411,7 +411,7 @@ th {
     th, td {
         padding: 12px 14px;
     }
-    tr{
+    th{
         position: fixed;
     }
     .modal-content {
