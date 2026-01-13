@@ -74,20 +74,6 @@ let ranklist ={
     gen:"General"
 };
 
-let userrole ={
-    engrnco:"Storeman (Engineer)",
-    signco:"Storeman (Signal)",
-    bqms:"Battalion Quartermaster Sergeant",
-    bknco:"Barrack NCO",
-    mtnco:"MT NCO",
-    mtjco:"MT JCO",
-    cc:"Contingent Commander",
-    clo:"Cheif Logistics Officer",
-    lo:"Logistics Officer",
-    so:"Signals Officer",
-    eo:"Engineer Officer",
-    mto:"Military Transport Officer"
-};
 
 const role = sessionStorage.getItem('role');
 
@@ -112,7 +98,7 @@ function loaditemdata() {
     else if(role === 'signco') {
         dbRef = ref(db, 'signinventory/');
     }
-    else if(role === 'mtnco') {
+    else if(role === 'mtnco' || role === 'mtjco') {
         dbRef = ref(db, 'mtinventory/');
     }
     else if(role === 'bqms') {
@@ -120,6 +106,12 @@ function loaditemdata() {
     }
     else if(role === 'bknco') {
         dbRef = ref(db, 'bkninventory/');
+    }
+    else {
+        console.error('Invalid role:', role);
+        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
+        window.location.href = 'storeman_login.html';
+        return;
     }
     const loadingOverlay = document.getElementById('loadingOverlay');
 
@@ -288,8 +280,9 @@ editForm?.addEventListener('submit', (e) => {
     updated.unservicable = updated.total - updated.servicable;
     updated.instore = Math.max(updated.total - updated.issue, 0);
 
-    console.table({ key: currentEditKey, updated });
-    update(ref(db, 'engrinventory/' + currentEditKey), updated)
+    console.table({ key: currentEditKey, updated });    let dbRef;
+    if(role === 'engrnco') {    
+        update(ref(db, 'engrinventory/' + currentEditKey), updated)
         .then(() => {
             console.log('Data updated successfully');
             showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
@@ -299,7 +292,59 @@ editForm?.addEventListener('submit', (e) => {
         .catch((error) => {
             console.error('Error updating data:', error);
         }); 
+    }
+    else if(role === 'signco') {
+        update(ref(db, 'signinventory/' + currentEditKey), updated)
+        .then(() => {
+            console.log('Data updated successfully');
+            showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
 
+            loaditemdata();
+        })
+        .catch((error) => {
+            console.error('Error updating data:', error);
+        }); 
+    }
+    else if(role === 'mtnco' || role === 'mtjco') {
+        update(ref(db, 'mtinventory/' + currentEditKey), updated)
+        .then(() => {
+            console.log('Data updated successfully');
+            showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
+            loaditemdata();
+        })
+        .catch((error) => {
+            console.error('Error updating data:', error);
+        });
+    }
+    else if(role === 'bqms') {
+        update(ref(db, 'bqminventory/' + currentEditKey), updated)
+        .then(() => {
+            console.log('Data updated successfully');
+            showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
+            loaditemdata();
+        }
+        )
+        .catch((error) => {
+            console.error('Error updating data:', error);
+        });
+    }
+    else if(role === 'bknco') {
+        update(ref(db, 'bkninventory/' + currentEditKey), updated)
+        .then(() => {
+            console.log('Data updated successfully');
+            showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
+            loaditemdata();
+        })
+        .catch((error) => {
+            console.error('Error updating data:', error);
+        });
+    }
+    else {
+        console.error('Invalid role:', role);
+        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
+        window.location.href = 'storeman_login.html';
+        return;
+    }
     closeEditModal();
 });
 
