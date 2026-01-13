@@ -24,6 +24,7 @@ measurementId: "G-H27M1SNMPX"
 
 
 import {showNotification} from './notification.js';
+import { use } from "react";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -63,26 +64,25 @@ function handlelogin() {
     get(dbRef).then((snapshot) => {
         if (snapshot.exists()) {
             const userData = snapshot.val();
-            if (userData.password === password && userData.role === role) {
+            const role =userData.role;
+            if (userData.password === password) {
                 console.log("Login successful");
+                sessionStorage.setItem('baNumber', banumber);
+                sessionStorage.setItem('role', role);
+                console.log(`Redirecting to ${role} dashboard`);
                 if (role === 'engrnco') {
-                    sessionStorage.setItem('baNumber', banumber);
                     window.location.href = 'engrnco.html';
                 }
                 else if (role === 'signco') {
-                    sessionStorage.setItem('baNumber', banumber);
                     window.location.href = 'signco.html';
                 }
                 else if (role === 'bqms') {
-                    sessionStorage.setItem('baNumber', banumber);
                     window.location.href = 'bqms.html';
                 }
                 else if (role === 'bknco') {
-                    sessionStorage.setItem('baNumber', banumber);
                     window.location.href = 'bknco.html';
                 }
                 else if (role === 'mtnco' || role === 'mtjco') {
-                    sessionStorage.setItem('baNumber', banumber);
                     window.location.href = 'mt_dashboard.html';
                 }
                 else {
