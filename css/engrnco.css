@@ -411,6 +411,9 @@ th {
     th, td {
         padding: 12px 14px;
     }
+    tr{
+        position: fixed;
+    }
     .modal-content {
         width: 96vw;
         padding: 1.25rem;
@@ -425,7 +428,7 @@ th {
         width: 100%;
         text-align: center;
     }
-    .logout{
+    .topdown-menu{
         position: static;
         margin-bottom: 8px;
     }
