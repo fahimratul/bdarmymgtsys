@@ -26,7 +26,10 @@
                     <circle cx="12" cy="12" r="3"></circle>
                 </svg>
             </button>
-            </div>
+        </div>
+        <div class="form-group remember-me">
+            <input type="checkbox" id="remember-me"><p> Remember me</p>
+        </div>
         <button id="login-button">Login</button>
     </div>
     <script type="module" src="js/connect.js" defer></script>
@@ -40,7 +43,14 @@
             const toast = document.getElementById("notification-toast");
             toast.classList.remove("show");
         }
-        const role_type = sessionStorage.getItem('role_type');
+        window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('baNumber') && localStorage.getItem('password')) {
+                document.getElementById('ba-number').value = localStorage.getItem('baNumber');
+                document.getElementById('password').value = localStorage.getItem('password');
+                document.getElementById('remember-me').checked = true;
+            }
+
+        });
     </script>
 </body>
 </html>

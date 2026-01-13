@@ -56,6 +56,10 @@
             }
             window.location.href = 'storeman_login.html';
         }
+        window.addEventListener('DOMContentLoaded', () => {
+            sessionStorage.removeItem('baNumber');
+            sessionStorage.removeItem('role_type');
+        });
 
     </script>
 </body>

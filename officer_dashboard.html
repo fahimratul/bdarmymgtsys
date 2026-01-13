@@ -92,7 +92,7 @@
                 <div class="card-icon">
                     <i data-lucide="user-plus"></i>
                 </div>
-                <div class="card-info">
+                <div class="card-info"  onclick="OpenUserManagement()" style="cursor: pointer;">
                     <h2 id="userManagement">User Management</h2>
                     <p></p>
                 </div>
@@ -184,6 +184,9 @@
         function hideNotification() {
             const toast = document.getElementById("notification-toast");
             toast.classList.remove("show");
+        }
+        function OpenUserManagement(){
+            window.location.href = 'user_management.html';
         }
     </script>
     <script type="module" src="js/signco.js" defer></script>

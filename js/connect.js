@@ -24,15 +24,14 @@ measurementId: "G-H27M1SNMPX"
 
 
 import {showNotification} from './notification.js';
-import { use } from "react";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const db = getDatabase(app);
-console.log(db);
 console.log("Firebase Initialized");
-
+console.log("Analytics Initialized");
+console.log(sessionStorage.getItem('role_type'));
 
 
 function readUserData(banumber) {
@@ -53,9 +52,9 @@ function handlelogin() {
     console.log("Login button clicked");
     const banumber = document.getElementById('ba-number').value;
     const password = document.getElementById('password').value;
-    const role = document.getElementById('role').value;
-    console.log(`BA Number: ${banumber}, Password: ${password}, Role: ${role}`);
-    if (!banumber || !password || !role) {
+    const rememberMe = document.getElementById('remember-me').checked;
+    
+    if (!banumber || !password) {
         showNotification("Please fill in all fields", "error", "Login Failed");
         return;
     }
@@ -69,6 +68,15 @@ function handlelogin() {
                 console.log("Login successful");
                 sessionStorage.setItem('baNumber', banumber);
                 sessionStorage.setItem('role', role);
+                if (rememberMe) {
+                    localStorage.setItem('baNumber', banumber);
+                    localStorage.setItem('password', password);
+                    console.log("Credentials saved to localStorage");
+                } else {
+                    localStorage.removeItem('baNumber');
+                    localStorage.removeItem('password');
+                    localStorage.removeItem('role');
+                }
                 console.log(`Redirecting to ${role} dashboard`);
                 if (role === 'engrnco') {
                     window.location.href = 'engrnco.html';
@@ -106,10 +114,7 @@ function handlelogin() {
 
 
 const loginButton = document.getElementById('login-button');
-loginButton.addEventListener('click', handlelogin);
-
-// Clear sessionStorage when the site is closed
- 
+loginButton.addEventListener('click', handlelogin); 
 
 console.log("Event listener added to login button");
 

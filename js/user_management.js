@@ -25,6 +25,7 @@ console.log("Firebase Initialized");
 window.addEventListener('DOMContentLoaded', () => {
     let baNumber = sessionStorage.getItem('baNumber');
     let roleType = sessionStorage.getItem('role_type');
+    console.log('Role Type from sessionStorage:', roleType);
     if (!roleType || roleType !== 'officer') {
         console.error('Unauthorized access. Redirecting to login.');
         window.location.href = 'storeman_login.html';
