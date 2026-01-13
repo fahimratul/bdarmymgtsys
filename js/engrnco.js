@@ -99,7 +99,7 @@ window.addEventListener('DOMContentLoaded', () => {
         titleElement.textContent = 'BQMS Inventory Management';
     }
     else if (role === 'bknco') {
-        titleElement.textContent = 'Baking NCO Inventory Management';
+        titleElement.textContent = 'Barrack NCO Inventory Management';
     }
     else {
         console.error('Invalid role:', role);
