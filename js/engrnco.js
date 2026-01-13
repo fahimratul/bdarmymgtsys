@@ -128,7 +128,7 @@ function loaditemdata() {
         dbRef = ref(db, 'bqminventory/');
     }
     else if(role === 'bknco') {
-        dbRef = ref(db, 'bkninventory/');
+        dbRef = ref(db, 'bkncoinventory/');
     }
     else {
         console.error('Invalid role:', role);
@@ -352,7 +352,7 @@ editForm?.addEventListener('submit', (e) => {
         });
     }
     else if(role === 'bknco') {
-        update(ref(db, 'bkninventory/' + currentEditKey), updated)
+        update(ref(db, 'bkncoinventory/' + currentEditKey), updated)
         .then(() => {
             console.log('Data updated successfully');
             showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
