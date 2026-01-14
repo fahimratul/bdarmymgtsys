@@ -24,8 +24,8 @@
     <h1>MT Dashboard</h1>
 
     <div class="buttoncointer">
-        <button class="btn primary" id="viewInrBtn" onclick="loadinventory()">View Inventory</button>
-        <button class="btn deactive" id="viewTrBtn" onclick="loadtransport()">View Transport State</button>
+        <button class="btn primary" id="viewTrBtn" onclick="loadtransport()">View Transport State</button>
+        <button class="btn deactive" id="viewInrBtn" onclick="loadinventory()">View Inventory</button>
     </div>
 
 
@@ -44,7 +44,7 @@
     </div>
 
 
-    <div class="table-container" id="inventoryTableContainer">
+    <div class="table-container" id="inventoryTableContainer" style="display: none;">
         <div class="search-container">
             <div class="library-search-container">
                 <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -74,8 +74,8 @@
         </table>
     </div>
 
-    <div class="table-container" id="transportTableContainer" style="display: none;">
-            <div class="dashboard-card">
+    <div class="table-container" id="transportTableContainer" >
+    <div class="dashboard-card">
         <div class="card">
             <div class="card-icon">
                 <i data-lucide="truck"></i>
@@ -147,6 +147,34 @@
         </div>
 
     </div>
+
+    <div class="search-container">
+        <div class="library-search-container">
+            <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            <input type="text" id="searchInputVehicle" class="library-search-input" placeholder="Search Item...">
+        </div>   
+        <button class="btn primary" id="addItemBtn" style="width:fit-content; white-space: nowrap;">Add Item</button> 
+    </div>
+        
+    
+    <table>
+        <thead>
+            <tr>
+                <th>serial</th>
+                <th>Name</th>
+                <th>Total Vehicles</th>
+                <th>Servicable</th>
+                <th>Unservicable</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="VehicleTableBody">
+            <!-- vehicles items will be dynamically inserted here -->
+        </tbody>
+    </table>
+
 
     </div>
     <!-- Edit Item Modal -->
@@ -252,7 +280,7 @@
         lucide.createIcons();
         addItemBtn = document.getElementById('addItemBtn');
         addItemBtn.addEventListener('click', function() {
-            window.location.href = 'additem.html';
+            window.location.href = 'addvehicle.html';
         });
         function hideNotification() {
             const toast = document.getElementById("notification-toast");

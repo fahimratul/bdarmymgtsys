@@ -173,7 +173,116 @@ function loaditemdata() {
     });
 }
 
+let vehicleDataCache = {
+    classA: {},
+    classB: {},
+    classC: {}
+};
+
+let vehicleinfo = {
+    classA: {
+        total:0,
+        servicable:0,
+        unservicable:0
+    },
+    classB: {
+        total:0,
+        servicable:0,
+        unservicable:0
+    },
+    classC: {
+        total:0,
+        servicable:0,
+        unservicable:0
+    }
+};
+
+function loadvehicledata(classType) {
+
+    const dbRef = ref(db, `vehiclelist/${classType}/`);
+    const loadingOverlay = document.getElementById('loadingOverlay');
+
+    vehicleinfo[classType] = {
+        total:0,
+        servicable:0,
+        unservicable:0
+    };
+
+    get(dbRef).then((snapshot) => {
+        const data = snapshot.val();
+        vehicleDataCache[classType] = data || {};
+        let serial = 1;
+        const tableBody = document.getElementById('VehicleTableBody');
+        
+        if (!tableBody) {
+            console.error('VehicleTableBody element not found');
+            if (loadingOverlay) loadingOverlay.classList.add('hidden');
+            return;
+        }
+        
+        let html = '';
+        
+        // Build table rows
+        if (data) {
+            for (const key in data) {
+                const vehicle = data[key];
+                const name = vehicle.name || '';
+                const total = vehicle.total ?? 0;
+                const servicable = vehicle.servicable ?? 0;
+                const unservicable = vehicle.unservicable ?? 0;
+                
+                html += `<tr id="${name}" data-key="${key}">
+                            <td>${serial}</td>
+                            <td>${name}</td>
+                            <td>${total}</td>
+                            <td>${servicable}</td>
+                            <td>${unservicable}</td>
+                            <td><button class="edit-btn" data-key='${key}'>Edit</button></td>
+                        </tr>`;
+                serial += 1;
+                vehicleinfo[classType].total += total;
+                vehicleinfo[classType].servicable += servicable;
+                vehicleinfo[classType].unservicable += unservicable;
+            }
+        } else {
+            html = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: #666;">No inventory data available</td></tr>';
+        }
+        
+        tableBody.innerHTML = html;
+
+        // Attach edit handlers
+        tableBody.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.dataset.key;
+                openEditModal(key);
+            });
+        });
+        
+        // Hide loading overlay after data is loaded
+        if (loadingOverlay) {
+            setTimeout(() => {
+                loadingOverlay.classList.add('hidden');
+            }, 100);
+        }
+    }).catch((error) => {
+        console.error('Error loading data:', error);
+        const tableBody = document.getElementById('VehicleTableBody');
+        if (tableBody) {
+            tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: #e53e3e;">Error loading data. Please refresh the page.</td></tr>';
+        }
+        // Hide loading overlay even on error
+        if (loadingOverlay) {
+            setTimeout(() => {
+                loadingOverlay.classList.add('hidden');
+            }, 100);
+        }
+    });
+}
+
+
+
 loaditemdata();
+loadvehicledata('classA');
 
 
 function searchItems() {
