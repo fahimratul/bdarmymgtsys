@@ -114,10 +114,10 @@ function loaditemdata() {
         dbRef = ref(db, 'engrinventory/');
     }
     else if(role === 'signco') {
-        dbRef = ref(db, 'signinventory/');
+        dbRef = ref(db, 'siginventory/');
     }
     else if(role === 'bqms') {
-        dbRef = ref(db, 'bqminventory/');
+        dbRef = ref(db, 'bqmsinventory/');
     }
     else if(role === 'bknco') {
         dbRef = ref(db, 'bkncoinventory/');
@@ -309,7 +309,7 @@ editForm?.addEventListener('submit', (e) => {
         }); 
     }
     else if(role === 'signco') {
-        update(ref(db, 'signinventory/' + currentEditKey), updated)
+        update(ref(db, 'siginventory/' + currentEditKey), updated)
         .then(() => {
             console.log('Data updated successfully');
             showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
@@ -321,7 +321,7 @@ editForm?.addEventListener('submit', (e) => {
         }); 
     }
     else if(role === 'bqms') {
-        update(ref(db, 'bqminventory/' + currentEditKey), updated)
+        update(ref(db, 'bqmsinventory/' + currentEditKey), updated)
         .then(() => {
             console.log('Data updated successfully');
             showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
