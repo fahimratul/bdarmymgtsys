@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
 
-import { getDatabase, get, ref, update } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getDatabase, get, ref, update, remove } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
 
 const firebaseConfig = {
@@ -99,6 +99,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 import {showNotification} from './notification.js';
+
 console.log("Officer Script Loaded");
 
 let dataCache = {};
@@ -106,6 +107,7 @@ let currentEditKey = null;
 const modal = document.getElementById('editModal');
 const modalCloseBtn = document.getElementById('modalCloseBtn');
 const cancelEditBtn = document.getElementById('cancelEditBtn');
+const deleteItemBtn = document.getElementById('deleteItemBtn');
 const editForm = document.getElementById('editForm');
 const inputs = {
     name: document.getElementById('editName'),
@@ -115,6 +117,7 @@ const inputs = {
     unservicable: document.getElementById('editunservicable'),
     issue: document.getElementById('editIssue'),
     instore: document.getElementById('editInstore'),
+    deleteitem: document.getElementById('deleteitem')
 };
 
 function loaditemdata() {
@@ -130,7 +133,7 @@ function loaditemdata() {
         dbRef = ref(db, 'engrinventory/');
     }
     else if(role === 'so') {
-        dbRef = ref(db, 'signinventory/');
+        dbRef = ref(db, 'siginventory/');
     }
     else if(role === 'mto') {
         dbRef = ref(db, 'mtinventory/');
@@ -179,7 +182,8 @@ function loaditemdata() {
                             <td>${unservicable}</td>
                             <td>${issue}</td>
                             <td>${instore}</td>
-                            <td><button class="edit-btn" data-key='${key}'>Edit</button></td>
+                            <td>
+                            <button class="edit-btn" data-key='${key}'>Edit</button></td>
                         </tr>`;
                 serial += 1;
                 datainfo.total+=total;
@@ -368,6 +372,62 @@ editForm?.addEventListener('submit', (e) => {
     closeEditModal();
 });
 
+deleteItemBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!currentEditKey) return;
+    if (inputs.deleteitem.value.trim() !== 'CONFIRM') {
+        showNotification("To delete the item, please type 'CONFIRM' in the delete field.", "error", "Deletion Failed");
+        return;
+    }
+    
+    if(role === 'eo') {
+        remove(ref(db, 'engrinventory/' + currentEditKey))
+            .then(() => {
+                console.log('Data deleted successfully');
+                showNotification('Inventory item deleted successfully.', 'success', 'Deletion Successful');
+                loaditemdata();
+            })
+            .catch((error) => {
+                console.error('Error deleting data:', error);
+                showNotification('Error deleting item. Please try again.', 'error', 'Deletion Failed');
+            });
+
+    }
+    else if(role === 'so') {    
+        remove(ref(db, 'siginventory/' + currentEditKey))
+        .then(() => {
+            console.log('Data deleted successfully');
+            showNotification('Inventory item deleted successfully.', 'success', 'Deletion Successful');
+            loaditemdata();
+        })
+        .catch((error) => {
+            console.error('Error deleting data:', error);
+            showNotification('Error deleting item. Please try again.', 'error', 'Deletion Failed');
+        });
+    }
+    else if(role === 'mto') {
+        remove(ref(db, 'mtinventory/' + currentEditKey))
+        .then(() => {
+            console.log('Data deleted successfully');
+            showNotification('Inventory item deleted successfully.', 'success', 'Deletion Successful');
+            loaditemdata();
+        })
+        .catch((error) => {
+            console.error('Error deleting data:', error);
+            showNotification('Error deleting item. Please try again.', 'error', 'Deletion Failed');
+        });
+    }
+    else {
+        console.error('Invalid role:', role);
+        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
+        alert('Invalid role. Please log in again.');
+        window.location.href = 'storeman_login.html';
+        return;
+    }
+    closeEditModal();
+});
+
+
 const logoutButton = document.getElementById('logoutButton');
 
 
@@ -377,7 +437,7 @@ logoutButton?.addEventListener('click', () => {
     sessionStorage.removeItem('role_type');
     sessionStorage.removeItem('username');
     sessionStorage.removeItem('rank');
-    window.location.href = 'storeman_login.html';
+    window.location.href = 'index.html';
 });
 
 

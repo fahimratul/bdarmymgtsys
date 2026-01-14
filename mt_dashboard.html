@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="css/adduser.css">
+    <link rel="stylesheet" href="css/card.css">
     <link rel="stylesheet" href="css/engrnco.css">
     <link rel="stylesheet" href="css/notification.css">
     <script src ="https://unpkg.com/lucide@latest" ></script>
     <link rel='icon' href='static/logo_small.png' type='image/x-icon' />
-    <title>MT Dashboard</title>
+    <title>Inventory</title>
 </html>
 </head>
 <body>
@@ -18,25 +21,39 @@
         <div class="loading-text">Loading Inventory Data</div>
         <div class="loading-subtext">Please wait...</div>
     </div>
+    <h1>MT Dashboard</h1>
 
-    <h1> MT DASHBOARD</h1>
-    <div class="logout">
-        <button id="logoutButton" class="btn secondary">Logout</button>
-    </div>
     <div class="buttoncointer">
         <button class="btn primary" id="viewInrBtn" onclick="loadinventory()">View Inventory</button>
         <button class="btn deactive" id="viewTrBtn" onclick="loadtransport()">View Transport State</button>
     </div>
-    <div class="search-container">
-        <div class="library-search-container">
-            <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-            </svg>
-            <input type="text" id="searchInput" class="library-search-input" placeholder="Search Item...">
-        </div>   
-        <button class="additem-btn" id="addItemBtn">Add Item</button> 
+
+
+    <div class="topdown-menu" onclick="popupmenu()">
+        <div class="userIcon">
+            <i data-lucide="user"></i>
+        </div>
+        <p>User Info</p>
     </div>
+    <div class="topdown-container" id="userInfoContainer" style="display: none;">
+        <h3 id ="username"></h3>
+        <h4 id ="rank"></h4>
+        <h4 id ="banumber"></h4>
+        <button class="btn primary" id="changePasswordBtn" onclick="passwordChangeModal()">Change Password</button>
+        <button class="btn secondary" id="logoutButton" onclick="logout()">Logout</button>        
+    </div>
+
+
     <div class="table-container" id="inventoryTableContainer">
+        <div class="search-container">
+            <div class="library-search-container">
+                <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <input type="text" id="searchInput" class="library-search-input" placeholder="Search Item...">
+            </div>   
+            <button class="btn primary" id="addItemBtn" style="width:fit-content; white-space: nowrap;">Add Item</button> 
+        </div>
         <table>
             <thead>
                 <tr>
@@ -58,10 +75,80 @@
     </div>
 
     <div class="table-container" id="transportTableContainer" style="display: none;">
+            <div class="dashboard-card">
+        <div class="card">
+            <div class="card-icon">
+                <i data-lucide="truck"></i>
+            </div>
+            <div class="card-info">
+                <h2 id="totalVehicles">0</h2>
+                <p>Total Vehicles</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-icon">
+                <i data-lucide="truck-electric"></i>
+            </div>
+            <div class="card-info">
+                <h2 id="servicableVehicles">0</h2>
+                <p>Servicable Vehicles</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-icon">
+                <i data-lucide="x-circle"></i>
+            </div>
+            <div class="card-info">
+                <h2 id="unservicableVehicles">0</h2>
+                <p>Unservicable Vehicles</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-icon">
+                <i data-lucide="truck"></i>
+                <h4>Class A</h4>
+            </div>
+            <div class="card-info">
+                <h3>Total Vehicles</h3>
+                <h2 id="totalVehiclesClassA">0</h2>
+                <h3>Servicable Vehicles</h3>
+                <h2 id="servicableVehiclesClassA">0</h2>
+                <h3>Unservicable Vehicles</h3>
+                <h2 id="unservicableVehiclesClassA">0</h2>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-icon">
+                <i data-lucide="truck"></i>
+                <h4>Class B</h4>
+            </div>
+            <div class="card-info">
+                <h3>Total Vehicles</h3>
+                <h2 id="totalVehiclesClassB">0</h2>
+                <h3>Servicable Vehicles</h3>
+                <h2 id="servicableVehiclesClassB">0</h2>
+                <h3>Unservicable Vehicles</h3>
+                <h2 id="unservicableVehiclesClassB">0</h2>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-icon">
+                <i data-lucide="truck"></i>
+                <h4>Class C</h4>
+            </div>
+            <div class="card-info">
+                <h3>Total Vehicles</h3>
+                <h2 id="totalVehiclesClassC">0</h2>
+                <h3>Servicable Vehicles</h3>
+                <h2 id="servicableVehiclesClassC">0</h2>
+                <h3>Unservicable Vehicles</h3>
+                <h2 id="unservicableVehiclesClassC">0</h2>
+            </div>
+        </div>
 
     </div>
 
-
+    </div>
     <!-- Edit Item Modal -->
     <div id="editModal" class="modal hidden">
         <div class="modal-content">
@@ -110,6 +197,57 @@
         </div>
     </div>
 
+    <div id="changePasswordModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Change Password</h2>
+                <button class="modal-close" onclick="closeModal()"  aria-label="Close">&times;</button>
+            </div>
+                <div class="modal-grid">
+                    <div class="form-group pass">
+                        <label for="password" class="form-label"> Current Password *</label>
+                        <input type="password" id="password" class="form-input" placeholder="Enter password" >
+                        <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="form-group pass">
+                        <label for="new-password" class="form-label">New Password *</label>
+                        <input type="password" id="new-password" class="form-input" placeholder="Enter password" >
+                        <button type="button" class="password-toggle" onclick="togglePassword('new-password')">
+                            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="form-group pass">
+                        <label for="confirm-password" class="form-label">Confirm Password *</label>
+                        <input type="password" id="confirm-password" class="form-input" placeholder="Confirm password">
+                        <button type="button" class="password-toggle" onclick="togglePassword('confirm-password')">
+                            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                
+                
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn secondary" onclick="closeModal()">Cancel</button>
+                    <button id="passwordChangeSubmitBtn" class="btn primary">Change Password</button>
+                </div>
+        </div>
+    </div>
+
     <script>
         lucide.createIcons();
         addItemBtn = document.getElementById('addItemBtn');
@@ -120,6 +258,31 @@
             const toast = document.getElementById("notification-toast");
             toast.classList.remove("show");
         }
+        function popupmenu() {
+            const userInfoContainer = document.getElementById('userInfoContainer');
+            if (userInfoContainer.style.display === 'none' || userInfoContainer.style.display === '') {
+                userInfoContainer.style.display = 'flex';
+            } else {
+                userInfoContainer.style.display = 'none';
+            }
+        }
+        function togglePassword(inputId) {
+            const passwordInput = document.getElementById(inputId);
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+        }
+
+        function closeModal() {
+            const changePasswordModal = document.getElementById('changePasswordModal'); 
+            changePasswordModal.classList.add('hidden');
+        }
+        function passwordChangeModal() {
+            const changePasswordModal = document.getElementById('changePasswordModal');
+            changePasswordModal.classList.remove('hidden');
+            const userInfoContainer = document.getElementById('userInfoContainer');
+            userInfoContainer.style.display = 'none';
+            console.log('Password Change Modal Opened');
+        }
         function loadinventory(){
             const inventoryBtn = document.getElementById('viewInrBtn');
             const transportBtn = document.getElementById('viewTrBtn');
@@ -127,7 +290,7 @@
             inventoryBtn.classList.remove('deactive');
             transportBtn.classList.add('deactive');
             transportBtn.classList.remove('primary');
-            document.getElementById('inventoryTableContainer').style.display = 'block';
+            document.getElementById('inventoryTableContainer').style.display = 'flex';
             document.getElementById('transportTableContainer').style.display = 'none';
         }
         function loadtransport(){
@@ -138,12 +301,11 @@
             inventoryBtn.classList.add('deactive');
             inventoryBtn.classList.remove('primary');
             document.getElementById('inventoryTableContainer').style.display = 'none';
-            document.getElementById('transportTableContainer').style.display = 'block';
+            document.getElementById('transportTableContainer').style.display = 'flex';
         }   
 
-
     </script>
-    <script type="module" src="js/engrnco.js" defer></script>
+    <script type="module" src="js/mtjconco.js" defer></script>
 
 
     

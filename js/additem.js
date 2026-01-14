@@ -125,7 +125,7 @@ function writeInventoryItem(name, data) {
             });
             }
             else if(role === 'signco' || role === 'so') {
-                set(ref(db, 'signinventory/' + newname),{
+                set(ref(db, 'siginventory/' + newname),{
                 name: name,
                 authorized: data.authorized,
                 total: data.total,

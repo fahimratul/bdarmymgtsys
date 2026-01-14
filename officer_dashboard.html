@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/offr.css">
+    <link rel="stylesheet" href="css/card.css">
     <link rel="stylesheet" href="css/notification.css">
     <link rel="stylesheet" href="css/adduser.css">
     <script src ="https://unpkg.com/lucide@latest" ></script>
@@ -13,6 +14,7 @@
 </head>
 <body>
     <div id="notification-toast" class="notification-toast"></div>
+   
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay">
         <div class="spinner"></div>
@@ -21,12 +23,14 @@
     </div>
 
     <h1 id="title"></h1>
+    <!-- User Info Dropdown -->
     <div class="topdown-menu" onclick="popupmenu()">
         <div class="userIcon">
             <i data-lucide="user"></i>
         </div>
         <p>User Info</p>
     </div>
+
     <div class="topdown-container" id="userInfoContainer" style="display: none;">
         <h3 id ="username"></h3>
         <h4 id ="rank"></h4>
@@ -34,6 +38,8 @@
         <button class="btn primary" id="changePasswordBtn" onclick="passwordChangeModal()">Change Password</button>
         <button class="btn secondary" id="logoutButton" onclick="logout()">Logout</button>        
     </div>
+
+    <!--Dashboard Card-->
     <div class="dashboard-card">
         <div class="card">
             <div class="card-icon">
@@ -89,16 +95,6 @@
                     <p></p>
                 </div>
             </div>
-            <div class="card">
-                <div class="card-icon">
-                    <i data-lucide="trash-2"></i>
-                </div>
-                <div class="card-info">
-                    <h2 id="deleteItems">Delete Items</h2>
-                    <p></p>
-                </div>
-            </div>
-            
             <div class="card" onclick="OpenUserManagement()" style="cursor: pointer;">
                 <div class="card-icon">
                     <i data-lucide="user-plus"></i>
@@ -109,6 +105,9 @@
                 </div>
         </div>
     </div>
+
+    <!-- Search and Add Item -->
+
     <div class="search-container">
         <div class="library-search-container">
             <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -119,6 +118,9 @@
         <button class="additem-btn" id="addItemBtn">Add Item</button> 
     </div>
 
+
+
+    <!-- Inventory Table -->
     <table>
         <thead>
             <tr>
@@ -177,64 +179,68 @@
                         <input type="number" id="editInstore" name="instore" min="0" step="1" readonly>
                         <p class="inline-hint">Auto: Total - Issued</p>
                     </div>
+                    <div class="field">
+                        <label for="deleteitem">To Delete this Item write 'CONFIRM'</label>
+                        <input type="text" id="deleteitem" name="deleteitem" placeholder="CONFIRM">
+                    </div>
+
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn secondary" id="cancelEditBtn">Cancel</button>
                     <button type="submit" class="btn primary">Save</button>
+                    <button type="button" class="btn danger" id="deleteItemBtn">Delete</button>
                 </div>
             </form>
         </div>
     </div>
-        <div id="changePasswordModal" class="modal hidden">
+    <div id="changePasswordModal" class="modal hidden">
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Change Password</h2>
                 <button class="modal-close" onclick="closeModal()"  aria-label="Close">&times;</button>
             </div>
-                <div class="modal-grid">
-                    <div class="form-group pass">
-                        <label for="password" class="form-label"> Current Password *</label>
-                        <input type="password" id="password" class="form-input" placeholder="Enter password" >
-                        <button type="button" class="password-toggle" onclick="togglePassword('password')">
-                            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="form-group pass">
-                        <label for="new-password" class="form-label">New Password *</label>
-                        <input type="password" id="new-password" class="form-input" placeholder="Enter password" >
-                        <button type="button" class="password-toggle" onclick="togglePassword('new-password')">
-                            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                        </button>
-                    </div>
-
-                    <div class="form-group pass">
-                        <label for="confirm-password" class="form-label">Confirm Password *</label>
-                        <input type="password" id="confirm-password" class="form-input" placeholder="Confirm password">
-                        <button type="button" class="password-toggle" onclick="togglePassword('confirm-password')">
-                            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                        </button>
-                    </div>
-                
-                
+            <div class="modal-grid">
+                <div class="form-group pass">
+                    <label for="password" class="form-label"> Current Password *</label>
+                    <input type="password" id="password" class="form-input" placeholder="Enter password" >
+                    <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
                 </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn secondary" onclick="closeModal()">Cancel</button>
-                    <button id="passwordChangeSubmitBtn" class="btn primary">Change Password</button>
+                <div class="form-group pass">
+                    <label for="new-password" class="form-label">New Password *</label>
+                    <input type="password" id="new-password" class="form-input" placeholder="Enter password" >
+                    <button type="button" class="password-toggle" onclick="togglePassword('new-password')">
+                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
                 </div>
+                <div class="form-group pass">
+                    <label for="confirm-password" class="form-label">Confirm Password *</label>
+                    <input type="password" id="confirm-password" class="form-input" placeholder="Confirm password">
+                    <button type="button" class="password-toggle" onclick="togglePassword('confirm-password')">
+                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn secondary" onclick="closeModal()">Cancel</button>
+                <button id="passwordChangeSubmitBtn" class="btn primary">Change Password</button>
+            </div>
         </div>
     </div>
+
 
     <script>
         lucide.createIcons();
@@ -275,6 +281,7 @@
             console.log('Password Change Modal Opened');
         }
     </script>
+
     <script type="module" src="js/officer.js" defer></script>
 
 </body> 

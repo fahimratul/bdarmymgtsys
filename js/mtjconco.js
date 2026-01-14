@@ -24,6 +24,12 @@ console.log("Firebase Initialized");
 
 window.addEventListener('DOMContentLoaded', () => {
     let baNumber = sessionStorage.getItem('baNumber');
+    let role = sessionStorage.getItem('role');
+    if (role !== 'mtjco' && role !== 'mtnco') {
+        console.error('Unauthorized role. Access denied.');
+        window.location.href = 'storeman_login.html';
+        return;
+    }
     if (!baNumber) {
         console.error('BA Number not found in local storage.');
         window.location.href = 'storeman_login.html';
@@ -31,8 +37,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
     console.log('Logged in as BA Number:', baNumber);
 });
-
-// Clear sessionStorage when the site is closed
  
 
 
@@ -55,8 +59,44 @@ const inputs = {
     instore: document.getElementById('editInstore'),
 };
 
+let ranklist ={
+    snk:"Sainik",
+    lcpl:"Lance Corporal",
+    cpl:"Corporal",
+    sgt:"Sergeant",
+    wo:"Warrant Officer",
+    swo:"Senior Warrant Officer",
+    mwo:"Master Warrant Officer",
+    lt:"Lieutenant",
+    capt:"Captain",
+    major:"Major",
+    ltcol:"Lieutenant Colonel",
+    col:"Colonel",
+    brig:"Brigadier",
+    majorgen:"Major General",
+    ltgen:"Lieutenant General",
+    gen:"General"
+};
+
+
+const role = sessionStorage.getItem('role');
+
+
+window.addEventListener('DOMContentLoaded', () => {
+    const username=sessionStorage.getItem('username');
+    const rank=sessionStorage.getItem('rank');
+    const banumber=sessionStorage.getItem('baNumber');
+    document.getElementById('username').textContent='Name: ' + username;
+    document.getElementById('rank').textContent=ranklist[rank] ? 'Rank: ' + ranklist[rank] : 'Rank: ' + rank;
+    document.getElementById('banumber').textContent='BA Number: ' + banumber;
+});
+
+
+
+
 function loaditemdata() {
-    const dbRef = ref(db, 'bqmsinventory/');
+
+    const dbRef = ref(db, 'mtinventory/');
     const loadingOverlay = document.getElementById('loadingOverlay');
 
     get(dbRef).then((snapshot) => {
@@ -225,16 +265,16 @@ editForm?.addEventListener('submit', (e) => {
     updated.instore = Math.max(updated.total - updated.issue, 0);
 
     console.table({ key: currentEditKey, updated });
-    update(ref(db, 'bqmsinventory/' + currentEditKey), updated)
-        .then(() => {
-            console.log('Data updated successfully');
-            showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
+    update(ref(db, 'mtinventory/' + currentEditKey), updated)
+    .then(() => {
+        console.log('Data updated successfully');
+        showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
 
-            loaditemdata();
-        })
-        .catch((error) => {
-            console.error('Error updating data:', error);
-        }); 
+        loaditemdata();
+    })
+    .catch((error) => {
+        console.error('Error updating data:', error);
+    });
 
     closeEditModal();
 });
@@ -243,6 +283,55 @@ const logoutButton = document.getElementById('logoutButton');
 
 logoutButton?.addEventListener('click', () => {
     sessionStorage.removeItem('baNumber');
-    window.location.href = 'storeman_login.html';
+    window.location.href = 'index.html';
 });
+
+
+function changePassword() {
+    const baNumber = sessionStorage.getItem('baNumber');
+    if (!baNumber) {
+        console.error('BA Number not found in session storage.');
+        window.location.href = 'storeman_login.html';
+        return;
+    }
+    const currentPassword = document.getElementById('password').value;
+    const newPassword = document.getElementById('new-password').value;    
+    const confirmPassword = document.getElementById('confirm-password').value;
+    if (newPassword !== confirmPassword) {
+        showNotification("New passwords do not match", "error", "Validation Error");
+        return;
+    }
+    if (newPassword.length < 6) {
+        showNotification("New password must be at least 6 characters long", "error", "Validation Error");
+        return;
+    }
+    const userRef = ref(db, 'users/' + baNumber);
+    get(userRef).then((snapshot) => {
+        const userData = snapshot.val();
+        if (userData) {
+            if (userData.password !== currentPassword) {
+                showNotification("Current password is incorrect", "error", "Validation Error");
+                return;
+            }
+            update(userRef, { password: newPassword })
+                .then(() => {
+                    showNotification("Password changed successfully", "success", "Success");
+                    sessionStorage.clear();
+                    window.location.href = 'index.html';
+                })
+                .catch((error) => {
+                    console.error("Error updating password:", error);
+                    showNotification("Error updating password", "error", "Update Failed");
+                });
+        } else {
+            showNotification("User data not found", "error", "Error");
+        }
+    }).catch((error) => {
+        console.error("Error fetching user data:", error);
+        showNotification("Error fetching user data", "error", "Error");
+    });
+}
+
+document.getElementById('passwordChangeSubmitBtn')?.addEventListener('click', changePassword);
+
 

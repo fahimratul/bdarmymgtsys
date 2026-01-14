@@ -92,12 +92,17 @@ function handlelogin() {
                         localStorage.removeItem('role');
                     }
                     console.log(`Redirecting to ${role} dashboard`);
-                    if (role_type === 'officer')
+                    if (role_type === 'officer'){
+                        console.log("Redirecting to officer dashboard");
                         window.location.href = 'officer_dashboard.html';
-                    else if (role_type === 'bqms')
+                    } 
+                    else if (role_type === 'bqms'){
                         window.location.href ='engrnco.html';
-                    else if (role_type === 'mtjconco')
-                        window.location.href ='mtjconco.html';
+                    
+                    } 
+                    else if (role_type === 'mtjconco'){
+                        window.location.href ='mt_dashboard.html';
+                    } 
                     else {
                         console.log("Invalid role in database");
                         showNotification("Invalid role in database", "error", "Login Failed");

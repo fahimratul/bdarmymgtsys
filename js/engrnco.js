@@ -31,8 +31,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
     console.log('Logged in as BA Number:', baNumber);
 });
-
-// Clear sessionStorage when the site is closed
  
 
 
@@ -92,9 +90,6 @@ window.addEventListener('DOMContentLoaded', () => {
     else if (role === 'signco') {
         titleElement.textContent = 'Signal NCO Inventory Management';
     }
-    else if (role === 'mtnco' || role === 'mtjco') {
-        titleElement.textContent = 'MT NCO/JCO Inventory Management';
-    }
     else if (role === 'bqms') {
         titleElement.textContent = 'BQMS Inventory Management';
     }
@@ -120,9 +115,6 @@ function loaditemdata() {
     }
     else if(role === 'signco') {
         dbRef = ref(db, 'signinventory/');
-    }
-    else if(role === 'mtnco' || role === 'mtjco') {
-        dbRef = ref(db, 'mtinventory/');
     }
     else if(role === 'bqms') {
         dbRef = ref(db, 'bqminventory/');
@@ -328,17 +320,6 @@ editForm?.addEventListener('submit', (e) => {
             console.error('Error updating data:', error);
         }); 
     }
-    else if(role === 'mtnco' || role === 'mtjco') {
-        update(ref(db, 'mtinventory/' + currentEditKey), updated)
-        .then(() => {
-            console.log('Data updated successfully');
-            showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
-            loaditemdata();
-        })
-        .catch((error) => {
-            console.error('Error updating data:', error);
-        });
-    }
     else if(role === 'bqms') {
         update(ref(db, 'bqminventory/' + currentEditKey), updated)
         .then(() => {
@@ -375,7 +356,7 @@ const logoutButton = document.getElementById('logoutButton');
 
 logoutButton?.addEventListener('click', () => {
     sessionStorage.removeItem('baNumber');
-    window.location.href = 'storeman_login.html';
+    window.location.href = 'index.html';
 });
 
 
