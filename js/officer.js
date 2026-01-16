@@ -47,13 +47,6 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 let ranklist ={
-    snk:"Sainik",
-    lcpl:"Lance Corporal",
-    cpl:"Corporal",
-    sgt:"Sergeant",
-    wo:"Warrant Officer",
-    swo:"Senior Warrant Officer",
-    mwo:"Master Warrant Officer",
     lt:"Lieutenant",
     capt:"Captain",
     major:"Major",
@@ -103,6 +96,9 @@ import {showNotification} from './notification.js';
 console.log("Officer Script Loaded");
 
 let dataCache = {};
+let pendingissueCache = {};
+let newitemCache = {};
+
 let currentEditKey = null;
 const modal = document.getElementById('editModal');
 const modalCloseBtn = document.getElementById('modalCloseBtn');
@@ -134,9 +130,6 @@ function loaditemdata() {
     }
     else if(role === 'so') {
         dbRef = ref(db, 'siginventory/');
-    }
-    else if(role === 'mto') {
-        dbRef = ref(db, 'mtinventory/');
     }
     else {
         console.error('Invalid role:', role);
@@ -207,6 +200,7 @@ function loaditemdata() {
         tableBody.querySelectorAll('.edit-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const key = btn.dataset.key;
+                console.log("Edit button clicked for key:", key);
                 openEditModal(key);
             });
         });
@@ -232,7 +226,195 @@ function loaditemdata() {
     });
 }
 
+
+function loadpendingissueditemdata() {
+    let dbRef;
+    let dbPendingRef;
+    if(role === 'eo') {
+        dbPendingRef = ref(db, 'officerapproval/issue/engrinventory/');
+    }
+    else if(role === 'so') {
+        dbPendingRef = ref(db, 'officerapproval/issue/siginventory/');
+    }
+    else {
+        console.error('Invalid role:', role);
+        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
+        alert('Invalid role. Please log in again.');
+        window.location.href = 'storeman_login.html';
+        return;
+    }
+    get(dbPendingRef).then((snapshot) => {
+        const data = snapshot.val();
+        pendingissueCache= data || {};
+        let serial = 1;
+        const pendingissueitemdiv = document.getElementById('pendingIssuedItemforApproval');
+        const tableBody = document.getElementById('pendingIssuedItemTableBody');
+        
+        if (!tableBody) {
+            console.error('itemTableBody element not found');
+            return;
+        }
+        
+        let html = '';
+        
+        // Build table rows
+        if (data) {
+            for (const key in data) {
+                const item = data[key];
+                const mainItemData = dataCache[key] || {};
+                html += `<tr id="${item.name}" data-key="${key}">
+                            <td rowspan="2">${serial}</td>
+                            <td>${mainItemData.name}</td>
+                            <td>${mainItemData.authorized}</td>
+                            <td>${mainItemData.total}</td>
+                            <td>${mainItemData.servicable}</td>
+                            <td>${mainItemData.unservicable}</td>
+                            <td>${mainItemData.issue}</td>
+                            <td>${mainItemData.instore}</td>
+                            <td rowspan="2">
+                            <button class="pendingbtn edit" data-key='${key}'>Edit</button>
+                                <button class="pendingbtn approve" data-key='${key}'>Approve</button>
+                                <button class="pendingbtn danger" data-key='${key}'>Reject</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>${item.name}</td>
+                            <td>${item.authorized}</td>
+                            <td>${item.total}</td>
+                            <td>${item.servicable}</td>
+                            <td>${item.unservicable}</td>
+                            <td>${item.issue}</td>
+                            <td>${item.instore}</td>
+                        </tr>`;
+                serial += 1;
+            }
+        } else {
+            pendingissueitemdiv.style.display='none';    
+        }
+        
+        tableBody.innerHTML = html;
+
+        tableBody.querySelectorAll('.edit').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.dataset.key;
+                openEditModal(key);
+            });
+        });
+        tableBody.querySelectorAll('.approve').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.dataset.key;
+                //approvePendingIssue(key);
+            });
+        });
+        tableBody.querySelectorAll('.danger').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.dataset.key;
+                //rejectPendingIssue(key);
+            });
+        });
+        
+    }).catch((error) => {
+        console.error('Error loading data:', error);
+    }
+    );
+}
+
+function loadnewitemdata() {
+    let dbRef;
+    if(role === 'eo') {
+        dbRef = ref(db, 'officerapproval/new/engrinventory/');
+    }
+    else if(role === 'so') {
+        dbRef = ref(db, 'officerapproval/new/siginventory/');
+    }
+    else {
+        console.error('Invalid role:', role);
+        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
+        alert('Invalid role. Please log in again.');
+        window.location.href = 'storeman_login.html';
+        return;
+    }
+    const loadingOverlay = document.getElementById('loadingOverlay');
+
+    get(dbRef).then((snapshot) => {
+        const data = snapshot.val();
+        newitemCache = data || {};
+        let serial = 1;
+        const divNewItem = document.getElementById('pendingNewItemforApproval');
+        const tableBody = document.getElementById('pendingNewItemTableBody');
+        
+        if (!tableBody) {
+            console.error('itemTableBody element not found');
+            if (loadingOverlay) loadingOverlay.classList.add('hidden');
+            return;
+        }
+        
+        let html = '';
+        
+        // Build table rows
+        if (data) {
+            for (const key in data) {
+                const item = data[key];
+                const name = item.name || '';
+                const authorized = item.authorized ?? '';
+                const total = item.total ?? 0;
+                const servicable = item.servicable ?? 0;
+                const unservicable = item.unservicable ?? 0;
+                const issue = item.issue ?? 0;
+                const instore = item.instore ?? 0;
+                
+                html += `<tr id="${name}" data-key="${key}">
+                            <td>${serial}</td>
+                            <td>${name}</td>
+                            <td>${authorized}</td>
+                            <td>${total}</td>
+                            <td>${servicable}</td>
+                            <td>${unservicable}</td>
+                            <td>${issue}</td>
+                            <td>${instore}</td>
+                            <td>
+                            <button class="pendingbtn edit" data-key='${key}'>Edit</button>
+                                <button class="pendingbtn approve" data-key='${key}'>Approve</button>
+                                <button class="pendingbtn danger" data-key='${key}'>Reject</button>
+                            </td>
+                        </tr>`;
+                serial += 1;
+            }
+        } else {
+            divNewItem.style.display='none';
+        }
+        
+        tableBody.innerHTML = html;
+
+        // Hide loading overlay after data is loaded
+        if (loadingOverlay) {
+            setTimeout(() => {
+                loadingOverlay.classList.add('hidden');
+            }, 100);
+        }
+    }).catch((error) => {
+        console.error('Error loading data:', error);
+        const tableBody = document.getElementById('pendingNewItemTableBody');
+        if (tableBody) {
+            tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem; color: #e53e3e;">Error loading data. Please refresh the page.</td></tr>';
+        }
+        // Hide loading overlay even on error
+        if (loadingOverlay) {
+            setTimeout(() => {
+                loadingOverlay.classList.add('hidden');
+            }, 100);
+        }
+    });
+}
+
+
+
+
 loaditemdata();
+console.log("Loading Pending Issued Items for Approval");
+loadpendingissueditemdata();
+console.log("Loading New Items for Approval");
+loadnewitemdata();
 
 
 function searchItems() {
@@ -326,7 +508,7 @@ editForm?.addEventListener('submit', (e) => {
     console.table({ key: currentEditKey, updated });
 
     if(role === 'eo') {
-        update(ref(db, 'engrinventory/' + currentEditKey), updated)
+        update(ref(db, 'cloapproval/issue/engrinventory/' + currentEditKey), updated)
             .then(() => {
                 console.log('Data updated successfully');
                 showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
@@ -339,7 +521,7 @@ editForm?.addEventListener('submit', (e) => {
 
     }
     else if(role === 'so') {    
-        update(ref(db, 'siginventory/' + currentEditKey), updated)
+        update(ref(db, 'cloapproval/issue/siginventory/' + currentEditKey), updated)
         .then(() => {
             console.log('Data updated successfully');
             showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
@@ -351,7 +533,7 @@ editForm?.addEventListener('submit', (e) => {
         }); 
     }
     else if(role === 'mto') {
-        update(ref(db, 'mtinventory/' + currentEditKey), updated)
+        update(ref(db, 'cloapproval/issue/mtinventory/' + currentEditKey), updated)
         .then(() => {
             console.log('Data updated successfully');
             showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
@@ -381,7 +563,7 @@ deleteItemBtn?.addEventListener('click', (e) => {
     }
     
     if(role === 'eo') {
-        remove(ref(db, 'engrinventory/' + currentEditKey))
+        remove(ref(db, 'cloapproval/issue/engrinventory/' + currentEditKey))
             .then(() => {
                 console.log('Data deleted successfully');
                 showNotification('Inventory item deleted successfully.', 'success', 'Deletion Successful');
@@ -394,7 +576,7 @@ deleteItemBtn?.addEventListener('click', (e) => {
 
     }
     else if(role === 'so') {    
-        remove(ref(db, 'siginventory/' + currentEditKey))
+        remove(ref(db, 'cloapproval/issue/siginventory/' + currentEditKey))
         .then(() => {
             console.log('Data deleted successfully');
             showNotification('Inventory item deleted successfully.', 'success', 'Deletion Successful');
@@ -405,19 +587,7 @@ deleteItemBtn?.addEventListener('click', (e) => {
             showNotification('Error deleting item. Please try again.', 'error', 'Deletion Failed');
         });
     }
-    else if(role === 'mto') {
-        remove(ref(db, 'mtinventory/' + currentEditKey))
-        .then(() => {
-            console.log('Data deleted successfully');
-            showNotification('Inventory item deleted successfully.', 'success', 'Deletion Successful');
-            loaditemdata();
-        })
-        .catch((error) => {
-            console.error('Error deleting data:', error);
-            showNotification('Error deleting item. Please try again.', 'error', 'Deletion Failed');
-        });
-    }
-    else {
+    else{
         console.error('Invalid role:', role);
         showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
         alert('Invalid role. Please log in again.');

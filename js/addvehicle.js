@@ -48,7 +48,8 @@ const vehicleNumber = document.getElementById('vehiclenumber');
 const classtype = document.getElementById('classtype');
 const type = document.getElementById('type');
 const condition = document.getElementById('condition');
-
+const unnumber = document.getElementById('unnumber');
+const camp = document.getElementById('camp');
 
 function toNumber(value) {
     const parsed = parseFloat(value);
@@ -63,15 +64,19 @@ form.addEventListener('submit', (event) => {
     const classtypeValue = classtype.value;
     const typeValue = type.value;
     const conditionValue = condition.value;
-    
+    const unnumberValue = toNumber(unnumber.value);
+    const campValue = camp.value;
+
     console.log("Form submitted with values:", {
         number,
         classtype: classtypeValue,
         type: typeValue,
-        condition: conditionValue
+        condition: conditionValue,
+        unnumber: unnumberValue,
+        camp: campValue
     });
     showNotification("Adding vehicle...", "info", "Please wait");
-    writeInventoryItem(classtypeValue, typeValue, number, conditionValue);
+    writeInventoryItem(classtypeValue, typeValue, number, conditionValue, unnumberValue, campValue);
     form.reset();
     vehicleNumber.focus();
 });
@@ -86,7 +91,7 @@ function checkInventoryItem(classtype, conditionValue, number) {
     });
 }
 
-function writeInventoryItem(classtype, typeValue, number, conditionValue) {
+function writeInventoryItem(classtype, typeValue, number, conditionValue, unnumberValue, campValue) {
     checkInventoryItem(classtype,conditionValue, number).then((exists) => {
         if (exists) {
             console.log("Vehicle with this name already exists:", number);
@@ -97,6 +102,8 @@ function writeInventoryItem(classtype, typeValue, number, conditionValue) {
                     condition: conditionValue,
                     classtype: classtype,
                     type: typeValue,
+                    unnumber: unnumberValue,
+                    camp: campValue,
                     createdAt: Date.now()
             });
             console.log("Vehicle added:", number);

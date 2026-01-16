@@ -112,9 +112,9 @@ function writeInventoryItem(name, data) {
         if (exists) {
             console.log("Item with this name already exists:", newname);
             showNotification("Item with this name already exists. Please choose a different name.", "error", "Error");
-        } else {    let dbRef;
-            if(role === 'engrnco' || role === 'eo') {
-                set(ref(db, 'engrinventory/' + newname),{
+        } else {    
+            if(role === 'engrnco') {
+                set(ref(db, 'officerapproval/new/engrinventory/' + newname),{
                 name: name,
                 authorized: data.authorized,
                 total: data.total,
@@ -124,8 +124,8 @@ function writeInventoryItem(name, data) {
                 instore: data.instore
             });
             }
-            else if(role === 'signco' || role === 'so') {
-                set(ref(db, 'siginventory/' + newname),{
+            else if(role === 'signco') {
+                set(ref(db, 'officerapproval/new/siginventory/' + newname),{
                 name: name,
                 authorized: data.authorized,
                 total: data.total,
@@ -135,8 +135,8 @@ function writeInventoryItem(name, data) {
                 instore: data.instore
             });
             }
-            else if(role === 'mtnco' || role === 'mtjco' || role === 'mto') {
-                set(ref(db, 'mtinventory/' + newname),{
+            else if(role === 'mtnco' || role === 'mtjco') {
+                set(ref(db, 'officerapproval/new/mtinventory/' + newname),{
                 name: name,
                 authorized: data.authorized,
                 total: data.total,
@@ -146,8 +146,8 @@ function writeInventoryItem(name, data) {
                 instore: data.instore
             });
             }
-            else if(role === 'bqms' || role === 'lo') {
-                set(ref(db, 'bqmsinventory/' + newname),{
+            else if(role === 'bqms') {
+                set(ref(db, 'officerapproval/new/bqmsinventory/' + newname),{
                 name: name,
                 authorized: data.authorized,
                 total: data.total,
@@ -157,8 +157,8 @@ function writeInventoryItem(name, data) {
                 instore: data.instore
             });
             }
-            else if(role === 'bknco' || role === 'lo') {
-                set(ref(db, 'bkncoinventory/' + newname),{
+            else if(role === 'bknco') {
+                set(ref(db, 'officerapproval/new/bkncoinventory/' + newname),{
                 name: name,
                 authorized: data.authorized,
                 total: data.total,
@@ -174,8 +174,6 @@ function writeInventoryItem(name, data) {
                 window.location.href = 'storeman_login.html';
                 return;
             }
-
-
             console.log("Inventory item added:", newname);
             showNotification("Item added successfully!", "success", "Success");
         }   

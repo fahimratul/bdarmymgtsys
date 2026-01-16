@@ -26,11 +26,29 @@
 			</div>
 			<form id="addvehicleForm">
 				<div class="grid">
-					<div class="field name-field" style="grid-column: span 3;">
-						<label for="vehiclenumber">Vehicle Number</label>
+					<div class="field">
+						<label for="vehiclenumber">Vehicle BA Number</label>
 						<input id="vehiclenumber" name="vehiclenumber" type="number" placeholder="e.g., Utility Knife" required>
                         <p class="inline-hint">Enter the vehicle number</p>
 					</div>
+					
+					<div class="field">
+						<label for="unnumber">UN Number</label>
+						<input id="unnumber" name="unnumber" type="number" placeholder="e.g., Utility Knife" required>
+                        <p class="inline-hint">Enter the UN number</p>
+					</div>
+					
+					<div class="field">
+						<label for="camp">Name of Camp</label>
+						<select id="camp" name="camp" required>
+							<option value="" disabled selected>Select Camp</option>
+							<option value="bayoo">BAYOO TOB</option>
+							<option value="drodro">DRODRO TOB</option>
+							<option value="rhoo">RHOO TOB</option>
+							<option value="ndromo">NDROMO POB</option>
+						</select>
+					</div>
+
 					<div class="field">
 						<label for="classtype">Class</label>
 						<select id="classtype" name="classtype" required>

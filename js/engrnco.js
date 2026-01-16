@@ -314,7 +314,7 @@ editForm?.addEventListener('submit', (e) => {
 
     console.table({ key: currentEditKey, updated });    let dbRef;
     if(role === 'engrnco') {    
-        update(ref(db, 'engrinventory/' + currentEditKey), updated)
+        update(ref(db, 'officerapproval/issue/engrinventory/' + currentEditKey), updated)
         .then(() => {
             console.log('Data updated successfully');
             showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
@@ -326,7 +326,7 @@ editForm?.addEventListener('submit', (e) => {
         }); 
     }
     else if(role === 'signco') {
-        update(ref(db, 'siginventory/' + currentEditKey), updated)
+        update(ref(db, 'officerapproval/issue/siginventory/' + currentEditKey), updated)
         .then(() => {
             console.log('Data updated successfully');
             showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
@@ -338,7 +338,7 @@ editForm?.addEventListener('submit', (e) => {
         }); 
     }
     else if(role === 'bqms') {
-        update(ref(db, 'bqmsinventory/' + currentEditKey), updated)
+        update(ref(db, 'officerapproval/issue/bqmsinventory/' + currentEditKey), updated)
         .then(() => {
             console.log('Data updated successfully');
             showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
@@ -350,7 +350,7 @@ editForm?.addEventListener('submit', (e) => {
         });
     }
     else if(role === 'bknco') {
-        update(ref(db, 'bkncoinventory/' + currentEditKey), updated)
+        update(ref(db, 'officerapproval/issue/bkncoinventory/' + currentEditKey), updated)
         .then(() => {
             console.log('Data updated successfully');
             showNotification('Inventory item updated successfully.', 'success', 'Update Successful');

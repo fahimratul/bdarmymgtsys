@@ -11,7 +11,6 @@
     <script src ="https://unpkg.com/lucide@latest" ></script>
     <link rel='icon' href='static/logo_small.png' type='image/x-icon' />
     <title>Offr Inventory</title>
-</html>
 </head>
 <body>
     <div id="notification-toast" class="notification-toast"></div>   
@@ -30,8 +29,8 @@
         </div>
         <p>User Info</p>
     </div>
-        <div id="pendingforApproval" class="pendingitem">
-        <h2>Pending Items for Approval</h2>
+    <div id="pendingIssuedItemforApproval" class="pendingitem">
+        <h2>Pending Issued Items for Approval</h2>
         <table class="pendingitemTable">
             <thead>
                 <th>Serial</th>
@@ -44,35 +43,31 @@
                 <th>In store</th>
                 <th>Actions</th>
             </thead>
-            <tbody id="pendingItemTableBody">
-                <tr>
-                    <td rowspan="2">1</td>
-                    <td>Sample Item for testing how pending item will work</td>
-                    <td>NOS</td>
-                    <td>100</td>
-                    <td>80</td>
-                    <td>20</td>
-                    <td>10</td>
-                    <td>90</td>
-                    <td rowspan="2">
-                        <button class="pendingbtn edit">Edit</button>
-                        <button class="pendingbtn approve">Approve</button>
-                        <button class="pendingbtn danger">Reject</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td> Sample Item for testing how pending item will work</td>
-                    <td>NOS</td>
-                    <td>50</td>
-                    <td>40</td>
-                    <td>10</td>
-                    <td>5</td>
-                    <td>45</td>
-                </tr>
+            <tbody id="pendingIssuedItemTableBody">
+                <!-- Pending issued items will be dynamically inserted here -->
             </tbody>
         </table>
     </div>
 
+    <div id="pendingNewItemforApproval" class="pendingitem">
+        <h2>Pending New Items for Approval</h2>
+        <table class="pendingitemTable">
+            <thead>
+                <th>Serial</th>
+                <th>Nomenclature/Name</th>
+                <th>Authorized Unit</th>
+                <th>Total Items</th>
+                <th>Servicable</th>
+                <th>Unservicable</th>
+                <th>Issued</th>
+                <th>In store</th>
+                <th>Actions</th>
+            </thead>
+            <tbody id="pendingNewItemTableBody">
+                <!-- Pending new items will be dynamically inserted here -->
+            </tbody>
+        </table>
+    </div>
 
     <div class="topdown-container" id="userInfoContainer" style="display: none;">
         <h3 id ="username"></h3>
