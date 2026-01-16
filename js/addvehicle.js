@@ -32,7 +32,7 @@ window.addEventListener('DOMContentLoaded', () => {
         window.location.href = 'index.html';
         return;
     }
-    
+
     if (!baNumber) {
         console.error('BA Number not found in session storage.');
         window.location.href = 'index.html';
@@ -42,66 +42,42 @@ window.addEventListener('DOMContentLoaded', () => {
 
 });
 
-const role = sessionStorage.getItem('role');
 
 const form = document.getElementById('addvehicleForm');
-const name= document.getElementById('name');
-const total = document.getElementById('total');
-const servicable = document.getElementById('servicable');
-const unservicable = document.getElementById('unservicable');
-const classtype = document.getElementById('classtype'); 
+const vehicleNumber = document.getElementById('vehiclenumber');
+const classtype = document.getElementById('classtype');
+const type = document.getElementById('type');
+const condition = document.getElementById('condition');
+
 
 function toNumber(value) {
     const parsed = parseFloat(value);
     return Number.isFinite(parsed) ? parsed : 0;
 }
 
-function recalc() {
-    if(toNumber(servicable.value) > toNumber(total.value)) {
-        showNotification('Servicable quantity cannot exceed Total quantity. Adjusting Servicable to match Total.', 'warning', 'Input Adjusted');
-        servicable.value = total.value;
-    }
-    if(toNumber(issue.value) > toNumber(servicable.value)) {
-        showNotification('Issue quantity cannot exceed Servicable quantity. Adjusting Issue to match Servicable.', 'warning', 'Input Adjusted');
-        issue.value = servicable.value;
-    }
-    const unservicableValue = toNumber(total.value)-toNumber(servicable.value);
 
-    const instoreValue = toNumber(total.value) - toNumber(issue.value);
-    unservicable.value = Math.max(unservicableValue, 0);
-    instore.value = Math.max(instoreValue, 0);
-}
-
-[total, servicable, issue].forEach(input => {
-    input.addEventListener('input', recalc);
-});
-
-recalc();
 
 form.addEventListener('submit', (event) => {
     event.preventDefault();
-    recalc();
-
-    const payload = {
-        name: form.name.value.trim(),
-        authorized: form.authorized.value.trim(),
-        total: toNumber(form.total.value),
-        servicable: toNumber(form.servicable.value),
-        unservicable: toNumber(form.unservicable.value),
-        issue: toNumber(form.issue.value),
-        instore: toNumber(form.instore.value)
-    };
-    console.table(payload);
-    writeInventoryItem(payload.name, payload);
+    const number = toNumber(vehicleNumber.value);
+    const classtypeValue = classtype.value;
+    const typeValue = type.value;
+    const conditionValue = condition.value;
+    
+    console.log("Form submitted with values:", {
+        number,
+        classtype: classtypeValue,
+        type: typeValue,
+        condition: conditionValue
+    });
+    showNotification("Adding vehicle...", "info", "Please wait");
+    writeInventoryItem(classtypeValue, typeValue, number, conditionValue);
     form.reset();
-    total.value = 0;
-    servicable.value = 0;
-    issue.value = 0;
-    recalc();
+    vehicleNumber.focus();
 });
 
-function checkInventoryItem(name) {
-    const dbRef = ref(db, 'engrinventory/' + name);
+function checkInventoryItem(classtype, conditionValue, number) {
+    const dbRef = ref(db, `vehiclelist/${classtype}/${conditionValue}/`+ number);
     return get(dbRef).then((snapshot) => {
         return snapshot.exists();
     }).catch((error) => {
@@ -110,78 +86,21 @@ function checkInventoryItem(name) {
     });
 }
 
-function writeInventoryItem(name, data) {
-    const newname = name.replace(/[\s/]+/g, '_').toLowerCase();
-    checkInventoryItem(newname).then((exists) => {
+function writeInventoryItem(classtype, typeValue, number, conditionValue) {
+    checkInventoryItem(classtype,conditionValue, number).then((exists) => {
         if (exists) {
-            console.log("Item with this name already exists:", newname);
-            showNotification("Item with this name already exists. Please choose a different name.", "error", "Error");
-        } else {    let dbRef;
-            if(role === 'engrnco' || role === 'eo') {
-                set(ref(db, 'engrinventory/' + newname),{
-                name: name,
-                authorized: data.authorized,
-                total: data.total,
-                servicable: data.servicable,
-                unservicable: data.unservicable,
-                issue: data.issue,
-                instore: data.instore
+            console.log("Vehicle with this name already exists:", number);
+            showNotification(`Vehicle with ${number} number already exists. Please choose a different number.`, "error", "Error");
+        } else {    
+                set(ref(db, `vehiclelist/${classtype}/${conditionValue}/`+ number),{
+                    number: number,
+                    condition: conditionValue,
+                    classtype: classtype,
+                    type: typeValue,
+                    createdAt: Date.now()
             });
-            }
-            else if(role === 'signco' || role === 'so') {
-                set(ref(db, 'siginventory/' + newname),{
-                name: name,
-                authorized: data.authorized,
-                total: data.total,
-                servicable: data.servicable,
-                unservicable: data.unservicable,
-                issue: data.issue,
-                instore: data.instore
-            });
-            }
-            else if(role === 'mtnco' || role === 'mtjco' || role === 'mto') {
-                set(ref(db, 'mtinventory/' + newname),{
-                name: name,
-                authorized: data.authorized,
-                total: data.total,
-                servicable: data.servicable,
-                unservicable: data.unservicable,
-                issue: data.issue,
-                instore: data.instore
-            });
-            }
-            else if(role === 'bqms' || role === 'lo') {
-                set(ref(db, 'bqmsinventory/' + newname),{
-                name: name,
-                authorized: data.authorized,
-                total: data.total,
-                servicable: data.servicable,
-                unservicable: data.unservicable,
-                issue: data.issue,
-                instore: data.instore
-            });
-            }
-            else if(role === 'bknco' || role === 'lo') {
-                set(ref(db, 'bkncoinventory/' + newname),{
-                name: name,
-                authorized: data.authorized,
-                total: data.total,
-                servicable: data.servicable,
-                unservicable: data.unservicable,
-                issue: data.issue,
-                instore: data.instore
-            });
-            }
-            else {
-                console.error('Invalid role:', role);
-                showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
-                window.location.href = 'storeman_login.html';
-                return;
-            }
-
-
-            console.log("Inventory item added:", newname);
-            showNotification("Item added successfully!", "success", "Success");
+            console.log("Vehicle added:", number);
+            showNotification("Vehicle added successfully!", "success", "Success");
         }   
         }).catch((error) => {   
             console.error("Error checking item existence:", error);

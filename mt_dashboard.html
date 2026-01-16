@@ -45,14 +45,72 @@
 
 
     <div class="table-container" id="inventoryTableContainer" style="display: none;">
+
+        <div class="dashboard-card">
+            <div class="card">
+                <div class="card-icon">
+                    <i data-lucide="box"></i>
+                </div>
+                <div class="card-info">
+                    <h2 id="totalItems">0</h2>
+                    <p>Total Items</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-icon">
+                    <i data-lucide="check-circle"></i>
+                </div>
+                <div class="card-info">
+                    <h2 id="servicableItems">0</h2>
+                    <p>Servicable Items</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-icon">
+                    <i data-lucide="x-circle"></i>
+                </div>
+                <div class="card-info">
+                    <h2 id="unservicableItems">0</h2>
+                    <p>Unservicable Items</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-icon">
+                    <i data-lucide="truck"></i>
+                </div>
+                <div class="card-info">
+                    <h2 id="issuedItems">0</h2>
+                    <p>Issued Items</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-icon">
+                    <i data-lucide="archive"></i>
+                </div>
+                <div class="card-info">
+                    <h2 id="inStoreItems">0</h2>
+                    <p>In Store Items</p>
+                </div>
+            </div>
+            <div class="card" onclick="window.location.href='additem.html'" style="cursor: pointer;">
+                <div class="card-icon">
+                    <i data-lucide="plus-circle"></i>
+                </div>
+                <div class="card-info">
+                    <h2 id="addItems">Add Items</h2>
+                    <p></p>
+                </div>
+            </div>
+        </div>
+
+
         <div class="search-container">
             <div class="library-search-container">
                 <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
                 <input type="text" id="searchInput" class="library-search-input" placeholder="Search Item...">
-            </div>   
-            <button class="btn primary" id="addItemBtn" style="width:fit-content; white-space: nowrap;">Add Item</button> 
+            </div>  
         </div>
         <table>
             <thead>
@@ -74,9 +132,11 @@
         </table>
     </div>
 
+
+
     <div class="table-container" id="transportTableContainer" >
     <div class="dashboard-card">
-        <div class="card">
+        <div class="card mt">
             <div class="card-icon">
                 <i data-lucide="truck"></i>
             </div>
@@ -85,7 +145,7 @@
                 <p>Total Vehicles</p>
             </div>
         </div>
-        <div class="card">
+        <div class="card mt">
             <div class="card-icon">
                 <i data-lucide="truck-electric"></i>
             </div>
@@ -94,7 +154,7 @@
                 <p>Servicable Vehicles</p>
             </div>
         </div>
-        <div class="card">
+        <div class="card mt">
             <div class="card-icon">
                 <i data-lucide="x-circle"></i>
             </div>
@@ -103,9 +163,19 @@
                 <p>Unservicable Vehicles</p>
             </div>
         </div>
+        <div class="card mt">
+            <div class="card-icon">
+                <i data-lucide="wrench"></i>
+            </div>
+            <div class="card-info">
+                <h2 id="inMaintenanceVehicles">0</h2>
+                <p> In Maintenance</p>
+            </div>
+        </div>
+
         <div class="card">
             <div class="card-icon">
-                <i data-lucide="truck"></i>
+                <i data-lucide="car"></i>
                 <h4>Class A</h4>
             </div>
             <div class="card-info">
@@ -115,6 +185,8 @@
                 <h2 id="servicableVehiclesClassA">0</h2>
                 <h3>Unservicable Vehicles</h3>
                 <h2 id="unservicableVehiclesClassA">0</h2>
+                <h3>In Maintenance</h3>
+                <h2 id="inMaintenanceVehiclesClassA">0</h2>
             </div>
         </div>
         <div class="card">
@@ -129,11 +201,13 @@
                 <h2 id="servicableVehiclesClassB">0</h2>
                 <h3>Unservicable Vehicles</h3>
                 <h2 id="unservicableVehiclesClassB">0</h2>
+                <h3>In Maintenance</h3>
+                <h2 id="inMaintenanceVehiclesClassB">0</h2>
             </div>
         </div>
         <div class="card">
             <div class="card-icon">
-                <i data-lucide="truck"></i>
+                <i data-lucide="forklift"></i>
                 <h4>Class C</h4>
             </div>
             <div class="card-info">
@@ -143,6 +217,8 @@
                 <h2 id="servicableVehiclesClassC">0</h2>
                 <h3>Unservicable Vehicles</h3>
                 <h2 id="unservicableVehiclesClassC">0</h2>
+                <h3>In Maintenance</h3>
+                <h2 id="inMaintenanceVehiclesClassC">0</h2>
             </div>
         </div>
 
@@ -154,8 +230,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
             <input type="text" id="searchInputVehicle" class="library-search-input" placeholder="Search Item...">
-        </div>   
-        <button class="btn primary" id="addItemBtn" style="width:fit-content; white-space: nowrap;">Add Item</button> 
+        </div>
     </div>
         
     
@@ -177,6 +252,8 @@
 
 
     </div>
+
+
     <!-- Edit Item Modal -->
     <div id="editModal" class="modal hidden">
         <div class="modal-content">
@@ -278,10 +355,6 @@
 
     <script>
         lucide.createIcons();
-        addItemBtn = document.getElementById('addItemBtn');
-        addItemBtn.addEventListener('click', function() {
-            window.location.href = 'addvehicle.html';
-        });
         function hideNotification() {
             const toast = document.getElementById("notification-toast");
             toast.classList.remove("show");

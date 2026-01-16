@@ -98,6 +98,14 @@ function loaditemdata() {
 
     const dbRef = ref(db, 'mtinventory/');
     const loadingOverlay = document.getElementById('loadingOverlay');
+    let datainfo={
+        total:0,
+        servicable:0,
+        unservicable:0,
+        issue:0,
+        instore:0
+    };
+
 
     get(dbRef).then((snapshot) => {
         const data = snapshot.val();
@@ -137,12 +145,22 @@ function loaditemdata() {
                             <td><button class="edit-btn" data-key='${key}'>Edit</button></td>
                         </tr>`;
                 serial += 1;
+                datainfo.total+=total;
+                datainfo.servicable+=servicable;
+                datainfo.unservicable+=unservicable;
+                datainfo.issue+=issue;
+                datainfo.instore+=instore;
             }
         } else {
             html = '<tr><td colspan="9" style="text-align: center; padding: 2rem; color: #666;">No inventory data available</td></tr>';
         }
         
         tableBody.innerHTML = html;
+        document.getElementById('totalItems').textContent = datainfo.total;
+        document.getElementById('servicableItems').textContent = datainfo.servicable;
+        document.getElementById('unservicableItems').textContent = datainfo.unservicable;
+        document.getElementById('issuedItems').textContent = datainfo.issue;
+        document.getElementById('inStoreItems').textContent = datainfo.instore;
 
         // Attach edit handlers
         tableBody.querySelectorAll('.edit-btn').forEach(btn => {

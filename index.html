@@ -16,39 +16,36 @@
         </div>
         <div>
             <p class="login-instruction">Select your login role:</p>
-            <div class="login-mode">
-                <div class="login-card" onclick="handlelogin('cc')">
-                <h2>Contingent Commander</h2>               
-                </div>
-                <div class="login-card" onclick="handlelogin('officer')">
-                    <h2>Officer</h2>
-                </div>
-            </div>
-            <div class="login-mode">
-                <div class="login-card" onclick="handlelogin('bqms')">
-                <h2>BQMS</h2>
-                </div>
-                <div class="login-card" onclick="handlelogin('mtjconco')">
-                <h2>MT</h2>
-                </div>  
-            </div>
+            <select id="roleSelect" class="role-select">
+                <option value="" disabled selected>Select Role</option>
+                <option value="cc">Contingent Commander</option>
+                <option value="clo">Chief Logistic Officer</option>
+                <option value="officer">Officer</option>
+                <option value="bqms">Storeman</option>
+                <option value="mtjconco">MT</option>
+            </select>
+            <button onclick="handlelogin(document.getElementById('roleSelect').value)">Login</button>
         </div>
 
     </div>
     <script>
-        function handlelogin(role) {
-            if(role === 'bqms') {
+        function handlelogin(role_type) {
+            if(role_type === 'bqms') {
                 sessionStorage.setItem('role_type', 'bqms');
             } 
-            else if(role === 'mtjconco') {
+            else if(role_type === 'mtjconco') {
                 sessionStorage.setItem('role_type', 'mtjconco');
             }
-            else if (role === 'cc') {
+            else if (role_type === 'cc') {
                 alert('Contingent Commander login is currently disabled');
                 return;
             }
-            else if (role === 'officer') {
+            else if (role_type === 'officer') {
                 sessionStorage.setItem('role_type', 'officer');
+            }
+            else if (role_type === 'clo') {
+                alert('Chief Logistic Officer login is currently disabled');
+                return;
             }
             else {
                 alert('Invalid role selected');

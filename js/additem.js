@@ -107,7 +107,7 @@ function checkInventoryItem(name) {
 }
 
 function writeInventoryItem(name, data) {
-    const newname = name.replace(/[\s/]+/g, '_').toLowerCase();
+    const newname = name.replace(/[^a-zA-Z0-9]+/g, '_').toLowerCase();
     checkInventoryItem(newname).then((exists) => {
         if (exists) {
             console.log("Item with this name already exists:", newname);

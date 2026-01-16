@@ -6,6 +6,7 @@
     
     <link rel="stylesheet" href="css/adduser.css">
     <link rel="stylesheet" href="css/engrnco.css">
+    <link rel="stylesheet" href="css/card.css">
     <link rel="stylesheet" href="css/notification.css">
     <script src ="https://unpkg.com/lucide@latest" ></script>
     <link rel='icon' href='static/logo_small.png' type='image/x-icon' />
@@ -34,7 +35,62 @@
         <button class="btn primary" id="changePasswordBtn" onclick="passwordChangeModal()">Change Password</button>
         <button class="btn secondary" id="logoutButton" onclick="logout()">Logout</button>        
     </div>
-
+    <div class="dashboard-card">
+        <div class="card">
+            <div class="card-icon">
+                <i data-lucide="box"></i>
+            </div>
+            <div class="card-info">
+                <h2 id="totalItems">0</h2>
+                <p>Total Items</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-icon">
+                <i data-lucide="check-circle"></i>
+            </div>
+            <div class="card-info">
+                <h2 id="servicableItems">0</h2>
+                <p>Servicable Items</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-icon">
+                <i data-lucide="x-circle"></i>
+            </div>
+            <div class="card-info">
+                <h2 id="unservicableItems">0</h2>
+                <p>Unservicable Items</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-icon">
+                <i data-lucide="truck"></i>
+            </div>
+            <div class="card-info">
+                <h2 id="issuedItems">0</h2>
+                <p>Issued Items</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-icon">
+                <i data-lucide="archive"></i>
+            </div>
+            <div class="card-info">
+                <h2 id="inStoreItems">0</h2>
+                <p>In Store Items</p>
+            </div>
+        </div>
+        <div class="card" onclick="window.location.href='additem.html'" style="cursor: pointer;">
+            <div class="card-icon">
+                <i data-lucide="plus-circle"></i>
+            </div>
+            <div class="card-info">
+                <h2 id="addItems">Add Items</h2>
+                <p></p>
+            </div>
+        </div>
+    </div>
     <div class="search-container">
         <div class="library-search-container">
             <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -42,7 +98,6 @@
             </svg>
             <input type="text" id="searchInput" class="library-search-input" placeholder="Search Item...">
         </div>   
-        <button class="btn primary" id="addItemBtn" style="width:fit-content; white-space: nowrap;">Add Item</button> 
     </div>
 
     <table>
@@ -165,10 +220,6 @@
 
     <script>
         lucide.createIcons();
-        addItemBtn = document.getElementById('addItemBtn');
-        addItemBtn.addEventListener('click', function() {
-            window.location.href = 'additem.html';
-        });
         function hideNotification() {
             const toast = document.getElementById("notification-toast");
             toast.classList.remove("show");

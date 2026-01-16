@@ -18,6 +18,9 @@
     min-height: 10rem;
     text-align: center;
 }
+.mt{
+    flex: 1 1 calc(25% - 2rem);
+}
 .card:hover{
     transform: translateY(-5px);
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
