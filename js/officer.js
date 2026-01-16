@@ -304,7 +304,7 @@ function loadpendingissueditemdata() {
             btn.addEventListener('click', () => {
                 showNotification("Approving issued item...", "info", "Please Wait");
                 const key = btn.dataset.key;
-                approveIssuedItem(key);
+                approveIssuedItem(key, data);
             });
         });
         tableBody.querySelectorAll('.danger').forEach(btn => {
