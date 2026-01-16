@@ -28,12 +28,12 @@ window.addEventListener('DOMContentLoaded', () => {
     console.log('Role Type from sessionStorage:', roleType);
     if (!roleType || roleType !== 'officer') {
         console.error('Unauthorized access. Redirecting to login.');
-        window.location.href = 'storeman_login.html';
+        window.location.href = 'login.html';
         return;
     }
     if (!baNumber) {
         console.error('BA Number not found in local storage.');
-        window.location.href = 'storeman_login.html';
+        window.location.href = 'login.html';
         return;
     }
     console.log('Logged in as BA Number:', baNumber);
@@ -76,9 +76,28 @@ let ranklist ={
 import {showNotification} from './notification.js';
 console.log("User management Script Loaded");
 
+let role = sessionStorage.getItem('role');
+
 function loaditemdata() {
     const dbRef = ref(db, 'users/');
     const loadingOverlay = document.getElementById('loadingOverlay');
+    let undercommandrole = {};
+    if(role === 'eo'){
+        undercommandrole = ['engrnco'];
+    }
+    else if(role === 'so'){
+        undercommandrole = ['signco'];
+    }
+    else if (role === 'lo'){
+        undercommandrole = ['bqms', 'bknco'];
+    }
+    else if (role === 'mto'){
+        undercommandrole = ['mtnco', 'mtjco'];
+    }
+    else{
+        undercommandrole = null; // CLO and above can see all
+    }
+
 
     get(dbRef).then((snapshot) => {
         const data = snapshot.val();
@@ -97,6 +116,9 @@ function loaditemdata() {
         if (data) {
             for (const key in data) {
                 const item = data[key];
+                if (undercommandrole && !undercommandrole.includes(item.role)) {
+                    continue; // Skip users not under command
+                }
                 const banumber = item.baNumber || '';
                 const rank = item.rank || '';
                 const name = item.name || '';

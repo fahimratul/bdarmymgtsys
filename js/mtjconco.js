@@ -27,12 +27,12 @@ window.addEventListener('DOMContentLoaded', () => {
     let role = sessionStorage.getItem('role');
     if (role !== 'mtjco' && role !== 'mtnco') {
         console.error('Unauthorized role. Access denied.');
-        window.location.href = 'storeman_login.html';
+        window.location.href = 'login.html';
         return;
     }
     if (!baNumber) {
         console.error('BA Number not found in local storage.');
-        window.location.href = 'storeman_login.html';
+        window.location.href = 'login.html';
         return;
     }
     console.log('Logged in as BA Number:', baNumber);
@@ -418,7 +418,7 @@ function changePassword() {
     const baNumber = sessionStorage.getItem('baNumber');
     if (!baNumber) {
         console.error('BA Number not found in session storage.');
-        window.location.href = 'storeman_login.html';
+        window.location.href = 'login.html';
         return;
     }
     const currentPassword = document.getElementById('password').value;

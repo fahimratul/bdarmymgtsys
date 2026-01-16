@@ -26,7 +26,7 @@ window.addEventListener('DOMContentLoaded', () => {
     let baNumber = sessionStorage.getItem('baNumber');
     if (!baNumber) {
         console.error('BA Number not found in local storage.');
-        window.location.href = 'storeman_login.html';
+        window.location.href = 'login.html';
         return;
     }
     console.log('Logged in as BA Number:', baNumber);
@@ -99,7 +99,7 @@ window.addEventListener('DOMContentLoaded', () => {
     else {
         console.error('Invalid role:', role);
         showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
-        window.location.href = 'storeman_login.html';
+        window.location.href = 'login.html';
         return;
     }
     
@@ -132,7 +132,7 @@ function loaditemdata() {
     else {
         console.error('Invalid role:', role);
         showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
-        window.location.href = 'storeman_login.html';
+        window.location.href = 'login.html';
         return;
     }
     const loadingOverlay = document.getElementById('loadingOverlay');
@@ -363,7 +363,7 @@ editForm?.addEventListener('submit', (e) => {
     else {
         console.error('Invalid role:', role);
         showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
-        window.location.href = 'storeman_login.html';
+        window.location.href = 'login.html';
         return;
     }
     closeEditModal();
@@ -381,7 +381,7 @@ function changePassword() {
     const baNumber = sessionStorage.getItem('baNumber');
     if (!baNumber) {
         console.error('BA Number not found in session storage.');
-        window.location.href = 'storeman_login.html';
+        window.location.href = 'login.html';
         return;
     }
     const currentPassword = document.getElementById('password').value;
@@ -407,7 +407,7 @@ function changePassword() {
                 .then(() => {
                     showNotification("Password changed successfully", "success", "Success");
                     sessionStorage.clear();
-                    window.location.href = 'storeman_login.html';
+                    window.location.href = 'login.html';
                 })
                 .catch((error) => {
                     console.error("Error updating password:", error);

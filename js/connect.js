@@ -93,8 +93,14 @@ function handlelogin() {
                     }
                     console.log(`Redirecting to ${role} dashboard`);
                     if (role_type === 'officer'){
-                        console.log("Redirecting to officer dashboard");
-                        window.location.href = 'officer_dashboard.html';
+                        if (role === 'lo'){
+                            console.log("Redirecting to LO dashboard");
+                            window.location.href = 'officer_lo_dashboard.html';
+                        }
+                        else {
+                            console.log("Redirecting to officer dashboard");
+                            window.location.href = 'officer_dashboard.html';
+                        }
                     } 
                     else if (role_type === 'bqms'){
                         window.location.href ='engrnco.html';

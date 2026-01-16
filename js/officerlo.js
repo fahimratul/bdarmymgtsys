@@ -59,7 +59,6 @@ let ranklist ={
 };
 
 
-// Clear sessionStorage when the site is closed
  
 const role = sessionStorage.getItem('role');
 
@@ -71,23 +70,16 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('username').textContent='Name: ' + username;
     document.getElementById('rank').textContent=ranklist[rank] ? 'Rank: ' + ranklist[rank] : 'Rank: ' + rank;
     document.getElementById('banumber').textContent='BA Number: ' + banumber;
-    const titleElement = document.getElementById('title');
-    if (role === 'eo') {
-        titleElement.textContent = 'Engineer Officer Inventory Management';
-    } 
-    else if (role === 'so') {
-        titleElement.textContent = 'Signal Officer Inventory Management';
-    }
-    else if (role === 'mto') {
-        titleElement.textContent = 'Military Transport Officer Inventory Management';
-    }
-    else {
-        console.error('Invalid role:', role);
-        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
+    if(!username || !rank || !banumber){
+        alert('Session expired. Please log in again.');
         window.location.href = 'login.html';
-        return;
     }
-    
+    if (!role || role !== 'lo') {
+        console.error('Unauthorized role:', role);
+        alert('Session expired. Please log in again.');
+        window.location.href = 'login.html';
+    }
+
 });
 
 
@@ -95,9 +87,12 @@ import {showNotification} from './notification.js';
 
 console.log("Officer Script Loaded");
 
-let dataCache = {};
-let pendingissueCache = {};
-let newitemCache = {};
+let dataCacheBQMS = {};
+let dataCacheBKNCO = {};
+let pendingissueCacheBQMS = {};
+let newitemCacheBQMS = {};
+let pendingissueCacheBKNCO = {};
+let newitemCacheBKNCO = {};
 
 let currentEditKey = null;
 const modal = document.getElementById('editModal');
@@ -116,7 +111,7 @@ const inputs = {
     deleteitem: document.getElementById('deleteitem')
 };
 
-function loaditemdata() {
+function loaditemdataBQMS() {
     let datainfo={
         total:0,
         servicable:0,
@@ -124,30 +119,17 @@ function loaditemdata() {
         issue:0,
         instore:0
     };
-    let dbRef;
-    if(role === 'eo') {
-        dbRef = ref(db, 'engrinventory/');
-    }
-    else if(role === 'so') {
-        dbRef = ref(db, 'siginventory/');
-    }
-    else {
-        console.error('Invalid role:', role);
-        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
-        alert('Invalid role. Please log in again.');
-        window.location.href = 'login.html';
-        return;
-    }
+    let dbRef = ref(db, 'bqmsinventory/');
     const loadingOverlay = document.getElementById('loadingOverlay');
 
     get(dbRef).then((snapshot) => {
         const data = snapshot.val();
-        dataCache = data || {};
+        dataCacheBQMS = data || {};
         let serial = 1;
-        const tableBody = document.getElementById('itemTableBody');
+        const tableBody = document.getElementById('itemTableBodyBQMS');
         
         if (!tableBody) {
-            console.error('itemTableBody element not found');
+            console.error('itemTableBodyBQMS element not found');
             if (loadingOverlay) loadingOverlay.classList.add('hidden');
             return;
         }
@@ -213,7 +195,104 @@ function loaditemdata() {
         }
     }).catch((error) => {
         console.error('Error loading data:', error);
-        const tableBody = document.getElementById('itemTableBody');
+        const tableBody = document.getElementById('itemTableBodyBQMS');
+        if (tableBody) {
+            tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem; color: #e53e3e;">Error loading data. Please refresh the page.</td></tr>';
+        }
+        // Hide loading overlay even on error
+        if (loadingOverlay) {
+            setTimeout(() => {
+                loadingOverlay.classList.add('hidden');
+            }, 100);
+        }
+    });
+}
+
+function loaditemdataBKNCO() {
+    let datainfo={
+        total:0,
+        servicable:0,
+        unservicable:0,
+        issue:0,
+        instore:0
+    };
+    let dbRef = ref(db, 'bkncoinventory/');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+
+    get(dbRef).then((snapshot) => {
+        const data = snapshot.val();
+        dataCacheBKNCO = data || {};
+        let serial = 1;
+        const tableBody = document.getElementById('itemTableBodyBKNCO');
+        
+        if (!tableBody) {
+            console.error('itemTableBodyBKNCO element not found');
+            if (loadingOverlay) loadingOverlay.classList.add('hidden');
+            return;
+        }
+        
+        let html = '';
+        
+        // Build table rows
+        if (data) {
+            for (const key in data) {
+                const item = data[key];
+                const name = item.name || '';
+                const authorized = item.authorized ?? '';
+                const total = item.total ?? 0;
+                const servicable = item.servicable ?? 0;
+                const unservicable = item.unservicable ?? 0;
+                const issue = item.issue ?? 0;
+                const instore = item.instore ?? 0;
+                
+                html += `<tr id="${name}" data-key="${key}">
+                            <td>${serial}</td>
+                            <td>${name}</td>
+                            <td>${authorized}</td>
+                            <td>${total}</td>
+                            <td>${servicable}</td>
+                            <td>${unservicable}</td>
+                            <td>${issue}</td>
+                            <td>${instore}</td>
+                            <td>
+                            <button class="edit-btn" data-key='${key}'>Edit</button></td>
+                        </tr>`;
+                serial += 1;
+                datainfo.total+=total;
+                datainfo.servicable+=servicable;
+                datainfo.unservicable+=unservicable;
+                datainfo.issue+=issue;
+                datainfo.instore+=instore;
+            }
+        } else {
+            html = '<tr><td colspan="9" style="text-align: center; padding: 2rem; color: #666;">No inventory data available</td></tr>';
+        }
+        
+        tableBody.innerHTML = html;
+        document.getElementById('totalItemsBKNCO').textContent = datainfo.total;
+        document.getElementById('servicableItemsBKNCO').textContent = datainfo.servicable;
+        document.getElementById('unservicableItemsBKNCO').textContent = datainfo.unservicable;
+        document.getElementById('issuedItemsBKNCO').textContent = datainfo.issue;
+        document.getElementById('inStoreItemsBKNCO').textContent = datainfo.instore;
+            
+        // Attach edit handlers
+        tableBody.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.dataset.key;
+                console.log("Edit button clicked for key:", key);
+                openEditModal(key);
+            });
+        });
+        
+        // Hide loading overlay after data is loaded
+        if (loadingOverlay) {
+            setTimeout(() => {
+                loadingOverlay.classList.add('hidden');
+            }, 100);
+        }
+    }).catch((error) => {
+        console.error('Error loading data:', error);
+        const tableBody = document.getElementById('itemTableBodyBKNCO');
         if (tableBody) {
             tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem; color: #e53e3e;">Error loading data. Please refresh the page.</td></tr>';
         }
@@ -230,19 +309,6 @@ function loaditemdata() {
 function loadpendingissueditemdata() {
     let dbRef;
     let dbPendingRef;
-    if(role === 'eo') {
-        dbPendingRef = ref(db, 'officerapproval/issue/engrinventory/');
-    }
-    else if(role === 'so') {
-        dbPendingRef = ref(db, 'officerapproval/issue/siginventory/');
-    }
-    else {
-        console.error('Invalid role:', role);
-        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
-        alert('Invalid role. Please log in again.');
-        window.location.href = 'login.html';
-        return;
-    }
     get(dbPendingRef).then((snapshot) => {
         const data = snapshot.val();
         pendingissueCache= data || {};
@@ -323,19 +389,6 @@ function loadpendingissueditemdata() {
 
 function loadnewitemdata() {
     let dbRef;
-    if(role === 'eo') {
-        dbRef = ref(db, 'officerapproval/new/engrinventory/');
-    }
-    else if(role === 'so') {
-        dbRef = ref(db, 'officerapproval/new/siginventory/');
-    }
-    else {
-        console.error('Invalid role:', role);
-        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
-        alert('Invalid role. Please log in again.');
-        window.location.href = 'login.html';
-        return;
-    }
     const loadingOverlay = document.getElementById('loadingOverlay');
 
     get(dbRef).then((snapshot) => {
@@ -430,11 +483,12 @@ function loadnewitemdata() {
 
 
 
-loaditemdata();
+loaditemdataBQMS();
+loaditemdataBKNCO();
 console.log("Loading Pending Issued Items for Approval");
-loadpendingissueditemdata();
-console.log("Loading New Items for Approval");
-loadnewitemdata();
+// loadpendingissueditemdata();
+// console.log("Loading New Items for Approval");
+// loadnewitemdata();
 
 
 function searchItems() {
@@ -772,3 +826,24 @@ function rejectIssuedItem(key) {
     });
     loadpendingissueditemdata();
 }
+
+
+document.getElementById('viewbqms')?.addEventListener('click', () => {
+    document.getElementById('bqmsInventory').style.display='flex';
+    loaditemdataBQMS();
+    document.getElementById('bkncoInventory').style.display='none';
+    document.getElementById('viewbqms').classList.remove('deactive');
+    document.getElementById('viewbqms').classList.add('primary');
+    document.getElementById('viewbknco').classList.remove('primary');
+    document.getElementById('viewbknco').classList.add('deactive');
+});
+
+document.getElementById('viewbknco')?.addEventListener('click', () => {
+    document.getElementById('bkncoInventory').style.display='flex';
+    document.getElementById('viewbqms').classList.remove('primary');
+    document.getElementById('viewbqms').classList.add('deactive');
+    document.getElementById('viewbknco').classList.remove('deactive');
+    document.getElementById('viewbknco').classList.add('primary');
+    loaditemdataBKNCO();
+    document.getElementById('bqmsInventory').style.display='none';
+});

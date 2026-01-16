@@ -97,7 +97,31 @@ form.addEventListener('submit', (event) => {
 });
 
 function checkInventoryItem(name) {
-    const dbRef = ref(db, 'engrinventory/' + name);
+    const newname = name.replace(/[^a-zA-Z0-9]+/g, '_').toLowerCase();
+    let dbRef;
+    if(role === 'engrnco') {
+        dbRef = ref(db, 'engrinventory/' + newname);
+    }
+    else if(role === 'signco') {
+        dbRef = ref(db, 'siginventory/' + newname);
+    }
+    else if(role === 'mtnco' || role === 'mtjco') {
+        dbRef = ref(db, 'mtinventory/' + newname);
+    }
+    else if(role === 'bqms') {
+        dbRef = ref(db, 'bqmsinventory/' + newname);
+    }
+    else if(role === 'bknco') {
+        dbRef = ref(db, 'bkncoinventory/' + newname);
+    }
+    else {
+        console.error('Invalid role:', role);
+        showNotification("Invalid role. Cannot check inventory item.", "error", "Check Failed");
+        setTimeout(() => {    
+            window.location.href = 'login.html';
+        }, 500);
+        return;
+    }
     return get(dbRef).then((snapshot) => {
         return snapshot.exists();
     }).catch((error) => {
@@ -204,7 +228,7 @@ function writeInventoryItem(name, data) {
             else {
                 console.error('Invalid role:', role);
                 showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
-                window.location.href = 'storeman_login.html';
+                window.location.href = 'login.html';
                 return;
             }
             console.log("Inventory item added:", newname);
