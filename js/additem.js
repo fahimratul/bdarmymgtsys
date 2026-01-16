@@ -168,6 +168,39 @@ function writeInventoryItem(name, data) {
                 instore: data.instore
             });
             }
+            else if(role === 'eo') {
+                set(ref(db, 'cloapproval/new/engrinventory/' + newname),{
+                name: name,
+                authorized: data.authorized,
+                total: data.total,
+                servicable: data.servicable,
+                unservicable: data.unservicable,
+                issue: data.issue,
+                instore: data.instore
+            });
+            }
+            else if(role === 'so') {
+                set(ref(db, 'cloapproval/new/siginventory/' + newname),{
+                name: name,
+                authorized: data.authorized,
+                total: data.total,
+                servicable: data.servicable,
+                unservicable: data.unservicable,
+                issue: data.issue,
+                instore: data.instore
+            });
+            }
+            else if(role === 'mto'){
+                set(ref(db, 'cloapproval/new/mtinventory/' + newname),{
+                name: name,
+                authorized: data.authorized,
+                total: data.total,
+                servicable: data.servicable,
+                unservicable: data.unservicable,
+                issue: data.issue,
+                instore: data.instore
+            });
+            }
             else {
                 console.error('Invalid role:', role);
                 showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");

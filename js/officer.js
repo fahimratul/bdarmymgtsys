@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
 
-import { getDatabase, get, ref, update, remove } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getDatabase, get, ref,set, update, remove } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
 
 const firebaseConfig = {
@@ -302,14 +302,16 @@ function loadpendingissueditemdata() {
         });
         tableBody.querySelectorAll('.approve').forEach(btn => {
             btn.addEventListener('click', () => {
+                showNotification("Approving issued item...", "info", "Please Wait");
                 const key = btn.dataset.key;
-                //approvePendingIssue(key);
+                approveIssuedItem(key);
             });
         });
         tableBody.querySelectorAll('.danger').forEach(btn => {
             btn.addEventListener('click', () => {
+                showNotification("Rejecting issued item...", "info", "Please Wait");
                 const key = btn.dataset.key;
-                //rejectPendingIssue(key);
+                rejectIssuedItem(key);
             });
         });
         
@@ -385,6 +387,24 @@ function loadnewitemdata() {
         }
         
         tableBody.innerHTML = html;
+        tableBody.querySelectorAll('.edit').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.dataset.key;
+                openEditModal(key);
+            });
+        });
+        tableBody.querySelectorAll('.approve').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.dataset.key;
+                approveNewItem(key, newitemCache[key]);
+            });
+        });
+        tableBody.querySelectorAll('.danger').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.dataset.key;
+                rejectNewItem(key);
+            });
+        });
 
         // Hide loading overlay after data is loaded
         if (loadingOverlay) {
@@ -563,10 +583,10 @@ deleteItemBtn?.addEventListener('click', (e) => {
     }
     
     if(role === 'eo') {
-        remove(ref(db, 'cloapproval/issue/engrinventory/' + currentEditKey))
+        remove(ref(db, 'cloapproval/delete/engrinventory/' + currentEditKey))
             .then(() => {
                 console.log('Data deleted successfully');
-                showNotification('Inventory item deleted successfully.', 'success', 'Deletion Successful');
+                showNotification('Inventory item is pending for deletion.', 'success', 'Deletion Successful');
                 loaditemdata();
             })
             .catch((error) => {
@@ -576,10 +596,10 @@ deleteItemBtn?.addEventListener('click', (e) => {
 
     }
     else if(role === 'so') {    
-        remove(ref(db, 'cloapproval/issue/siginventory/' + currentEditKey))
+        remove(ref(db, 'cloapproval/delete/siginventory/' + currentEditKey))
         .then(() => {
             console.log('Data deleted successfully');
-            showNotification('Inventory item deleted successfully.', 'success', 'Deletion Successful');
+            showNotification('Inventory item is pending for deletion.', 'success', 'Deletion Successful');
             loaditemdata();
         })
         .catch((error) => {
@@ -611,4 +631,144 @@ logoutButton?.addEventListener('click', () => {
 });
 
 
+function approveNewItem(key, data) {
+    let dbremoveRef;
+    if(role === 'eo') {
+        set(ref(db, 'cloapproval/new/engrinventory/' + key),{
+            name: data.name,
+            authorized: data.authorized,
+            total: data.total,
+            servicable: data.servicable,
+            unservicable: data.unservicable,
+            issue: data.issue,
+            instore: data.instore
+        });
+        dbremoveRef = ref(db, 'officerapproval/new/engrinventory/' + key);
+        showNotification("Item approved successfully! Waiting For Cheif Logistic Officer's Approval", "success", "Success");
+    }
+    else if(role === 'so') {
+        set(ref(db, 'cloapproval/new/siginventory/' + key),{
+            name: data.name,
+            authorized: data.authorized,
+            total: data.total,
+            servicable: data.servicable,
+            unservicable: data.unservicable,
+            issue: data.issue,
+            instore: data.instore
+        });
+        dbremoveRef = ref(db, 'officerapproval/new/siginventory/' + key);
+        showNotification("Item approved successfully! Waiting For Cheif Logistic Officer's Approval", "success", "Success");
+    }
+    else {
+        console.error('Invalid role:', role);
+        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
+        window.location.href = 'storeman_login.html';
+        return;
+    }
+    remove(dbremoveRef)
+    .then(() => {
+        console.log('Pending new item removed successfully after approval');
+    })
+    .catch((error) => {
+        console.error('Error removing pending new item:', error);
+    });
+    loadnewitemdata();
+}
 
+
+function approveIssuedItem(key, data) {
+    let dbremoveRef;
+    if(role === 'eo') {
+        set(ref(db, 'cloapproval/issue/engrinventory/' + key),{
+            name: data.name,
+            authorized: data.authorized,
+            total: data.total,
+            servicable: data.servicable,
+            unservicable: data.unservicable,
+            issue: data.issue,
+            instore: data.instore
+        });
+        dbremoveRef = ref(db, 'officerapproval/issue/engrinventory/' + key);
+        showNotification("Item approved successfully! Waiting For Cheif Logistic Officer's Approval", "success", "Success");
+    }
+    else if(role === 'so') {
+        set(ref(db, 'cloapproval/issue/siginventory/' + key),{
+            name: data.name,
+            authorized: data.authorized,
+            total: data.total,
+            servicable: data.servicable,
+            unservicable: data.unservicable,
+            issue: data.issue,
+            instore: data.instore
+        });
+        dbremoveRef = ref(db, 'officerapproval/issue/siginventory/' + key);
+        showNotification("Item approved successfully! Waiting For Cheif Logistic Officer's Approval", "success", "Success");
+    }
+    else {
+        console.error('Invalid role:', role);
+        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
+        window.location.href = 'storeman_login.html';
+        return;
+    }
+    remove(dbremoveRef)
+    .then(() => {
+        console.log('Pending issued item removed successfully after approval');
+    })
+    .catch((error) => {
+        console.error('Error removing pending new item:', error);
+    });
+    loadpendingissueditemdata();
+}
+
+function rejectNewItem(key) {
+    let dbremoveRef;
+    if(role === 'eo') {
+        dbremoveRef = ref(db, 'officerapproval/new/engrinventory/' + key);
+    }
+    else if(role === 'so') {
+        dbremoveRef = ref(db, 'officerapproval/new/siginventory/' + key);
+    }
+    else {
+        console.error('Invalid role:', role);
+        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
+        window.location.href = 'storeman_login.html';
+        return;
+    }
+    remove(dbremoveRef)
+    .then(() => {
+        console.log('Pending new item removed successfully after rejection');
+        showNotification("Item rejected successfully!", "success", "Success");
+        loadnewitemdata();
+    })
+    .catch((error) => {
+        console.error('Error removing pending new item:', error);
+    });
+    loadnewitemdata();
+}
+
+
+function rejectIssuedItem(key) {
+    let dbremoveRef;
+    if(role === 'eo') {
+        dbremoveRef = ref(db, 'officerapproval/issue/engrinventory/' + key);
+    }
+    else if(role === 'so') {
+        dbremoveRef = ref(db, 'officerapproval/issue/siginventory/' + key);
+    }
+    else {
+        console.error('Invalid role:', role);
+        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
+        window.location.href = 'storeman_login.html';
+        return;
+    }
+    remove(dbremoveRef)
+    .then(() => {
+        console.log('Pending issued item removed successfully after rejection');
+        showNotification("Item rejected successfully!", "success", "Success");
+        loadpendingissueditemdata();
+    })
+    .catch((error) => {
+        console.error('Error removing pending issued item:', error);
+    });
+    loadpendingissueditemdata();
+}
