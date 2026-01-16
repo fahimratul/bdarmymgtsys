@@ -245,7 +245,7 @@ function loaditemdataBKNCO() {
                 const issue = item.issue ?? 0;
                 const instore = item.instore ?? 0;
                 
-                html += `<tr id="${name}" data-key="${key}">
+                html += `<tr id='${name}' data-key="${key}">
                             <td>${serial}</td>
                             <td>${name}</td>
                             <td>${authorized}</td>
@@ -491,9 +491,9 @@ console.log("Loading Pending Issued Items for Approval");
 // loadnewitemdata();
 
 
-function searchItems() {
-    const searchInput = document.getElementById('searchInput');
-    const tableBody = document.getElementById('itemTableBody');
+function searchItemsBKNCO() {
+    const searchInput = document.getElementById('searchInputBKNCO');
+    const tableBody = document.getElementById('itemTableBodyBKNCO');
     const rows = tableBody.getElementsByTagName('tr');
     const searchTerm = searchInput.value.toLowerCase();
 
@@ -507,10 +507,38 @@ function searchItems() {
     });
 }
 
-document.getElementById('searchInput')?.addEventListener('keyup', searchItems);
+document.getElementById('searchInputBKNCO')?.addEventListener('keyup', searchItemsBKNCO);
 
-function openEditModal(key) {
-    const item = dataCache?.[key];
+function searchItemsBQMS() {
+    const searchInput = document.getElementById('searchInputBQMS');
+    const tableBody = document.getElementById('itemTableBodyBQMS');
+    const rows = tableBody.getElementsByTagName('tr');
+    const searchTerm = searchInput.value.toLowerCase();
+
+    Array.from(rows).forEach(row => {
+        const itemName = row.getAttribute('id');
+        if (itemName && itemName.toLowerCase().includes(searchTerm)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        } 
+    });
+}
+
+document.getElementById('searchInputBQMS')?.addEventListener('keyup', searchItemsBQMS);
+
+
+
+function openEditModal(key, type) {
+    let item;
+    if(type ==='bqms'){
+        localStorage.setItem('editItemType', 'bqms');
+        item = dataCacheBQMS?.[key];
+    }
+    else if(type ==='bknco'){
+        localStorage.setItem('editItemType', 'bknco');
+        item = dataCacheBKNCO?.[key];
+    }
     if (!item) return;
     currentEditKey = key;
 
@@ -535,6 +563,7 @@ function closeEditModal() {
     inputs.unservicable.value = '';
     inputs.issue.value = '';
     inputs.instore.value = '';
+    localStorage.removeItem('editItemType');
 }
 
 function recalcModalTotals() {
@@ -563,9 +592,17 @@ modal?.addEventListener('click', (e) => {
 });
 
 editForm?.addEventListener('submit', (e) => {
+    showNotification("Updating inventory item...", "info", "Please Wait");
     e.preventDefault();
     if (!currentEditKey) return;
-
+    let dataCache;
+    const itemType = localStorage.getItem('editItemType');
+    if(itemType ==='bqms'){
+        dataCache = dataCacheBQMS;
+    }
+    else if(itemType ==='bknco'){
+        dataCache = dataCacheBKNCO;
+    }
     const updated = {
         ...dataCache[currentEditKey],
         name: inputs.name.value.trim(),
@@ -580,52 +617,29 @@ editForm?.addEventListener('submit', (e) => {
     updated.instore = Math.max(updated.total - updated.issue, 0);
 
     console.table({ key: currentEditKey, updated });
-
-    if(role === 'eo') {
-        update(ref(db, 'cloapproval/issue/engrinventory/' + currentEditKey), updated)
-            .then(() => {
-                console.log('Data updated successfully');
-                showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
-
-                loaditemdata();
-            })
-            .catch((error) => {
-                console.error('Error updating data:', error);
-            }); 
-
+    let dbRef;
+    if(itemType ==='bqms'){
+        dbRef = ref(db, 'bqmsinventory/' + currentEditKey);
     }
-    else if(role === 'so') {    
-        update(ref(db, 'cloapproval/issue/siginventory/' + currentEditKey), updated)
-        .then(() => {
-            console.log('Data updated successfully');
-            showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
-
-            loaditemdata();
-        })
-        .catch((error) => {
-            console.error('Error updating data:', error);
-        }); 
+    else if(itemType ==='bknco'){
+        dbRef = ref(db, 'bkncoinventory/' + currentEditKey);
     }
-    else if(role === 'mto') {
-        update(ref(db, 'cloapproval/issue/mtinventory/' + currentEditKey), updated)
-        .then(() => {
-            console.log('Data updated successfully');
-            showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
-
-            loaditemdata();
-        })
-        .catch((error) => {
-            console.error('Error updating data:', error);
-        }); 
-    }
-    else {
-        console.error('Invalid role:', role);
-        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
-        alert('Invalid role. Please log in again.');
-        window.location.href = 'login.html';
-        return;
-    }
-    closeEditModal();
+    update(dbRef, updated)
+    .then(() => {
+        console.log('Data updated successfully');
+        showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
+        if(itemType ==='bqms'){
+            loaditemdataBQMS();
+        }
+        else if(itemType ==='bknco'){
+            loaditemdataBKNCO();
+        }
+        closeEditModal();
+    })
+    .catch((error) => {
+        console.error('Error updating data:', error);
+        showNotification('Error updating item. Please try again.', 'error', 'Update Failed');
+    });
 });
 
 deleteItemBtn?.addEventListener('click', (e) => {
