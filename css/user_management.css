@@ -171,6 +171,17 @@ th {
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
     transition: background 0.3s ease;
 }
+.approve-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    color: white;
+    background: linear-gradient(135deg, #34d399 0%, #059669 100%);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(52, 211, 153, 0.4);
+    transition: background 0.3s ease;
+}
 .buttoncointer{
     display: flex;
     gap: 1rem;

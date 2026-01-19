@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
 
-import { getDatabase, get, ref, remove } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getDatabase, get, ref, set, remove, update } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
 
 const firebaseConfig = {
@@ -26,7 +26,7 @@ window.addEventListener('DOMContentLoaded', () => {
     let baNumber = sessionStorage.getItem('baNumber');
     let roleType = sessionStorage.getItem('role_type');
     console.log('Role Type from sessionStorage:', roleType);
-    if (!roleType || roleType !== 'officer' && roleType !== 'clo' && roleType !=='CC') {
+    if (!roleType || roleType !== 'officer' && roleType !== 'clo' && roleType !=='cc') {
         console.error('Unauthorized access. Redirecting to login.');
         window.location.href = 'login.html';
         return;
@@ -39,6 +39,7 @@ window.addEventListener('DOMContentLoaded', () => {
     console.log('Logged in as BA Number:', baNumber);
     if(roleType === 'clo' || roleType === 'CC'){
         document.getElementById('PendingUser').style.display = 'inline-block';
+        document.getElementById('AddUserBtn').style.display = 'none';
     }
 });
 
@@ -75,6 +76,7 @@ let ranklist ={
     ltgen:"Lieutenant General",
     gen:"General"
 }
+
 
 import {showNotification} from './notification.js';
 console.log("User management Script Loaded");
@@ -169,8 +171,132 @@ function loaditemdata() {
     });
 }
 
-loaditemdata();
 
+function pendingApprovalCount() {
+    const dbRef = ref(db, 'cloapproval/users/');
+    get(dbRef).then((snapshot) => {
+        const data = snapshot.val();
+        let serial = 1;
+        const tableBody = document.getElementById('itemTableBody');
+        
+        if (!tableBody) {
+            console.error('itemTableBody element not found');
+            if (loadingOverlay) loadingOverlay.classList.add('hidden');
+            return;
+        }
+        
+        let html = '';
+        
+        // Build table rows
+        if (data) {
+            for (const key in data) {
+                const item = data[key];
+                const banumber = item.baNumber || '';
+                const rank = item.rank || '';
+                const name = item.name || '';
+                const role = item.role || '';
+                html += `<tr id="${banumber}" data-key="${key}">
+                            <td>${serial}</td>
+                            <td>${banumber}</td>
+                            <td>${ranklist[rank] || rank}</td>
+                            <td>${name}</td>
+                            <td>${userrole[role] || role}</td>
+                            <td>
+                            <button class="approve-btn" id="approve-btn" data-key='${key}'>Approve</button>
+                            <button class="delete-btn" id="reject-btn" data-key='${key}'>Reject</button>
+                            </td>
+                        </tr>`;
+                serial += 1;
+            }
+        } else {
+            html = '<tr><td colspan="9" style="text-align: center; padding: 2rem; color: #666;">No inventory data available</td></tr>';
+        }
+        
+        tableBody.innerHTML = html;
+        tableBody.querySelectorAll('.approve-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.dataset.key;
+                approve(key);
+            });
+        });
+        tableBody.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.dataset.key;
+                reject(key);
+            });
+        });
+        // Hide loading overlay after data is loaded
+        if (loadingOverlay) {
+            setTimeout(() => {
+                loadingOverlay.classList.add('hidden');
+            }, 100);
+        }
+    }).catch((error) => {
+        console.error('Error loading data:', error);
+        const tableBody = document.getElementById('itemTableBody');
+        if (tableBody) {
+            tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem; color: #e53e3e;">Error loading data. Please refresh the page.</td></tr>';
+        }
+        // Hide loading overlay even on error
+        if (loadingOverlay) {
+            setTimeout(() => {
+                loadingOverlay.classList.add('hidden');
+            }, 100);
+        }
+    });
+}
+loaditemdata();
+let mode='all';
+document.getElementById('PendingUser')?.addEventListener('click', () => {
+    if(mode==='all'){
+        mode='pending';
+        document.getElementById('PendingUser').textContent = 'View All Users';
+        pendingApprovalCount();
+    }
+    else{
+        mode='all';
+        document.getElementById('PendingUser').textContent = 'View Pending Approvals';
+        loaditemdata();
+    }
+});
+
+function approve(key) {
+    const userRef = ref(db, 'cloapproval/users/' + key);
+    get(userRef).then((snapshot) => {
+        const userData = snapshot.val();
+        if (userData) {
+            const newUserRef = ref(db, 'users/' + key);
+            set(newUserRef, userData).then(() => {
+                remove(userRef).then(() => {
+                    showNotification('User approved successfully', 'success');
+                    pendingApprovalCount();
+                }).catch((error) => {
+                    console.error('Error removing pending approval:', error);
+                    showNotification('Error during approval process. Please try again.', 'error');
+                });
+            }).catch((error) => {
+                console.error('Error adding approved user:', error);
+                showNotification('Error during approval process. Please try again.', 'error');
+            });
+        } else {
+            showNotification('User data not found for approval', 'error');
+        }
+    }).catch((error) => {
+        console.error('Error fetching user data for approval:', error);
+        showNotification('Error during approval process. Please try again.', 'error');
+    });
+}   
+
+function reject(key) {
+    const userRef = ref(db, 'cloapproval/users/' + key);
+    remove(userRef).then(() => {
+        showNotification('User rejected successfully', 'success');
+        pendingApprovalCount();
+    }).catch((error) => {
+        console.error('Error rejecting user:', error);
+        showNotification('Error during rejection process. Please try again.', 'error');
+    }   );
+}   
 
 function searchItems() {
     const searchInput = document.getElementById('searchInput');
@@ -214,7 +340,4 @@ function deleteUser(key) {
         showNotification('Error deleting user. Please try again.', 'error');
     });
 }
-
-
-
 

@@ -167,14 +167,15 @@ function loaditemdata() {
                 const instore = item.instore ?? 0;
                 
                 html += `<tr id="${name}" data-key="${key}">
+    
                             <td>${serial}</td>
                             <td>${name}</td>
                             <td>${authorized}</td>
                             <td>${total}</td>
-                            <td>${servicable}</td>
-                            <td>${unservicable}</td>
                             <td>${issue}</td>
                             <td>${instore}</td>
+                            <td>${servicable}</td>
+                            <td>${unservicable}</td>
                             <td>
                             <button class="edit-btn" data-key='${key}'>Edit</button></td>
                         </tr>`;
@@ -366,14 +367,15 @@ function loadnewitemdata() {
                 const instore = item.instore ?? 0;
                 
                 html += `<tr id="${name}" data-key="${key}">
+    
                             <td>${serial}</td>
                             <td>${name}</td>
                             <td>${authorized}</td>
                             <td>${total}</td>
-                            <td>${servicable}</td>
-                            <td>${unservicable}</td>
                             <td>${issue}</td>
                             <td>${instore}</td>
+                            <td>${servicable}</td>
+                            <td>${unservicable}</td>
                             <td>
                             <button class="pendingbtn edit" data-key='${key}'>Edit</button>
                                 <button class="pendingbtn approve" data-key='${key}'>Approve</button>

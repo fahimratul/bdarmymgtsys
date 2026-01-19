@@ -24,8 +24,8 @@
     <div class="search-container">
         <div class="button-action">
             <div class="additem-btn" onclick="opendashboard()"><i data-lucide="Home"></i>Dashboard</div>
-            <div class="additem-btn"  onclick="adduser()"><i data-lucide="user-plus"></i>Add New User</div>
-            <div class="additem-btn" onclick="loadPendingRequests()" id="PendingUser" style="display: none;" ><i data-lucide="refresh-cw"></i>Pending Requests</div>
+            <div class="additem-btn"  onclick="adduser()" id="AddUserBtn"><i data-lucide="user-plus"></i>Add New User</div>
+            <div class="additem-btn" id="PendingUser" style="display: none;" >View Pending Approvals</div>
 
         </div>
         <div class="library-search-container">
@@ -54,6 +54,7 @@
 
 
 
+
     <script>
         lucide.createIcons();
         function hideNotification() {
@@ -70,7 +71,7 @@
                 window.location.href = 'officer_lo_dashboard.html';
                 return;
             }
-            if(sessionStorage.getItem('role') === 'clo' || sessionStorage.getItem('role') === 'CC'){
+            if(sessionStorage.getItem('role') === 'clo' || sessionStorage.getItem('role') === 'cc'){
                 window.location.href = 'clodashboard.html';
                 return;
             }
