@@ -95,21 +95,7 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('username').textContent='Name: ' + username;
     document.getElementById('rank').textContent=ranklist[rank] ? 'Rank: ' + ranklist[rank] : 'Rank: ' + rank;
     document.getElementById('banumber').textContent='BA Number: ' + banumber;
-    const titleElement = document.getElementById('title');
-    if(role === 'cc'){
-        
-        titleElement.textContent = 'Welcome , Contingent Commander';
-    }
-    else if(role === 'clo'){
-        
-        titleElement.textContent = 'Welcome , Cheif Logistic Officer';
-    }
-    else {
-        console.error('Invalid role:', role);
-        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
-        window.location.href = 'login.html';
-        return;
-    }
+
     
 });
 
