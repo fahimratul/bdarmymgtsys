@@ -37,7 +37,7 @@ window.addEventListener('DOMContentLoaded', () => {
         return;
     }
     console.log('Logged in as BA Number:', baNumber);
-    if(roleType === 'clo' || roleType === 'CC'){
+    if(roleType === 'clo' || roleType === 'cc'){
         document.getElementById('PendingUser').style.display = 'inline-block';
         document.getElementById('AddUserBtn').style.display = 'none';
     }
