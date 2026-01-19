@@ -9,6 +9,7 @@
     scrollbar-width: thin;
     min-height: 45vw;
 }
+
 .piechart {
     width: 45vw;
     margin: 1%;
@@ -17,12 +18,12 @@
     padding: 16px;
     background-color: #fff;
     text-align: center;
-
 }
 
-#symbol{
+#symbol {
     display: none;
 }
+
 nav {
     background-color: #333;
     overflow: hidden;
@@ -33,28 +34,31 @@ nav {
     width: 100%;
     justify-items: end;
 }
+
 nav ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
 }
+
 nav ul li {
     margin-right: 20px;
 }
+
 nav ul li a {
     color: white;
     text-decoration: none;
     padding: 14px 20px;
     display: block;
 }
+
 nav ul li a:hover, nav ul li a.active {
     background-color: #575757;
     border-radius: 4px;
 }
-
-
 
 .details {
     display: none;
@@ -63,4 +67,41 @@ nav ul li a:hover, nav ul li a.active {
     align-items: center;
     margin: 20px;
     width: 100%;
+}
+
+/* Tablet devices */
+@media screen and (max-width: 1024px) {
+    .piechart {
+        width: 60vw;
+    }
+}
+
+/* Mobile devices */
+@media screen and (max-width: 768px) {
+    .piesection {
+        width: 100vw;
+        min-height: auto;
+    }
+    
+    .piechart {
+        width: 90vw;
+    }
+}
+
+/* Small phones */
+@media screen and (max-width: 480px) {
+    nav ul li {
+        margin-right: 10px;
+    }
+    
+    nav ul li a {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+    
+    .piechart {
+        width: 95vw;
+        padding: 12px;
+        margin: 0.5%;
+    }
 }
