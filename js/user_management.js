@@ -26,7 +26,7 @@ window.addEventListener('DOMContentLoaded', () => {
     let baNumber = sessionStorage.getItem('baNumber');
     let roleType = sessionStorage.getItem('role_type');
     console.log('Role Type from sessionStorage:', roleType);
-    if (!roleType || roleType !== 'officer') {
+    if (!roleType || roleType !== 'officer' && roleType !== 'clo' && roleType !=='CC') {
         console.error('Unauthorized access. Redirecting to login.');
         window.location.href = 'login.html';
         return;
@@ -37,6 +37,9 @@ window.addEventListener('DOMContentLoaded', () => {
         return;
     }
     console.log('Logged in as BA Number:', baNumber);
+    if(roleType === 'clo' || roleType === 'CC'){
+        document.getElementById('PendingUser').style.display = 'inline-block';
+    }
 });
 
 let userrole ={

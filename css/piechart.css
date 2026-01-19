@@ -1,0 +1,56 @@
+.piesection {
+    display: flex;
+    flex-wrap: nowrap;
+    width: 95vw;
+    margin: 1%;
+    justify-content: space-evenly;
+    flex-direction: row;
+    align-items: center;
+    scrollbar-width: thin;
+    overflow-x: auto;
+    min-height: 45vw;
+}
+.piechart {
+    width: 45vw;
+    margin: 1%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 16px;
+    background-color: #fff;
+    text-align: center;
+
+}
+
+#symbol{
+    display: none;
+}
+nav {
+    background-color: #333;
+    overflow: hidden;
+    z-index: 1000;
+    min-height: 50px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    justify-items: end;
+}
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+nav ul li {
+    margin-right: 20px;
+}
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    padding: 14px 20px;
+    display: block;
+}
+nav ul li a:hover, nav ul li a.active {
+    background-color: #575757;
+    border-radius: 4px;
+}

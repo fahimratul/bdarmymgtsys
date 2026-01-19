@@ -39,6 +39,8 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 const role = sessionStorage.getItem('role');
+const loAddItemRole = sessionStorage.getItem('lo_add_item_role');
+
 
 const form = document.getElementById('addItemForm');
 const total = document.getElementById('total');
@@ -99,13 +101,13 @@ form.addEventListener('submit', (event) => {
 function checkInventoryItem(name) {
     const newname = name.replace(/[^a-zA-Z0-9]+/g, '_').toLowerCase();
     let dbRef;
-    if(role === 'engrnco') {
+    if(role === 'engrnco' || role === 'eo') {
         dbRef = ref(db, 'engrinventory/' + newname);
     }
-    else if(role === 'signco') {
+    else if(role === 'signco' || role === 'so') {
         dbRef = ref(db, 'siginventory/' + newname);
     }
-    else if(role === 'mtnco' || role === 'mtjco') {
+    else if(role === 'mtnco' || role === 'mtjco' || role === 'mto') {
         dbRef = ref(db, 'mtinventory/' + newname);
     }
     else if(role === 'bqms') {
@@ -113,6 +115,22 @@ function checkInventoryItem(name) {
     }
     else if(role === 'bknco') {
         dbRef = ref(db, 'bkncoinventory/' + newname);
+    }
+    else if(role === 'lo') {
+        if(loAddItemRole === 'bqms') {
+            dbRef = ref(db, 'bqmsinventory/' + newname);
+        }
+        else if(loAddItemRole === 'bknco') {
+            dbRef = ref(db, 'bkncoinventory/' + newname);
+        }
+        else {
+            console.error('Invalid LO add item role:', loAddItemRole);
+            showNotification("Invalid role. Cannot check inventory item.", "error", "Check Failed");
+            setTimeout(() => {    
+                window.location.href = 'login.html';
+            }, 500);
+            return;
+        }
     }
     else {
         console.error('Invalid role:', role);
@@ -224,6 +242,30 @@ function writeInventoryItem(name, data) {
                 issue: data.issue,
                 instore: data.instore
             });
+            }
+            else if(role === 'lo') {
+                if(loAddItemRole === 'bqms') {
+                    set(ref(db, 'cloapproval/new/bqmsinventory/' + newname),{
+                    name: name,
+                    authorized: data.authorized,
+                    total: data.total,
+                    servicable: data.servicable,
+                    unservicable: data.unservicable,
+                    issue: data.issue,
+                    instore: data.instore
+                });
+                }
+                else if(loAddItemRole === 'bknco') {
+                    set(ref(db, 'cloapproval/new/bkncoinventory/' + newname),{
+                    name: name,
+                    authorized: data.authorized,
+                    total: data.total,
+                    servicable: data.servicable,
+                    unservicable: data.unservicable,
+                    issue: data.issue,
+                    instore: data.instore
+                });
+                }
             }
             else {
                 console.error('Invalid role:', role);

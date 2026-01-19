@@ -37,15 +37,13 @@
                 sessionStorage.setItem('role_type', 'mtjconco');
             }
             else if (role_type === 'cc') {
-                alert('Contingent Commander login is currently disabled');
-                return;
+                sessionStorage.setItem('role_type', 'cc');
             }
             else if (role_type === 'officer') {
                 sessionStorage.setItem('role_type', 'officer');
             }
             else if (role_type === 'clo') {
-                alert('Chief Logistic Officer login is currently disabled');
-                return;
+                sessionStorage.setItem('role_type', 'clo');
             }
             else {
                 alert('Invalid role selected');

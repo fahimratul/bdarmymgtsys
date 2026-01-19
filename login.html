@@ -61,7 +61,14 @@
             } else if (roletype ==='officer') {
                 titleElement.textContent = 'Officer Login';
                 document.getElementById('officer_signup').style.display = 'block';
-            } else {
+            } 
+            else if (roletype ==='clo') {
+                titleElement.textContent = 'Welcome Cheif Logisitics Officer';
+            } 
+            else if (roletype ==='cc') {
+                titleElement.textContent = 'Welcome, Contigent Commander';
+            }
+            else {
                 titleElement.textContent = 'Login';
             }
         });

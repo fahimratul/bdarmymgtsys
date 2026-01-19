@@ -136,7 +136,7 @@
                     <p>In Store Items</p>
                 </div>
             </div>
-            <div class="card" onclick="window.location.href='additem.html'" style="cursor: pointer;">
+            <div class="card" onclick="additem('bqms')" style="cursor: pointer;">
                 <div class="card-icon">
                     <i data-lucide="plus-circle"></i>
                 </div>
@@ -283,7 +283,7 @@
                     <p>In Store Items</p>
                 </div>
             </div>
-            <div class="card" onclick="window.location.href='additem.html'" style="cursor: pointer;">
+            <div class="card" onclick="additem('bknco')" style="cursor: pointer;">
                 <div class="card-icon">
                     <i data-lucide="plus-circle"></i>
                 </div>
@@ -472,6 +472,16 @@
             const userInfoContainer = document.getElementById('userInfoContainer');
             userInfoContainer.style.display = 'none';
             console.log('Password Change Modal Opened');
+        }
+
+        function additem(role){
+            if(role ==='bqms'){
+                sessionStorage.setItem('lo_add_item_role', 'bqms');
+            }
+            else if(role ==='bknco'){
+                sessionStorage.setItem('lo_add_item_role', 'bknco');
+            }
+            window.location.href = 'additem.html';
         }
     </script>
 

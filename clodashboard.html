@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/offr.css">
+    <link rel="stylesheet" href="css/card.css">
+    <link rel="stylesheet" href="css/piechart.css">
+    <link rel="stylesheet" href="css/pendingitem.css">
+    <link rel="stylesheet" href="css/notification.css">
+    <link rel="stylesheet" href="css/adduser.css">
+    <script src ="https://unpkg.com/lucide@latest" ></script>
+    <link rel='icon' href='static/logo_small.png' type='image/x-icon' />
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <title>CLO Dashboard</title>
+</head>
+<body style="margin-top: 70px;">
+
+    <nav>
+        <ul>
+            <li><a href="clodashboard.html" class="active">Home</a></li>
+            <li><a href="user_management.html">User Management</a></li>
+            <li><a href="reports.html">Reports</a></li>
+            <li ><a href="#" onclick="popupmenu()"> User Info </a> </li>
+        </ul>
+    </nav>
+    <div id="notification-toast" class="notification-toast"></div>   
+    <!-- Loading Overlay -->
+    <!-- <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Loading Inventory Data</div>
+        <div class="loading-subtext">Please wait...</div>
+    </div> -->
+
+    <h1 id="title">Welcome to CLO Dashboard</h1>
+    <!-- User Info Dropdown -->
+
+    <!-- <div id="pendingIssuedItemforApproval" class="pendingitem">
+        <h2>Pending Issued Items for Approval</h2>
+        <table class="pendingitemTable">
+            <thead>
+                <th>Serial</th>
+                <th>Nomenclature/Name</th>
+                <th>Authorized Unit</th>
+                <th>Total Items</th>
+                <th>Servicable</th>
+                <th>Unservicable</th>
+                <th>Issued</th>
+                <th>In store</th>
+                <th>Actions</th>
+            </thead>
+            <tbody id="pendingIssuedItemTableBody">
+            </tbody>
+        </table>
+    </div> -->
+
+    <div class="topdown-container" id="userInfoContainer" style="display: none;">
+        <h3 id ="username"></h3>
+        <h4 id ="rank"></h4>
+        <h4 id ="banumber"></h4>
+        <button class="btn primary" id="changePasswordBtn" onclick="passwordChangeModal()">Change Password</button>
+        <button class="btn secondary" id="logoutButton" onclick="logout()">Logout</button>        
+    </div>
+    
+    <h2>Inventory Status Overview</h2>
+    <div class="piesection">
+        <div class="piechart">
+                
+            <div id="engr" style="width: 40vw;"></div>
+            <h3 id ="engr-total"></h3>
+        </div>
+        <div class="piechart">
+            <div id="sig" style="width: 40vw;"></div>
+            <h3 id ="sig-total"></h3>
+        </div>
+        <div class="piechart">
+            <div id="mt" style="width: 40vw;"></div>
+            <h3 id ="mt-total"></h3>
+        </div>
+        <div class="piechart">
+            <div id="bknco" style="width: 40vw;"></div>
+            <h3 id ="bknco-total"></h3>
+        </div>
+        <div class="piechart">
+            <div id="bqms" style="width: 40vw;"></div>
+            <h3 id ="bqms-total"></h3>
+        </div>    
+    </div>   
+
+    <!-- Search and Add Item -->
+
+    <div class="search-container">
+        <div class="library-search-container">
+            <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            <input type="text" id="searchInput" class="library-search-input" placeholder="Search Item...">
+        </div>   
+        <button class="additem-btn" id="addItemBtn">Add Item</button> 
+    </div>
+
+
+
+    <!-- Inventory Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>Serial</th>
+                <th>Nomenclature/Name</th>
+                <th>Authorized Unit</th>
+                <th>Total Items</th>
+                <th>Servicable</th>
+                <th>Unservicable</th>
+                <th>Issued</th>
+                <th>In store</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="itemTableBody">
+            <!-- Inventory items will be dynamically inserted here -->
+        </tbody>
+    </table>
+
+    <!-- Edit Item Modal -->
+    <div id="editModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Item</h2>
+                <button class="modal-close" id="modalCloseBtn" aria-label="Close">&times;</button>
+            </div>
+            <form id="editForm" class="modal-form">
+                <div class="modal-grid">
+                    <div class="field">
+                        <label for="editName">Nomenclature / Name</label>
+                        <input type="text" id="editName" name="name" required>
+                    </div>
+                    <div class="field">
+                        <label for="editAuthorized">Authorized Unit</label>
+                        <input type="text" id="editAuthorized" name="authorized" required>
+                    </div>
+                    <div class="field">
+                        <label for="edittotal">Total</label>
+                        <input type="number" id="edittotal" name="total" min="0" step="1" required>
+                    </div>
+                    <div class="field">
+                        <label for="editservicable">Servicable</label>
+                        <input type="number" id="editServicable" name="servicable" min="0" step="1" required>
+                    </div>
+                    <div class="field">
+                        <label for="editIssue">Issued</label>
+                        <input type="number" id="editIssue" name="issue" min="0" step="1" required>
+                    </div>
+                    <div class="field">
+                        <label for="editunservicable">Unservicable</label>
+                        <input type="number" id="editunservicable" name="unservicable" min="0" step="1" readonly>
+                        <p class="inline-hint">Auto: Total - Servicable</p>
+                    </div>
+                    <div class="field">
+                        <label for="editinstore">In store</label>
+                        <input type="number" id="editInstore" name="instore" min="0" step="1" readonly>
+                        <p class="inline-hint">Auto: Total - Issued</p>
+                    </div>
+                    <div class="field">
+                        <label for="deleteitem">To Delete this Item write 'CONFIRM'</label>
+                        <input type="text" id="deleteitem" name="deleteitem" placeholder="CONFIRM">
+                    </div>
+
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn secondary" id="cancelEditBtn">Cancel</button>
+                    <button type="submit" class="btn primary">Save</button>
+                    <button type="button" class="btn danger" id="deleteItemBtn">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="changePasswordModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Change Password</h2>
+                <button class="modal-close" onclick="closeModal()"  aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-grid">
+                <div class="form-group pass">
+                    <label for="password" class="form-label"> Current Password *</label>
+                    <input type="password" id="password" class="form-input" placeholder="Enter password" >
+                    <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+                <div class="form-group pass">
+                    <label for="new-password" class="form-label">New Password *</label>
+                    <input type="password" id="new-password" class="form-input" placeholder="Enter password" >
+                    <button type="button" class="password-toggle" onclick="togglePassword('new-password')">
+                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+                <div class="form-group pass">
+                    <label for="confirm-password" class="form-label">Confirm Password *</label>
+                    <input type="password" id="confirm-password" class="form-input" placeholder="Confirm password">
+                    <button type="button" class="password-toggle" onclick="togglePassword('confirm-password')">
+                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn secondary" onclick="closeModal()">Cancel</button>
+                <button id="passwordChangeSubmitBtn" class="btn primary">Change Password</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        lucide.createIcons();
+        addItemBtn = document.getElementById('addItemBtn');
+        addItemBtn.addEventListener('click', function() {
+            window.location.href = 'additem.html';
+        });
+        function hideNotification() {
+            const toast = document.getElementById("notification-toast");
+            toast.classList.remove("show");
+        }
+        function OpenUserManagement(){
+            window.location.href = 'user_management.html';
+        }
+                function popupmenu() {
+            const userInfoContainer = document.getElementById('userInfoContainer');
+            if (userInfoContainer.style.display === 'none' || userInfoContainer.style.display === '') {
+                userInfoContainer.style.display = 'flex';
+            } else {
+                userInfoContainer.style.display = 'none';
+            }
+        }
+        function togglePassword(inputId) {
+            const passwordInput = document.getElementById(inputId);
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+        }
+
+        function closeModal() {
+            const changePasswordModal = document.getElementById('changePasswordModal'); 
+            changePasswordModal.classList.add('hidden');
+        }
+        function passwordChangeModal() {
+            const changePasswordModal = document.getElementById('changePasswordModal');
+            changePasswordModal.classList.remove('hidden');
+            const userInfoContainer = document.getElementById('userInfoContainer');
+            userInfoContainer.style.display = 'none';
+            console.log('Password Change Modal Opened');
+        }
+    </script>
+
+    <script type="module" src="js/clodashboard.js" defer></script>
+
+</body> 
+
+</html>

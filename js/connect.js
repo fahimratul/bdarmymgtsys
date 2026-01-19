@@ -70,7 +70,7 @@ function handlelogin() {
                 showNotification("You are not an authorized MT JCO/NCO", "error", "Login Failed");
                 return;
             }
-            else if (role_type ==='officer' && !ranklist.officer.includes(userRank)) {
+            else if ((role_type ==='officer' || role_type === 'clo' || role_type === 'cc') && !ranklist.officer.includes(userRank)) {
                 console.log("Unauthorized rank for Officer role");
                 showNotification("You are not an authorized Officer", "error", "Login Failed");
                 return;
@@ -109,6 +109,9 @@ function handlelogin() {
                     else if (role_type === 'mtjconco'){
                         window.location.href ='mt_dashboard.html';
                     } 
+                    else if (role_type === 'clo' || role_type === 'cc'){
+                        window.location.href ='clodashboard.html';
+                    }
                     else {
                         console.log("Invalid role in database");
                         showNotification("Invalid role in database", "error", "Login Failed");
