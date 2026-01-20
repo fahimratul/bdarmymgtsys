@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="css/adduser.css">
     <script src ="https://unpkg.com/lucide@latest" ></script>
     <link rel='icon' href='static/logo_small.png' type='image/x-icon' />
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <title>Dashboard</title>
 </head>
 <body style="margin-top: 70px;">
@@ -51,6 +50,58 @@
     </div>
     
     <h2>Inventory Status Overview</h2>
+        <div class="dashboard-card">
+        <div class="card" onclick="handleInventoryChange('engr')" style="cursor: pointer;">
+            <div class="card-icon">
+                <i data-lucide="box"></i>
+            </div>
+            <div class="card-info">
+                <h1>Engineer Inventory</h1>
+                <h2 id="engr">0</h2>
+                <p>Total Items</p> 
+            </div>
+        </div>
+        <div class="card" onclick="handleInventoryChange('sig')" style="cursor: pointer;">
+            <div class="card-icon">
+                <i data-lucide="check-circle"></i>
+            </div>
+            <div class="card-info">
+                <h1>Signal Inventory</h1>
+                <h2 id="sig">0</h2>
+                <p>Total Items</p> 
+            </div>
+        </div>
+        <div class="card" onclick="handleInventoryChange('mt')" style="cursor: pointer;">
+            <div class="card-icon">
+                <i data-lucide="x-circle"></i>
+            </div>
+            <div class="card-info">
+                <h1>Military Transport Inventory</h1>
+                <h2 id="mt">0</h2>
+                <p>Total Items</p> 
+            </div>
+        </div>
+        <div class="card" onclick="handleInventoryChange('bknco')" style="cursor: pointer;">
+            <div class="card-icon">
+                <i data-lucide="truck"></i>
+            </div>
+            <div class="card-info">
+                <h1>BKNCO Inventory</h1>
+                <h2 id="bknco">0</h2>
+                <p>Total Items</p> 
+            </div>
+        </div>
+        <div class="card" onclick="handleInventoryChange('bqms')" style="cursor: pointer;">
+            <div class="card-icon">
+                <i data-lucide="box"></i>
+            </div>
+            <div class="card-info">
+                <h1>BQMS Inventory</h1>
+                <h2 id="bqms">0</h2>
+                <p>Total Items</p>
+            </div>
+        </div>
+    </div>
    
 
  

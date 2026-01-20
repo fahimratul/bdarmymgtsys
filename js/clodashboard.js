@@ -94,68 +94,24 @@ import {showNotification} from './notification.js';
 
 console.log("Officer Script Loaded");
 
-let dataCache = {
-    engr:{},
-    sig:{},
-    mt:{},
-    bknco:{},
-    bqms:{}
-};
 
-let pendingissueCache = {};
-let newitemCache = {};
-
-let currentEditKey = null;
-const modal = document.getElementById('editModal');
-const modalCloseBtn = document.getElementById('modalCloseBtn');
-const cancelEditBtn = document.getElementById('cancelEditBtn');
-const deleteItemBtn = document.getElementById('deleteItemBtn');
-const editForm = document.getElementById('editForm');
-const inputs = {
-    name: document.getElementById('editName'),
-    authorized: document.getElementById('editAuthorized'),
-    total: document.getElementById('edittotal'),
-    servicable: document.getElementById('editServicable'),
-    unservicable: document.getElementById('editunservicable'),
-    issue: document.getElementById('editIssue'),
-    instore: document.getElementById('editInstore'),
-    deleteitem: document.getElementById('deleteitem')
-};
 
 function loaditemdata(type, path) {
     let dbRef=ref(db, path);
-    let yValues = [0,0,0,0]; // Servicable, Unservicable, Issued, In Store
-    let total=0; 
-
-
+    const totalitemElement = document.getElementById(type);
+    let totalItemsCount = 0;
     const loadingOverlay = document.getElementById('loadingOverlay');
 
     get(dbRef).then((snapshot) => {
-        const data = snapshot.val();
-        dataCache[type] = data || {};
-        
-        if (data) {
-            for (const key in data) {
-                const item = data[key];
-                yValues[0] += Number(item.servicable) || 0;
-                yValues[1] += Number(item.unservicable) || 0;
-                yValues[2] += Number(item.issue) || 0;
-                yValues[3] += Number(item.instore) || 0;
-                total += Number(item.total) || 0;
-            }
+        if (snapshot.exists()) {
+            totalItemsCount =snapshot.size;
+            totalitemElement.textContent = totalItemsCount;
+            console.log(`Total items in ${type} inventory:`, totalItemsCount);
         } else {
-            console.log('No data available');
-        }
-        const xValues = ["Servicable", "Unservicable", "Issued", "In Store"];
-        const titleText =   type === 'engr' ? 'Engineer Inventory Status' :
-                            type === 'sig' ? 'Signal Inventory Status' :
-                            type === 'mt' ? 'Military Transport Inventory Status' :
-                            type === 'bknco' ? 'BKNCO Inventory Status' :
-                            type === 'bqms' ? 'BQMS Inventory Status' :
-                             'Inventory Status';
-        const piedata = [{labels:xValues, values:yValues, type:"pie"}];
-        Plotly.newPlot(type, piedata, {title: titleText});
-        document.getElementById(type + '-total').textContent = `Total: ${total}`;
+            totalitemElement.textContent = '0';
+            console.log(`No data available in ${type} inventory.`);
+        }   
+            
         if (loadingOverlay) {
             setTimeout(() => {
                 loadingOverlay.classList.add('hidden');
