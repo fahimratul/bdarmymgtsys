@@ -124,6 +124,9 @@ function loaditemdata() {
                 if (undercommandrole && !undercommandrole.includes(item.role)) {
                     continue; // Skip users not under command
                 }
+                if(item.role === 'cc' || item.role === 'clo'){
+                    continue; // Skip CC and CLO from user list
+                }
                 const banumber = item.baNumber || '';
                 const rank = item.rank || '';
                 const name = item.name || '';
