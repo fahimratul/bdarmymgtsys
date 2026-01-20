@@ -172,12 +172,14 @@ function loaditemdata() {
                             <td>${name}</td>
                             <td>${authorized}</td>
                             <td>${total}</td>
-                            <td>${issue}</td>
+                            <td><button class="issue-btn" data-key='${key}'>${issue}</button></td>
                             <td>${instore}</td>
                             <td>${servicable}</td>
-                            <td>${unservicable}</td>
+                            <td><button class="unservicable-btn" data-key='${key}'>${unservicable}</button></td>
                             <td>
-                            <button class="edit-btn" data-key='${key}'>Edit</button></td>
+                            <button class="edit-btn" data-key='${key}'>Edit</button>
+                            </td>
+
                         </tr>`;
                 serial += 1;
                 datainfo.total+=total;
@@ -203,6 +205,20 @@ function loaditemdata() {
                 const key = btn.dataset.key;
                 console.log("Edit button clicked for key:", key);
                 openEditModal(key);
+            });
+        });
+        tableBody.querySelectorAll('.issue-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.dataset.key;
+                console.log("Issue button clicked for key:", key);
+                addIssued(key);
+            });
+        });
+        tableBody.querySelectorAll('.unservicable-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.dataset.key;
+                console.log("Unservicable button clicked for key:", key);
+                addUnservicable(key);
             });
         });
         
@@ -773,4 +789,13 @@ function rejectIssuedItem(key) {
         console.error('Error removing pending issued item:', error);
     });
     loadpendingissueditemdata();
+}
+
+const issueModal = document.getElementById('issuelistModal');
+
+function addIssued(key) {
+    const item = dataCache?.[key];
+    if (!item) return;
+    currentEditKey = key;
+    issueModal.classList.remove('hidden');
 }

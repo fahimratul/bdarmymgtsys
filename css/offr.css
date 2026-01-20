@@ -407,7 +407,22 @@ th {
     color: #1f2933;
     font-weight: 600;
 }
-
+.issue-btn, .unservicable-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    color: rgb(0, 0, 0);
+    background: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.issue-itemlist{
+    width: 100%;
+    max-width: 90vw;
+    max-height: 500px;
+    overflow: auto;
+    
+}
 
 /* Responsive */
 @media (max-width: 900px) {
