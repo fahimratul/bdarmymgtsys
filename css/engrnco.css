@@ -415,7 +415,7 @@ th {
     }
     table {
         display: block;
-        height: 100vh;
+        min-height: 100vh;
         overflow-x: auto;
         white-space: nowrap;
         max-width: 100%;
