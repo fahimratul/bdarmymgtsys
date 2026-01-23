@@ -22,7 +22,15 @@
         <div class="loading-subtext">Please wait...</div>
     </div>
     <h1>MT Dashboard</h1>
-
+    
+    <div id="officer_notification" class="officernotification">
+        <div class="msg">
+            <p class="content">1x item issued by lalalalalalalaa</p>
+            <button>Accept</button>
+            <button>Reject</button>
+        </div>
+    </div>
+    
     <div class="buttoncointer">
         <button class="btn primary" id="viewTrBtn" onclick="loadtransport()">View Transport State</button>
         <button class="btn deactive" id="viewInrBtn" onclick="loadinventory()">View Inventory</button>
@@ -150,8 +158,8 @@
                 <i data-lucide="truck-electric"></i>
             </div>
             <div class="card-info">
-                <h2 id="servicableVehicles">0</h2>
-                <p>Servicable Vehicles</p>
+                <h2 id="ALRVehicles">0</h2>
+                <p>A LR</p>
             </div>
         </div>
         <div class="card mt">
@@ -159,8 +167,8 @@
                 <i data-lucide="x-circle"></i>
             </div>
             <div class="card-info">
-                <h2 id="unservicableVehicles">0</h2>
-                <p>Unservicable Vehicles</p>
+                <h2 id="ASRVehicles">0</h2>
+                <p>A SR Vehicles</p>
             </div>
         </div>
         <div class="card mt">
@@ -173,20 +181,30 @@
             </div>
         </div>
 
+        <div class="card mt">
+            <div class="card-icon">
+                <i data-lucide="wrench"></i>
+            </div>
+            <div class="card-info">
+                <h2 id="groundedVehicles">0</h2>
+                <p> Grounded </p>
+            </div>
+        </div>
+    </div>
+    
+    <h2>Vehicle Classes Overview</h2>
+    <div class="dashboard-card">
         <div class="card">
             <div class="card-icon">
                 <i data-lucide="car"></i>
                 <h4>Class A</h4>
             </div>
-            <div class="card-info">
-                <h3>Total Vehicles</h3>
-                <h2 id="totalVehiclesClassA">0</h2>
-                <h3>Servicable Vehicles</h3>
-                <h2 id="servicableVehiclesClassA">0</h2>
-                <h3>Unservicable Vehicles</h3>
-                <h2 id="unservicableVehiclesClassA">0</h2>
-                <h3>In Maintenance</h3>
-                <h2 id="inMaintenanceVehiclesClassA">0</h2>
+            <div class="card-info mt">
+                <h4 id="totalVehiclesclassA">0</h4>
+                <h4 id="ALRVehiclesclassA">0</h4>
+                <h4 id="ASRVehiclesclassA">0</h4>
+                <h4 id="inMaintenanceVehiclesclassA">0</h4>
+                <h4 id="groundedVehiclesclassA">0</h4>
             </div>
         </div>
         <div class="card">
@@ -194,43 +212,158 @@
                 <i data-lucide="truck"></i>
                 <h4>Class B</h4>
             </div>
-            <div class="card-info">
-                <h3>Total Vehicles</h3>
-                <h2 id="totalVehiclesClassB">0</h2>
-                <h3>Servicable Vehicles</h3>
-                <h2 id="servicableVehiclesClassB">0</h2>
-                <h3>Unservicable Vehicles</h3>
-                <h2 id="unservicableVehiclesClassB">0</h2>
-                <h3>In Maintenance</h3>
-                <h2 id="inMaintenanceVehiclesClassB">0</h2>
+            <div class="card-info mt">
+                <h4 id="totalVehiclesclassB">0</h4>
+                <h4 id="ALRVehiclesclassB">0</h4>
+                <h4 id="ASRVehiclesclassB">0</h4>
+                <h4 id="inMaintenanceVehiclesclassB">0</h4>
+                <h4 id="groundedVehiclesclassB">0</h4>
             </div>
         </div>
         <div class="card">
             <div class="card-icon">
                 <i data-lucide="forklift"></i>
-                <h4>Class C</h4>
+                <h4>Spl Veh</h4>
             </div>
-            <div class="card-info">
-                <h3>Total Vehicles</h3>
-                <h2 id="totalVehiclesClassC">0</h2>
-                <h3>Servicable Vehicles</h3>
-                <h2 id="servicableVehiclesClassC">0</h2>
-                <h3>Unservicable Vehicles</h3>
-                <h2 id="unservicableVehiclesClassC">0</h2>
-                <h3>In Maintenance</h3>
-                <h2 id="inMaintenanceVehiclesClassC">0</h2>
+            <div class="card-info mt">
+                <h4 id="totalVehiclesspl">0</h4>
+                <h4 id="ALRVehiclesspl">0</h4>
+                <h4 id="ASRVehiclesspl">0</h4>
+                <h4 id="inMaintenanceVehiclesspl">0</h4>
+                <h4 id="groundedVehiclesspl">0</h4>
             </div>
         </div>
-
+        <div class="card">
+            <div class="card-icon">
+                <i data-lucide="forklift"></i>
+                <h4>Sp Veh</h4>
+            </div>
+            <div class="card-info mt">
+                <h4 id="totalVehiclessp">0</h4>
+                <h4 id="ALRVehiclessp">0</h4>
+                <h4 id="ASRVehiclessp">0</h4>
+                <h4 id="inMaintenanceVehiclessp">0</h4>
+                <h4 id="groundedVehiclessp">0</h4>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-icon">
+                <i data-lucide="forklift"></i>
+                <h4>Water Trailer</h4>
+            </div>
+            <div class="card-info mt">
+                <h4 id="totalVehicleswatertrailer">0</h4>
+                <h4 id="ALRVehicleswatertrailer">0</h4>
+                <h4 id="ASRVehicleswatertrailer">0</h4>
+                <h4 id="inMaintenanceVehicleswatertrailer">0</h4>
+                <h4 id="groundedVehicleswatertrailer">0</h4>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-icon">
+                <i data-lucide="forklift"></i>
+                <h4>Low Bed/ Fuel/ Water/ Trailer</h4>
+            </div>
+            <div class="card-info mt">
+                <h4 id="totalVehicleslowbed">0</h4>
+                <h4 id="ALRVehicleslowbed">0</h4>
+                <h4 id="ASRVehicleslowbed">0</h4>
+                <h4 id="inMaintenanceVehicleslowbed">0</h4>
+                <h4 id="groundedVehicleslowbed">0</h4>
+            </div>
+        </div>
     </div>
 
+    <h2>Campwise overview</h2>
+    <div class="dashboard-card">
+        <div class="card mt">
+            <div class="card-icon">
+                <i data-lucide="car"></i>
+                <h4>BAYOO TOB</h4>
+            </div>
+            <div class="card-info mt">
+                <h4 id="totalVehiclesbayoo">0</h4>
+                <h4 id="ALRVehiclesbayoo">0</h4>
+                <h4 id="ASRVehiclesbayoo">0</h4>
+                <h4 id="inMaintenanceVehiclesbayoo">0</h4>
+                <h4 id="groundedVehiclesbayoo">0</h4>
+            </div>
+        </div>
+        <div class="card mt">
+            <div class="card-icon">
+                <i data-lucide="car"></i>
+                <h4>DRODRO TOB</h4>
+            </div>
+            <div class="card-info mt">
+                <h4 id="totalVehiclesdrodro">0</h4>
+                <h4 id="ALRVehiclesdrodro">0</h4>
+                <h4 id="ASRVehiclesdrodro">0</h4>
+                <h4 id="inMaintenanceVehiclesdrodro">0</h4>
+                <h4 id="groundedVehiclesdrodro">0</h4>
+            </div>
+        </div>
+        <div class="card mt">
+            <div class="card-icon">
+                <i data-lucide="car"></i>
+                <h4>RHOO TOB</h4>
+            </div>
+            <div class="card-info mt">
+                <h4 id="totalVehiclesrhoo">0</h4>
+                <h4 id="ALRVehiclesrhoo">0</h4>
+                <h4 id="ASRVehiclesrhoo">0</h4>
+                <h4 id="inMaintenanceVehiclesrhoo">0</h4>
+                <h4 id="groundedVehiclesrhoo">0</h4>
+            </div>
+        </div>
+        <div class="card mt">
+            <div class="card-icon">
+                <i data-lucide="car"></i>
+                <h4>NDROMO TOB</h4>
+            </div>
+            <div class="card-info mt">
+                <h4 id="totalVehiclesndromo">0</h4>
+                <h4 id="ALRVehiclesndromo">0</h4>
+                <h4 id="ASRVehiclesndromo">0</h4>
+                <h4 id="inMaintenanceVehiclesndromo">0</h4>
+                <h4 id="groundedVehiclesndromo">0</h4>
+            </div>
+        </div>
+    </div>
     <div class="search-container">
         <div class="library-search-container">
             <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
-            <input type="text" id="searchInputVehicle" class="library-search-input" placeholder="Search Item...">
+            <input type="text" id="searchInputVehicle" class="library-search-input" placeholder="Search BA Number...">
         </div>
+    </div>
+
+    <div class="search-container">
+        <h2>Filter:</h2>
+        <select id="conditionFilter" class="filter-select">
+            <option value="">All Vehicles</option>
+            <option value="alr">A LR</option>
+            <option value="asr">A SR</option>
+            <option value="inmaintenance">In Maintenance</option>
+            <option value="grounded">Grounded</option>
+        </select>
+        <select id="campFilter" class="filter-select">
+            <option value="">All Camps</option>
+            <option value="bayoo">BAYOO TOB</option>
+            <option value="drodro">DRODRO TOB</option>
+            <option value="rhoo">RHOO TOB</option>
+            <option value="ndromo">NDROMO POB</option>
+        </select>
+        <select id="classFilter" class="filter-select"> 
+            <option value="">All Classes</option>
+            <option value="classA">A Veh</option>
+            <option value="classB">B Veh</option>
+            <option value="spl">Spl Veh</option>
+            <option value="sp">Sp Veh</option>
+            <option value="watertrailer">Water Trailer</option>
+            <option value="lowbed">Low bed/Fuel/Water/Trailer</option>
+        </select>
     </div>
         
     
@@ -238,10 +371,12 @@
         <thead>
             <tr>
                 <th>serial</th>
-                <th>Name</th>
-                <th>Total Vehicles</th>
-                <th>Servicable</th>
-                <th>Unservicable</th>
+                <th>Vehicle BA Number</th>
+                <th>UN Number</th>
+                <th>Type of Vehicle</th>
+                <th>Class</th>
+                <th>Condition</th>
+                <th>Camp</th>
                 <th>Actions</th>
             </tr>
         </thead>

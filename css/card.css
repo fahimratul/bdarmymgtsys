@@ -7,6 +7,8 @@
     padding: 1.5rem 2rem;
     flex-wrap: wrap;
     gap: 1rem;
+    width: 100%;
+    align-items: stretch;
 }
 .card{
     background: white;
@@ -15,11 +17,11 @@
     padding: 1.5rem 2rem;
     flex: 1 1 calc(33% - 2rem);
     min-width: 220px;
-    min-height: 10rem;
+    transition: all 0.3s ease;
     text-align: center;
 }
 .mt{
-    flex: 1 1 calc(25% - 2rem);
+    flex: 1 1 calc(20% - 2rem);
 }
 .card:hover{
     transform: translateY(-5px);
@@ -37,3 +39,56 @@
     color: #6b7280;
     margin-bottom: 0.25rem;
 }
+
+.card-info.mt{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-content: space-evenly;
+}
+.card-info h4{
+    font-weight: bold;
+    margin: 0;
+    width: 47%;
+    text-align: left;
+    font-size: 1rem;
+    color: #333;
+
+}
+
+.card-info h4:nth-child(odd){
+    text-align: left;
+}
+.card-info h4:nth-child(even){
+    text-align: right;
+    margin-right: 8px;
+}
+.card-info h4:first-child{
+    width: 100%;
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.card-icon h4{
+    font-size: 1.5rem;
+    color: #667eea;
+}
+
+.filter-select{
+    padding: 0.5rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-right: 1rem;
+}
+.filter-select:hover{
+    border-color: #667eea;
+}
+.filter-select:focus{
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
+}
+

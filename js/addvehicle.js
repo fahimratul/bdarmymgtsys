@@ -39,14 +39,13 @@ window.addEventListener('DOMContentLoaded', () => {
         return;
     }
     console.log('Logged in as BA Number:', baNumber);
-
 });
 
 
 const form = document.getElementById('addvehicleForm');
 const vehicleNumber = document.getElementById('vehiclenumber');
 const classtype = document.getElementById('classtype');
-const type = document.getElementById('type');
+const typeofvehicle = document.getElementById('typeofvehicle');
 const condition = document.getElementById('condition');
 const unnumber = document.getElementById('unnumber');
 const camp = document.getElementById('camp');
@@ -62,27 +61,28 @@ form.addEventListener('submit', (event) => {
     event.preventDefault();
     const number = toNumber(vehicleNumber.value);
     const classtypeValue = classtype.value;
-    const typeValue = type.value;
     const conditionValue = condition.value;
+    const typeofvehicleValue = typeofvehicle.value;
     const unnumberValue = toNumber(unnumber.value);
     const campValue = camp.value;
 
     console.log("Form submitted with values:", {
         number,
         classtype: classtypeValue,
-        type: typeValue,
+        typeofvehicle: typeofvehicleValue,
         condition: conditionValue,
         unnumber: unnumberValue,
         camp: campValue
     });
     showNotification("Adding vehicle...", "info", "Please wait");
-    writeInventoryItem(classtypeValue, typeValue, number, conditionValue, unnumberValue, campValue);
+    writeInventoryItem(number,classtypeValue, conditionValue, typeofvehicleValue, unnumberValue, campValue);
     form.reset();
     vehicleNumber.focus();
 });
 
-function checkInventoryItem(classtype, conditionValue, number) {
-    const dbRef = ref(db, `vehiclelist/${classtype}/${conditionValue}/`+ number);
+
+function checkInventoryItem(number) {
+    const dbRef = ref(db, `vehiclelist/` + number);
     return get(dbRef).then((snapshot) => {
         return snapshot.exists();
     }).catch((error) => {
@@ -91,22 +91,22 @@ function checkInventoryItem(classtype, conditionValue, number) {
     });
 }
 
-function writeInventoryItem(classtype, typeValue, number, conditionValue, unnumberValue, campValue) {
-    checkInventoryItem(classtype,conditionValue, number).then((exists) => {
+
+function writeInventoryItem(baNumber, classtype, conditionValue, typeofvehicleValue, unnumberValue, campValue) {
+    checkInventoryItem(baNumber).then((exists) => {
         if (exists) {
-            console.log("Vehicle with this name already exists:", number);
-            showNotification(`Vehicle with ${number} number already exists. Please choose a different number.`, "error", "Error");
+            console.log("Vehicle with this name already exists:", baNumber);
+            showNotification(`Vehicle with ${baNumber} number already exists. Please choose a different number.`, "error", "Error");
         } else {    
-                set(ref(db, `vehiclelist/${classtype}/${conditionValue}/`+ number),{
-                    number: number,
-                    condition: conditionValue,
-                    classtype: classtype,
-                    type: typeValue,
-                    unnumber: unnumberValue,
-                    camp: campValue,
-                    createdAt: Date.now()
+                set(ref(db, `vehiclelist/` + baNumber),{
+                vehicleNumber: baNumber,
+                unnumber: unnumberValue,
+                typeofvehicle: typeofvehicleValue,
+                classtype: classtype,
+                condition: conditionValue,
+                camp: campValue
             });
-            console.log("Vehicle added:", number);
+            console.log("Vehicle added:", baNumber);
             showNotification("Vehicle added successfully!", "success", "Success");
         }   
         }).catch((error) => {   
@@ -114,3 +114,5 @@ function writeInventoryItem(classtype, typeValue, number, conditionValue, unnumb
             showNotification("Error adding item. Please try again.", "error", "Error");
         });
 }
+
+console.log("Add Vehicle Script Executed");
