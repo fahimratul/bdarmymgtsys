@@ -1,25 +1,10 @@
-.piesection {
-    display: flex;
-    flex-wrap: wrap;
-    width: 95vw;
-    margin: 1%;
-    justify-content: space-evenly;
-    flex-direction: row;
-    align-items: center;
-    scrollbar-width: thin;
-    min-height: 45vw;
+body {
+    font-family: Arial, sans-serif;
+    margin-top: 70px;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #f4f4f4;
 }
-
-.piechart {
-    width: 45vw;
-    margin: 1%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    padding: 16px;
-    background-color: #fff;
-    text-align: center;
-}
-
 #symbol {
     display: none;
 }

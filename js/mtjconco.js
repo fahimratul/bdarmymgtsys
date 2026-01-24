@@ -517,6 +517,20 @@ function acceptNotificationMTO(key) {
     }, 500);
 }
 
+function rejectNotificationMTO(key) {
+    let dbref = ref(db, `officernotification/mto/notifications/${key}`);
+    remove(dbref).then(() => {
+        console.log('Notification rejected and removed successfully.');
+    }).catch((error) => {
+        console.error('Error removing notification:', error);
+    });
+    setTimeout(() => {
+        loadnotifactions();
+        showNotification('Notification rejected successfully.', 'success', 'Rejection Successful');
+    }, 500);
+}
+
+
 loaditemdata();
 loadvehicledata();
 
