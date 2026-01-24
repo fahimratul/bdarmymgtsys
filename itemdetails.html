@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Vehicle History</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/additem.css">
+    <link rel="stylesheet" href="css/notification.css">
+    <link rel="stylesheet" href="css/vehiclehistory.css">
+    <link rel='icon' href='static/logo_small.png' type='image/x-icon' />
+</head>
+<body>
+    <div id="notification-toast" class="notification-toast"></div>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Loading Inventory Data</div>
+        <div class="loading-subtext">Please wait...</div>
+    </div>
+
+
+	<div class="shell">
+		<div class="card">
+			<div class="card-header">
+				<div class="title-row">
+					<div>
+						<h1 id="title"></h1>
+						<p>Details of your vehicle</p>
+					</div>
+					<a class="back-link" onclick="window.history.back()">&#8592; Back to Dashboard</a>
+				</div>
+			</div>
+            <div class="card-body">
+                    <div class="info">
+                        <div class="info-group">
+                            <span class="info-label">Type of Vehicle:</span>
+                            <span class="info-value" id="typeofvehicle">Truck Utility/Cargo (2.5 to 5 ton)</span>
+                        </div>
+                        <div class="info-group">
+                            <span class="info-label">BA Number:</span>
+                            <span class="info-value" id="vehicleNumber">AB123CD</span>
+                        </div>
+                        <div class="info-group">
+                            <span class="info-label">UN Number:</span>
+                            <span class="info-value" id="unnumber">1212</span>
+                        </div>
+                        <div class="info-group">
+                            <span class="info-label">Class:</span>
+                            <span class="info-value" id="classtype">Ford F-150</span>
+                        </div>
+                        <div class="info-group">
+                            <span class="info-label">Camp</span>
+                            <span class="info-value" id="camp">BAYOO</span>
+                        </div>
+                        <div class="info-group">
+                            <span class="info-label">Condition:</span>
+                            <span class="info-value" id="condition"></span>
+                        </div>  
+                    </div>
+                    <div class="button">
+                        <button id="sendformaintainace" class="maintainance-button">Send for Maintenance</button>
+                        <button id="markasgrounded" class="maintainance-button">Mark as Grounded</button>
+                        <button id="markasalr" class="maintainance-button">Mark as A LR</button>
+                        <button id="markasasr" class="maintainance-button">Mark as A SR</button>
+                    </div>
+                    <div class="history-section">
+                        <h2>Vehicle History</h2>
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Voucher No</th>
+                                    <th>Date</th>
+                                    <th>Event</th>
+                                    <th>Details</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-tbody">
+                                <!-- History records will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+            </div>
+		</div>
+	</div>
+
+    <div id="editModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Send for Maintenance</h2>
+                <button class="modal-close" id="modalCloseBtn" aria-label="Close">&times;</button>
+            </div>
+            <form id="editForm" class="modal-form">
+                <div class="modal-grid">
+                    <div class="field">
+                        <label for="editdate">Date</label>
+                        <input type="date" id="editdate" name="date" required>
+                    </div>
+                    <div class="field">
+                        <label for="editevent">Event</label>
+                        <input type="text" id="editevent" name="event" disabled>
+                    </div>
+                    <div class="field" style="grid-column: span 2;">
+                        <label for="editdetails">Details</label>
+                        <textarea id="editdetails" name="details" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn secondary" id="cancelEditBtn">Cancel</button>
+                    <button type="submit" class="btn primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div> 
+
+
+
+
+    <!-- <script type="module" src="js/vehiclehistory.js" defer></script> -->
+    <script>
+        function hideNotification() {
+            const toast = document.getElementById("notification-toast");
+            toast.classList.remove("show");
+        }
+    </script>
+</body>
+</html>

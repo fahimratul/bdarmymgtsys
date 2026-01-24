@@ -100,6 +100,10 @@ function handlelogin() {
                         else if(role === 'mto'){
                             window.location.href ='mt_dashboard.html';
                         }
+                        else if(role === 'eo'){
+                            console.log("Redirecting to engineer dashboard");
+                            window.location.href = 'officer_engr_dashboard.html?key=engr';
+                        }
                         else {
                             console.log("Redirecting to officer dashboard");
                             window.location.href = 'officer_dashboard.html';

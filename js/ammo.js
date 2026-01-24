@@ -22,21 +22,23 @@ const db = getDatabase(app);
 console.log(db);
 console.log("Firebase Initialized");
 
-// window.addEventListener('DOMContentLoaded', () => {
-//     let baNumber = sessionStorage.getItem('baNumber');
-//     let role = sessionStorage.getItem('role');
-//     if (role !== 'mtjco' && role !== 'mtnco' &&  role !=='mto') {
-//         console.error('Unauthorized role for mto. Access denied.');
-//         window.location.href = 'login.html';
-//         return;
-//     }
-//     if (!baNumber) {
-//         console.error('BA Number not found in local storage.');
-//         window.location.href = 'login.html';
-//         return;
-//     }
-//     console.log('Logged in as BA Number:', baNumber);
-// });
+let allowedRoles = ['lo', 'cc', 'clo'];
+
+window.addEventListener('DOMContentLoaded', () => {
+    let baNumber = sessionStorage.getItem('baNumber');
+    let role = sessionStorage.getItem('role');
+    if (!allowedRoles.includes(role)) {
+        console.error('Unauthorized role for mto. Access denied.');
+        window.location.href = 'login.html';
+        return;
+    }
+    if (!baNumber) {
+        console.error('BA Number not found in local storage.');
+        window.location.href = 'login.html';
+        return;
+    }
+    console.log('Logged in as BA Number:', baNumber);
+});
  
 
 
@@ -66,14 +68,15 @@ let ranklist ={
 const role = sessionStorage.getItem('role');
 
 
-// window.addEventListener('DOMContentLoaded', () => {
-//     const username=sessionStorage.getItem('username');
-//     const rank=sessionStorage.getItem('rank');
-//     const banumber=sessionStorage.getItem('baNumber');
-//     document.getElementById('username').textContent='Name: ' + username;
-//     document.getElementById('rank').textContent=ranklist[rank] ? 'Rank: ' + ranklist[rank] : 'Rank: ' + rank;
-//     document.getElementById('banumber').textContent='BA Number: ' + banumber;
-// });
+window.addEventListener('DOMContentLoaded', () => {
+    const username=sessionStorage.getItem('username');
+    const rank=sessionStorage.getItem('rank');
+    const banumber=sessionStorage.getItem('baNumber');
+    document.getElementById('username').textContent='Name: ' + username;
+    document.getElementById('rank').textContent=ranklist[rank] ? 'Rank: ' + ranklist[rank] : 'Rank: ' + rank;
+    document.getElementById('banumber').textContent='BA Number: ' + banumber;
+});
+
 let typeofammo ={};
 function loadammodata() {
     const dbref = ref(db, 'ammoindex/typesofammo');
@@ -110,7 +113,7 @@ function loadammodata() {
         tableBody.querySelectorAll('.ammo-row').forEach(row => {
             row.addEventListener('click', () => {
                 const ammoKey = row.getAttribute('data-key');
-                sessionStorage.setItem('selectedAmmoKey', ammoKey);
+                sessionStorage.setItem('ammotypename', typeofammo[ammoKey].name);
                 window.location.href = `ammodetails.html?ammo=${ammoKey}`;
             });
         });

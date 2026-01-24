@@ -46,6 +46,7 @@ window.addEventListener('DOMContentLoaded', () => {
     console.log('Logged in as BA Number:', baNumber);
 });
 
+
 let ranklist ={
     lt:"Lieutenant",
     capt:"Captain",
@@ -58,11 +59,11 @@ let ranklist ={
     gen:"General"
 };
 
-
-// Clear sessionStorage when the site is closed
  
 const role = sessionStorage.getItem('role');
 
+const urlparams = new URLSearchParams(window.location.search);
+const typeKey = urlparams.get('key');
 
 window.addEventListener('DOMContentLoaded', () => {
     const username=sessionStorage.getItem('username');
@@ -72,22 +73,6 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('rank').textContent=ranklist[rank] ? 'Rank: ' + ranklist[rank] : 'Rank: ' + rank;
     document.getElementById('banumber').textContent='BA Number: ' + banumber;
     const titleElement = document.getElementById('title');
-    if (role === 'eo') {
-        titleElement.textContent = 'Engineer Officer Inventory Management';
-    } 
-    else if (role === 'so') {
-        titleElement.textContent = 'Signal Officer Inventory Management';
-    }
-    else if (role === 'mto') {
-        titleElement.textContent = 'Military Transport Officer Inventory Management';
-    }
-    else {
-        console.error('Invalid role:', role);
-        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
-        window.location.href = 'login.html';
-        return;
-    }
-    
 });
 
 
@@ -125,11 +110,11 @@ function loaditemdata() {
         instore:0
     };
     let dbRef;
-    if(role === 'eo') {
+    if(typeKey === 'engr') {
         dbRef = ref(db, 'engrinventory/');
     }
-    else if(role === 'so') {
-        dbRef = ref(db, 'siginventory/');
+    else if(typeKey === 'bqms') {
+        dbRef = ref(db, 'bqmsinventory/');
     }
     else {
         console.error('Invalid role:', role);
@@ -247,11 +232,11 @@ function loaditemdata() {
 function loadpendingissueditemdata() {
     let dbRef;
     let dbPendingRef;
-    if(role === 'eo') {
+    if(typeKey === 'engr') {
         dbPendingRef = ref(db, 'officerapproval/issue/engrinventory/');
     }
-    else if(role === 'so') {
-        dbPendingRef = ref(db, 'officerapproval/issue/siginventory/');
+    else if(typeKey === 'bqms') {
+        dbPendingRef = ref(db, 'officerapproval/issue/bqmsinventory/');
     }
     else {
         console.error('Invalid role:', role);
@@ -340,11 +325,11 @@ function loadpendingissueditemdata() {
 
 function loadnewitemdata() {
     let dbRef;
-    if(role === 'eo') {
+    if(typeKey === 'engr') {
         dbRef = ref(db, 'officerapproval/new/engrinventory/');
     }
-    else if(role === 'so') {
-        dbRef = ref(db, 'officerapproval/new/siginventory/');
+    else if(typeKey === 'bqms') {
+        dbRef = ref(db, 'officerapproval/new/bqmsinventory/');
     }
     else {
         console.error('Invalid role:', role);
@@ -545,7 +530,7 @@ editForm?.addEventListener('submit', (e) => {
 
     console.table({ key: currentEditKey, updated });
 
-    if(role === 'eo') {
+    if(typeKey === 'engr') {
         update(ref(db, 'engrinventory/' + currentEditKey), updated)
             .then(() => {
                 console.log('Data updated successfully');
@@ -558,20 +543,8 @@ editForm?.addEventListener('submit', (e) => {
             }); 
 
     }
-    else if(role === 'so') {    
-        update(ref(db, 'siginventory/' + currentEditKey), updated)
-        .then(() => {
-            console.log('Data updated successfully');
-            showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
-
-            loaditemdata();
-        })
-        .catch((error) => {
-            console.error('Error updating data:', error);
-        }); 
-    }
-    else if(role === 'mto') {
-        update(ref(db, 'mtinventory/' + currentEditKey), updated)
+    else if(typeKey === 'bqms') {    
+        update(ref(db, 'bqmsinventory/' + currentEditKey), updated)
         .then(() => {
             console.log('Data updated successfully');
             showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
@@ -600,7 +573,7 @@ deleteItemBtn?.addEventListener('click', (e) => {
         return;
     }
     
-    if(role === 'eo') {
+    if(typeKey === 'engr') {
         remove(ref(db, 'engrinventory/' + currentEditKey))
             .then(() => {
                 console.log('Data deleted successfully');
@@ -613,20 +586,8 @@ deleteItemBtn?.addEventListener('click', (e) => {
             });
 
     }
-    else if(role === 'so') {    
-        remove(ref(db, 'siginventory/' + currentEditKey))
-        .then(() => {
-            console.log('Data deleted successfully');
-            showNotification('Inventory item is pending for deletion.', 'success', 'Deletion Successful');
-            loaditemdata();
-        })
-        .catch((error) => {
-            console.error('Error deleting data:', error);
-            showNotification('Error deleting item. Please try again.', 'error', 'Deletion Failed');
-        });
-    }
-    else if(role === 'mto') {
-        remove(ref(db, 'mtinventory/' + currentEditKey))
+    else if(typeKey === 'bqms') {    
+        remove(ref(db, 'bqmsinventory/' + currentEditKey))
         .then(() => {
             console.log('Data deleted successfully');
             showNotification('Inventory item is pending for deletion.', 'success', 'Deletion Successful');
@@ -663,8 +624,8 @@ logoutButton?.addEventListener('click', () => {
 
 function approveNewItem(key, data) {
     let dbremoveRef;
-    if(role === 'eo') {
-        set(ref(db, 'cloapproval/new/engrinventory/' + key),{
+    if(role === 'engr') {
+        set(ref(db, 'engrinventory/' + key),{
             name: data.name,
             authorized: data.authorized,
             total: data.total,
@@ -674,10 +635,10 @@ function approveNewItem(key, data) {
             instore: data.instore
         });
         dbremoveRef = ref(db, 'officerapproval/new/engrinventory/' + key);
-        showNotification("Item approved successfully! Waiting For Cheif Logistic Officer's Approval", "success", "Success");
+        showNotification("Item approved successfully!", "success", "Success");
     }
-    else if(role === 'so') {
-        set(ref(db, 'cloapproval/new/siginventory/' + key),{
+    else if(typeKey === 'bqms') {
+        set(ref(db, 'bqmsinventory/' + key),{
             name: data.name,
             authorized: data.authorized,
             total: data.total,
@@ -687,7 +648,7 @@ function approveNewItem(key, data) {
             instore: data.instore
         });
         dbremoveRef = ref(db, 'officerapproval/new/siginventory/' + key);
-        showNotification("Item approved successfully! Waiting For Cheif Logistic Officer's Approval", "success", "Success");
+        showNotification("Item approved successfully!", "success", "Success");
     }
     else {
         console.error('Invalid role:', role);
@@ -708,8 +669,8 @@ function approveNewItem(key, data) {
 
 function approveIssuedItem(key, data) {
     let dbremoveRef;
-    if(role === 'eo') {
-        set(ref(db, 'cloapproval/issue/engrinventory/' + key),{
+    if(typeKey === 'engr') {
+        set(ref(db, 'engrinventory/' + key),{
             name: data.name,
             authorized: data.authorized,
             total: data.total,
@@ -721,8 +682,8 @@ function approveIssuedItem(key, data) {
         dbremoveRef = ref(db, 'officerapproval/issue/engrinventory/' + key);
         showNotification("Item approved successfully! Waiting For Cheif Logistic Officer's Approval", "success", "Success");
     }
-    else if(role === 'so') {
-        set(ref(db, 'cloapproval/issue/siginventory/' + key),{
+    else if(typeKey === 'bqms') {
+        set(ref(db, 'bqmsinventory/' + key),{
             name: data.name,
             authorized: data.authorized,
             total: data.total,
@@ -752,14 +713,14 @@ function approveIssuedItem(key, data) {
 
 function rejectNewItem(key) {
     let dbremoveRef;
-    if(role === 'eo') {
+    if(typeKey === 'bqms') {
+        dbremoveRef = ref(db, 'officerapproval/new/bqmsinventory/' + key);
+    }
+    else if(typeKey === 'so') {
         dbremoveRef = ref(db, 'officerapproval/new/engrinventory/' + key);
     }
-    else if(role === 'so') {
-        dbremoveRef = ref(db, 'officerapproval/new/siginventory/' + key);
-    }
     else {
-        console.error('Invalid role:', role);
+        console.error('Invalid role:', typeKey);
         showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
         window.location.href = 'login.html';
         return;
@@ -779,14 +740,14 @@ function rejectNewItem(key) {
 
 function rejectIssuedItem(key) {
     let dbremoveRef;
-    if(role === 'eo') {
+    if(typeKey === 'engr') {
         dbremoveRef = ref(db, 'officerapproval/issue/engrinventory/' + key);
     }
-    else if(role === 'so') {
-        dbremoveRef = ref(db, 'officerapproval/issue/siginventory/' + key);
+    else if(typeKey === 'bqms') {
+        dbremoveRef = ref(db, 'officerapproval/issue/bqmsinventory/' + key);
     }
     else {
-        console.error('Invalid role:', role);
+        console.error('Invalid role:', typeKey);
         showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
         window.location.href = 'login.html';
         return;

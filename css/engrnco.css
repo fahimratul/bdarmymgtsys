@@ -150,7 +150,7 @@ body {
 
 table{
     border-collapse: collapse;
-    width: 100%;
+    width: fit-content;
     max-width: 90vw;
     background: white;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);

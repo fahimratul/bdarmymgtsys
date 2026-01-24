@@ -17,9 +17,9 @@
 
     <nav>
         <ul>
-            <li><a href="clodashboard.html" class="active">Home</a></li>
-            <li><a href="user_management.html">User Management</a></li>
-            <li><a href="notifications.html">Notifications</a></li>
+            <li><a href="clodashboard.html" >Home</a></li>
+            <li><a href="user_management.html" >User Management</a></li>
+            <li><a href="notifications.html" class="active">Notifications</a></li>
             <li><select id="inventorySelect" onchange="handleInventoryChange(this.value)">
                 <option value="">Reports</option>
                 <option value="engr">Engineer Inventory</option>
@@ -52,60 +52,11 @@
         <button class="btn secondary" id="logoutButton" onclick="logout()">Logout</button>        
     </div>
     
-    <h2>Inventory Status Overview</h2>
-        <div class="dashboard-card">
-        <div class="card" onclick="handleInventoryChange('engr')" style="cursor: pointer;">
-            <div class="card-icon">
-                <i data-lucide="box"></i>
-            </div>
-            <div class="card-info">
-                <h1>Engineer Inventory</h1>
-                <h2 id="engr">0</h2>
-                <p>Total Items</p> 
-            </div>
-        </div>
-        <div class="card" onclick="handleInventoryChange('sig')" style="cursor: pointer;">
-            <div class="card-icon">
-                <i data-lucide="check-circle"></i>
-            </div>
-            <div class="card-info">
-                <h1>Signal Inventory</h1>
-                <h2 id="sig">0</h2>
-                <p>Total Items</p> 
-            </div>
-        </div>
-        <div class="card" onclick="handleInventoryChange('mt')" style="cursor: pointer;">
-            <div class="card-icon">
-                <i data-lucide="x-circle"></i>
-            </div>
-            <div class="card-info">
-                <h1>Military Transport Inventory</h1>
-                <h2 id="mt">0</h2>
-                <p>Total Items</p> 
-            </div>
-        </div>
-        <div class="card" onclick="handleInventoryChange('bknco')" style="cursor: pointer;">
-            <div class="card-icon">
-                <i data-lucide="truck"></i>
-            </div>
-            <div class="card-info">
-                <h1>BKNCO Inventory</h1>
-                <h2 id="bknco">0</h2>
-                <p>Total Items</p> 
-            </div>
-        </div>
-        <div class="card" onclick="handleInventoryChange('bqms')" style="cursor: pointer;">
-            <div class="card-icon">
-                <i data-lucide="box"></i>
-            </div>
-            <div class="card-info">
-                <h1>BQMS Inventory</h1>
-                <h2 id="bqms">0</h2>
-                <p>Total Items</p>
-            </div>
-        </div>
-    </div>
-   
+    <h2>Notifications</h2>
+    
+    
+    <div id="officer_notification" class="officernotification clo"></div>
+
 
  
     <div id="changePasswordModal" class="modal hidden">
@@ -202,7 +153,7 @@
         }
     </script>
 
-    <script type="module" src="js/clodashboard.js" defer></script>
+    <script type="module" src="js/clonotifications.js"   defer></script>
 
 </body> 
 

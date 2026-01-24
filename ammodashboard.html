@@ -14,7 +14,8 @@
     <title>Ammo Dashboard</title>
 </head>
 <body>
-    <nav>
+    
+    <nav id="notforclo">
         <ul>
             <li><a href="officer_dashboard.html">Home</a></li>
             <li><a href="user_management.html">User Management</a></li>
@@ -22,6 +23,26 @@
             <li ><a href="#" onclick="popupmenu()"> User Info </a> </li>
         </ul>
     </nav>
+    <nav id="forclo">
+        <ul>
+            <li><a href="clodashboard.html" class="active">Home</a></li>
+            <li><a href="user_management.html">User Management</a></li>
+            <li><a href="notifications.html">Notifications</a></li>
+            <li><select id="inventorySelect" onchange="handleInventoryChange(this.value)">
+                <option value="">Reports</option>
+                <option value="engr">Engineer Inventory</option>
+                <option value="sig">Signal Inventory</option>
+                <option value="mt">MT Inventory</option>
+                <option value="bknco">Bknco Inventory</option>
+                <option value="bqms">BQMS Inventory</option>    
+            </select>
+            </li>
+            <li><a href="ammodashboard.html">Ammo Dashboard</a></li>
+            <li><a href="mt_dashboard.html">Mt Dashboard</a></li>
+            <li ><a href="#" onclick="popupmenu()"> User Info </a> </li>
+        </ul>
+    </nav>
+
     <div id="notification-toast" class="notification-toast"></div>
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay">
@@ -162,6 +183,17 @@
             userInfoContainer.style.display = 'none';
             console.log('Password Change Modal Opened');
         }
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            const role=sessionStorage.getItem('role');
+            if(role==='clo' || role === 'cc'){
+                document.getElementById('notforclo').style.display='none';
+                document.getElementById('forclo').style.display='block';
+            } else {
+                document.getElementById('forclo').style.display='none';
+                document.getElementById('notforclo').style.display='block';
+            }
+        });
 </script>
 <script type="module" src="js/ammo.js" defer></script>
 

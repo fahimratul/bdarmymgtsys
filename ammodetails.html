@@ -15,7 +15,7 @@
     <title>Ammo Dashboard</title>
 </head>
 <body>
-    <nav>
+    <nav id="notforclo">
         <ul>
             <li><a href="officer_dashboard.html">Home</a></li>
             <li><a href="user_management.html">User Management</a></li>
@@ -23,6 +23,27 @@
             <li ><a href="#" onclick="popupmenu()"> User Info </a> </li>
         </ul>
     </nav>
+    
+    <nav id="forclo">
+        <ul>
+            <li><a href="clodashboard.html" class="active">Home</a></li>
+            <li><a href="user_management.html">User Management</a></li>
+            <li><a href="notifications.html">Notifications</a></li>
+            <li><select id="inventorySelect" onchange="handleInventoryChange(this.value)">
+                <option value="">Reports</option>
+                <option value="engr">Engineer Inventory</option>
+                <option value="sig">Signal Inventory</option>
+                <option value="mt">MT Inventory</option>
+                <option value="bknco">Bknco Inventory</option>
+                <option value="bqms">BQMS Inventory</option>    
+            </select>
+            </li>
+            <li><a href="ammodashboard.html">Ammo Dashboard</a></li>
+            <li><a href="mt_dashboard.html">Mt Dashboard</a></li>
+            <li ><a href="#" onclick="popupmenu()"> User Info </a> </li>
+        </ul>
+    </nav>
+
     <div id="notification-toast" class="notification-toast"></div>
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay">
@@ -30,6 +51,7 @@
         <div class="loading-text">Loading Inventory Data</div>
         <div class="loading-subtext">Please wait...</div>
     </div>
+
     <div class="topdown-container" id="userInfoContainer" style="display: none;">
         <h3 id ="username"></h3>
         <h4 id ="rank"></h4>
@@ -37,6 +59,7 @@
         <button class="btn primary" id="changePasswordBtn" onclick="passwordChangeModal()">Change Password</button>
         <button class="btn secondary" id="logoutButton" onclick="logout()">Logout</button>        
     </div>
+    
     <h1>Datails of</h1>
     <h2 id="ammotypeheading"></h2>
     <button class="btn primary" id="addAmmoBtn">Add New Lot</button>
@@ -99,11 +122,7 @@
                 <div class="form-group">
                     <label for="unsvcquantity" class="form-label">Un Svc Quantity *</label>
                     <input type="number" id="unsvcquantity" class="form-input" min="0" placeholder="Enter Un Svc Quantity" >
-                </div>
-                <div class="form-group">
-                    <label for="inmagquantity" class="form-label">In Mag Quantity *</label>
-                    <input type="number" id="inmagquantity" class="form-input" min="0" placeholder="Enter In Mag Quantity" >
-                </div>     
+                </div>  
             </div>
             <h3>Kote Distribution</h3>
             <div class="modal-grid">
@@ -148,6 +167,81 @@
             <div class="modal-actions">
                 <button type="button" class="btn secondary" id="addAmmoCloseBtn">Cancel</button>
                 <button id="addAmmoSubmitBtn" class="btn primary">Add Lot</button>
+            </div>  
+        </div>
+    </div>
+
+    <div id="lotdetailsmodal" class="modal hidden" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>lot </h2>
+                <button class="modal-close" id="closelotdetailsmodal" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-grid">
+                <div class="form-group" style="grid-column: span 2;">
+                    <label for="lotdetailslotno" class="form-label">Lot No *</label>
+                    <input type="text" id="lotdetailslotno" class="form-input" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="lotdetailsyearofmfr" class="form-label">Year of Mfr *</label>
+                    <input type="number" id="lotdetailsyearofmfr" class="form-input" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="lotdetailsexpiryyear" class="form-label">Expiry Year *</label>
+                    <input type="number" id="lotdetailsexpiryyear" class="form-input" min="1900" max="2100" placeholder="Enter Expiry Year" >
+                </div>
+                <div class="form-group">
+                    <label for="totalquantity" class="form-label">Total Quantity *</label>
+                    <input type="number" id="lotdetailstotalquantity" class="form-input" min="0" placeholder="Enter Total Quantity" >
+                </div>
+                <div class="form-group">
+                    <label for="lotdetailsunsvcquantity" class="form-label">Un Svc Quantity *</label>
+                    <input type="number" id="lotdetailsunsvcquantity" class="form-input" min="0" placeholder="Enter Un Svc Quantity" >
+                </div>    
+            </div>
+            <h3>Kote Distribution</h3>
+            <div class="modal-grid">
+                <div class="form-group">
+                    <label for="lotdetailsinf1quantity" class="form-label">Inf-1 Quantity *</label>
+                    <input type="number" id="lotdetailsinf1quantity" class="form-input" min="0" placeholder="Enter Inf-1 Quantity" >
+                </div>
+                <div class="form-group">
+                    <label for="lotdetailsinf2quantity" class="form-label">Inf-2 Quantity *</label>
+                    <input type="number" id="lotdetailsinf2quantity" class="form-input" min="0" placeholder="Enter Inf-2 Quantity" >
+                </div>
+                <div class="form-group">
+                    <label for="lotdetailsinf3quantity" class="form-label">Inf-3 Quantity *</label>
+                    <input type="number" id="lotdetailsinf3quantity" class="form-input" min="0" placeholder="Enter Inf-3 Quantity" >
+                </div>
+                <div class="form-group">
+                    <label for="lotdetailsinf4quantity" class="form-label">Inf-4 Quantity *</label>
+                    <input type="number" id="lotdetailsinf4quantity" class="form-input" min="0" placeholder="Enter Inf-4 Quantity" >
+                </div>
+                <div class="form-group">
+                    <label for="lotdetailsspquantity" class="form-label">Sp Quantity *</label>
+                    <input type="number" id="lotdetailsspquantity" class="form-input" min="0" placeholder="Enter Sp Quantity" >
+                </div>
+            </div>
+            <h3>Camp Distribution</h3>
+            <div class="modal-grid">
+                <div class="form-group">
+                    <label for="lotdetailsbayooquantity" class="form-label">BAYOO Quantity *</label>
+                    <input type="number" id="lotdetailsbayooquantity" class="form-input" min="0" placeholder="Enter BAYOO Quantity" >
+                </div>
+                <div class="form-group">
+                    <label for="lotdetailsdrodroquantity" class="form-label">DRODRO Quantity *</label>
+                    <input type="number" id="lotdetailsdrodroquantity" class="form-input" min="0" placeholder="Enter DRODRO Quantity" >   
+                </div>
+                <div class="form-group">
+                    <label for="lotdetailsrhooquantity" class="form-label">RHOO Quantity *</label>
+                    <input type="number" id="lotdetailsrhooquantity" class="form-input" min="0" placeholder="Enter RHOO Quantity" >
+                </div>
+
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn secondary" id="addLotCloseBtn">Cancel</button>
+                <button id="addLotSubmitBtn" class="btn primary">Update</button>
             </div>  
         </div>
     </div>
@@ -201,39 +295,49 @@
         </div>
     </div>
 
-<script>
-        lucide.createIcons();
-        function hideNotification() {
-            const toast = document.getElementById("notification-toast");
-            toast.classList.remove("show");
-        }
-        function popupmenu() {
-            const userInfoContainer = document.getElementById('userInfoContainer');
-            if (userInfoContainer.style.display === 'none' || userInfoContainer.style.display === '') {
-                userInfoContainer.style.display = 'flex';
-            } else {
-                userInfoContainer.style.display = 'none';
+    <script>
+            lucide.createIcons();
+            function hideNotification() {
+                const toast = document.getElementById("notification-toast");
+                toast.classList.remove("show");
             }
-        }
-        function togglePassword(inputId) {
-            const passwordInput = document.getElementById(inputId);
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-        }
+            function popupmenu() {
+                const userInfoContainer = document.getElementById('userInfoContainer');
+                if (userInfoContainer.style.display === 'none' || userInfoContainer.style.display === '') {
+                    userInfoContainer.style.display = 'flex';
+                } else {
+                    userInfoContainer.style.display = 'none';
+                }
+            }
+            function togglePassword(inputId) {
+                const passwordInput = document.getElementById(inputId);
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+            }
 
-        function closeModal() {
-            const changePasswordModal = document.getElementById('changePasswordModal'); 
-            changePasswordModal.classList.add('hidden');
-        }
-        function passwordChangeModal() {
-            const changePasswordModal = document.getElementById('changePasswordModal');
-            changePasswordModal.classList.remove('hidden');
-            const userInfoContainer = document.getElementById('userInfoContainer');
-            userInfoContainer.style.display = 'none';
-            console.log('Password Change Modal Opened');
-        }
-</script>
-<script type="module" src="js/ammodetails.js" defer></script>
+            function closeModal() {
+                const changePasswordModal = document.getElementById('changePasswordModal'); 
+                changePasswordModal.classList.add('hidden');
+            }
+            function passwordChangeModal() {
+                const changePasswordModal = document.getElementById('changePasswordModal');
+                changePasswordModal.classList.remove('hidden');
+                const userInfoContainer = document.getElementById('userInfoContainer');
+                userInfoContainer.style.display = 'none';
+                console.log('Password Change Modal Opened');
+            }
+            window.addEventListener('DOMContentLoaded', () => {
+                const role=sessionStorage.getItem('role');
+                if(role==='clo' || role === 'cc'){
+                    document.getElementById('notforclo').style.display='none';
+                    document.getElementById('forclo').style.display='block';
+                } else {
+                    document.getElementById('forclo').style.display='none';
+                    document.getElementById('notforclo').style.display='block';
+                }
+            });
+    </script>
+    <script type="module" src="js/ammodetails.js" defer></script>
 
 </body>
 </html>

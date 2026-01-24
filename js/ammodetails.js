@@ -17,26 +17,28 @@ measurementId: "G-H27M1SNMPX"
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-getAnalytics(app);
+getAnalytics(app); 
 const db = getDatabase(app);
 console.log(db);
 console.log("Firebase Initialized");
 
-// window.addEventListener('DOMContentLoaded', () => {
-//     let baNumber = sessionStorage.getItem('baNumber');
-//     let role = sessionStorage.getItem('role');
-//     if (role !== 'mtjco' && role !== 'mtnco' &&  role !=='mto') {
-//         console.error('Unauthorized role for mto. Access denied.');
-//         window.location.href = 'login.html';
-//         return;
-//     }
-//     if (!baNumber) {
-//         console.error('BA Number not found in local storage.');
-//         window.location.href = 'login.html';
-//         return;
-//     }
-//     console.log('Logged in as BA Number:', baNumber);
-// });
+let allowedRoles = ['lo', 'cc', 'clo', 'bknco'];
+
+window.addEventListener('DOMContentLoaded', () => {
+    let baNumber = sessionStorage.getItem('baNumber');
+    let role = sessionStorage.getItem('role');
+    if (!allowedRoles.includes(role)) {
+        console.error('Unauthorized role for mto. Access denied.');
+        window.location.href = 'login.html';
+        return;
+    }
+    if (!baNumber) {
+        console.error('BA Number not found in local storage.');
+        window.location.href = 'login.html';
+        return;
+    }
+    console.log('Logged in as BA Number:', baNumber);
+});
  
 
 
@@ -66,16 +68,22 @@ let ranklist ={
 const role = sessionStorage.getItem('role');
 
 
-// window.addEventListener('DOMContentLoaded', () => {
-//     const username=sessionStorage.getItem('username');
-//     const rank=sessionStorage.getItem('rank');
-//     const banumber=sessionStorage.getItem('baNumber');
-//     document.getElementById('username').textContent='Name: ' + username;
-//     document.getElementById('rank').textContent=ranklist[rank] ? 'Rank: ' + ranklist[rank] : 'Rank: ' + rank;
-//     document.getElementById('banumber').textContent='BA Number: ' + banumber;
-// });
+window.addEventListener('DOMContentLoaded', () => {
+    const username=sessionStorage.getItem('username');
+    const rank=sessionStorage.getItem('rank');
+    const banumber=sessionStorage.getItem('baNumber');
+    document.getElementById('username').textContent='Name: ' + username;
+    document.getElementById('rank').textContent=ranklist[rank] ? 'Rank: ' + ranklist[rank] : 'Rank: ' + rank;
+    document.getElementById('banumber').textContent='BA Number: ' + banumber;
+});
+
+document.getElementById('ammotypeheading').textContent = sessionStorage.getItem('ammotypename') || 'Ammo Details';
+
+
+
 let ammodetails ={};
 let ammokey ='';
+let editlotnokey ='';
 function loadammodata() {
     const urlparams = new URLSearchParams(window.location.search);
     ammokey = urlparams.get('ammo');
@@ -170,9 +178,8 @@ function loadammodata() {
 
         tableBody.querySelectorAll('.ammo-row').forEach(row => {
             row.addEventListener('click', () => {
-                const ammoKey = row.getAttribute('data-key');
-                sessionStorage.setItem('selectedAmmoKey', ammoKey);
-                window.location.href = `ammodetails.html?ammo=${ammoKey}`;
+                const lotnokey = row.getAttribute('data-key');
+                showlotdetails(lotnokey);
             });
         });
         if(loadingOverlay) 
@@ -289,6 +296,120 @@ function addAmmo() {
 }
 
 document.getElementById('addAmmoSubmitBtn')?.addEventListener('click', addAmmo);
+
+
+
+
+function showlotdetails(lotnokeyvalue) {
+    const ammoData = ammodetails[lotnokeyvalue];
+    if (!ammoData) {
+        showNotification("lot data not found", "error", "Error");
+        return;
+    }
+    editlotnokey = lotnokeyvalue;
+    document.getElementById('lotdetailslotno').value = ammoData.lotno;
+    document.getElementById('lotdetailsyearofmfr').value = ammoData.yearofmfr;
+    document.getElementById('lotdetailsexpiryyear').value = ammoData.expiryyear;
+    document.getElementById('lotdetailstotalquantity').value = ammoData.totalquantity;
+    document.getElementById('lotdetailsunsvcquantity').value = ammoData.unsvcquantity;
+    document.getElementById('lotdetailsinf1quantity').value = ammoData.inf1quantity;
+    document.getElementById('lotdetailsinf2quantity').value = ammoData.inf2quantity;
+    document.getElementById('lotdetailsinf3quantity').value = ammoData.inf3quantity;
+    document.getElementById('lotdetailsinf4quantity').value = ammoData.inf4quantity;
+    document.getElementById('lotdetailsspquantity').value = ammoData.spqquantity;
+    document.getElementById('lotdetailsbayooquantity').value = ammoData.bayooquantity;
+    document.getElementById('lotdetailsdrodroquantity').value = ammoData.drodroquantity;
+    document.getElementById('lotdetailsrhooquantity').value = ammoData.rhooquantity;
+    const lotDetailsModal = document.getElementById('lotdetailsmodal');
+    lotDetailsModal.classList.remove('hidden');
+}
+
+function closelotdetailsmodal() {
+    const lotDetailsModal = document.getElementById('lotdetailsmodal');
+    lotDetailsModal.classList.add('hidden');
+}
+
+document.getElementById('closelotdetailsmodal')?.addEventListener('click', closelotdetailsmodal);
+
+document.getElementById('addLotCloseBtn')?.addEventListener('click', closelotdetailsmodal);
+
+
+document.getElementById('addLotSubmitBtn')?.addEventListener('click', () => {
+    updatelotdetails();
+});
+
+function updatelotdetails() {
+    const lotno = document.getElementById('lotdetailslotno').value.trim();
+    const yearofmfr = document.getElementById('lotdetailsyearofmfr').value.trim();
+    const expiryyear = document.getElementById('lotdetailsexpiryyear').value.trim();
+    const totalquantity = parseInt(document.getElementById('lotdetailstotalquantity').value.trim(), 10);
+    const unsvcquantity = parseInt(document.getElementById('lotdetailsunsvcquantity').value.trim(), 10);
+    const insvcquantity = totalquantity - unsvcquantity;
+    const inf1quantity = parseInt(document.getElementById('lotdetailsinf1quantity').value.trim(), 10) || 0;
+    const inf2quantity = parseInt(document.getElementById('lotdetailsinf2quantity').value.trim(), 10) || 0;
+    const inf3quantity = parseInt(document.getElementById('lotdetailsinf3quantity').value.trim(), 10) || 0;
+    const inf4quantity = parseInt(document.getElementById('lotdetailsinf4quantity').value.trim(), 10) || 0;
+    const spqquantity = parseInt(document.getElementById('lotdetailsspquantity').value.trim(), 10) || 0;
+    const bayooquantity = parseInt(document.getElementById('lotdetailsbayooquantity').value.trim(), 10) || 0;
+    const drodroquantity = parseInt(document.getElementById('lotdetailsdrodroquantity').value.trim(), 10) || 0;
+    const rhooquantity = parseInt(document.getElementById('lotdetailsrhooquantity').value.trim(), 10) || 0;
+    console.log("Calculating inmagquantity", totalquantity);
+    const inmagquantity = totalquantity - ( inf1quantity + inf2quantity + inf3quantity + inf4quantity + spqquantity + bayooquantity + drodroquantity + rhooquantity);
+    if (inmagquantity < 0) {
+        showNotification("Invalid quantities: In Mag Quantity cannot be negative", "error", "Validation Error");
+        return;
+    }
+    console.log("Updating lot details for " + editlotnokey);
+    console.log({
+        lotno,
+        yearofmfr,
+        expiryyear,
+        totalquantity,
+        unsvcquantity,
+        insvcquantity,
+        inmagquantity,
+        inf1quantity,
+        inf2quantity,
+        inf3quantity,
+        inf4quantity,
+        spqquantity,
+        bayooquantity,
+        drodroquantity,
+        rhooquantity
+    });
+    const ammoRef = ref(db, 'ammoindex/' + ammokey + '/' + editlotnokey);
+    const updatedAmmoData = {
+        lotno: lotno,
+        yearofmfr: yearofmfr,
+        expiryyear: expiryyear,
+        totalquantity: totalquantity,
+        unsvcquantity: unsvcquantity,
+        insvcquantity: insvcquantity,
+        inmagquantity: inmagquantity,
+        inf1quantity: inf1quantity,
+        inf2quantity: inf2quantity,
+        inf3quantity: inf3quantity,
+        inf4quantity: inf4quantity,
+        spqquantity: spqquantity,
+        bayooquantity: bayooquantity,
+        drodroquantity: drodroquantity,
+        rhooquantity: rhooquantity
+    };
+    update(ammoRef, updatedAmmoData).then(() => {
+            showNotification("Lot details updated successfully", "success", "Success");
+            closelotdetailsmodal();
+            loadammodata();
+        }
+        )
+        .catch((error) => {
+            console.error("Error updating lot details:", error);
+            showNotification("Error updating lot details", "error", "Error");
+        });
+}
+
+
+
+
 
 
 function changePassword() {

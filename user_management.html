@@ -74,6 +74,14 @@
                 window.location.href = 'clodashboard.html';
                 return;
             }
+            if(sessionStorage.getItem('role') === 'mto'){
+                window.location.href = 'mt_dashboard.html';
+                return;
+            }
+            if(sessionStorage.getItem('role') === 'eo'){
+                window.location.href = 'officer_engr_dashboard.html?key=engr';
+                return;
+            }
             window.location.href = 'officer_dashboard.html';
         }
     </script>

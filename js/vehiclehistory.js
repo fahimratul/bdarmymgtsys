@@ -23,9 +23,10 @@ console.log(db);
 console.log("Firebase Initialized");
 let vehicleKey = null;
 let role = sessionStorage.getItem('role');
+let allowedRoles = ['mtjco', 'mtnco', 'mto','cc', 'clo'];
 window.addEventListener('DOMContentLoaded', () => {
     let baNumber = sessionStorage.getItem('baNumber');
-    if (role !== 'mtjco' && role !== 'mtnco' &&  role !=='mto') {
+    if (!allowedRoles.includes(role)) {
         console.error('Unauthorized role for mto. Access denied.');
         window.location.href = 'login.html';
         return;
@@ -262,19 +263,21 @@ function updaterecord(event, details, date, msg) {
             console.error('Error sending notification to MTO:', error);
         });
     }
-    if(role==='mto'){
-        let dbref = ref(db, `clo_cc_notification/${Date.now()}`);    
-        updateVehicleHistoryRecord(event, details, date);
-        const notificationData = {
-            msg: 'Vehicle Number ' + vehicleKey + ' '+ msg + ' Details: ' + details,
-        };
-        update(dbref, notificationData)
-        .then(() => {
-            console.log('Notification sent to CLOC successfully.');
-        })
-        .catch((error) => {
-            console.error('Error sending notification to CLOC:', error);
-        });
+    if(role==='mto' || role==='cc' || role==='clo'){
+        if(role ==='mto'){
+            let dbref = ref(db, `clo_cc_notification/${Date.now()}`);    
+            updateVehicleHistoryRecord(event, details, date);
+            const notificationData = {
+                msg: 'Vehicle Number ' + vehicleKey + ' '+ msg + ' Details: ' + details,
+            };
+            update(dbref, notificationData)
+            .then(() => {
+                console.log('Notification sent to CLOC successfully.');
+            })
+            .catch((error) => {
+                console.error('Error sending notification to CLOC:', error);
+            });
+        }
         dbref = ref(db, `vehiclelist/`+vehicleKey);
         update(dbref, {condition: event === 'Maintenance' ? 'inmaintenance' : event === 'Grounded' ? 'grounded' : event === 'Marking as A LR' ? 'alr' : event === 'Marking as A SR' ? 'asr' : dataCache.condition})
         .then(() => {
