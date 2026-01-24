@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
 
-import { getDatabase, get, ref, update } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getDatabase, get, ref, update , remove} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
 
 const firebaseConfig = {
@@ -215,10 +215,6 @@ function loaditemdata() {
 
 let vehicleDataCache = {};
 
-
-
-
-function loadvehicledata() {
     let vehicleinfoclass = { 
         classA:{
             total:0,
@@ -301,6 +297,10 @@ function loadvehicledata() {
         }
     };
 
+
+function loadvehicledata() {
+
+
     const dbRef = ref(db, `vehiclelist/`);
     const loadingOverlay = document.getElementById('loadingOverlay');
     get(dbRef).then((snapshot) => {
@@ -341,11 +341,15 @@ function loadvehicledata() {
                         </tr>`;
                 serial += 1;
                 vehicleinfo.total.total+=1;
-                vehicleinfo.total[condition]+=1;
-                vehicleinfo[camp].total+=1;
-                vehicleinfo[camp][condition]+=1;
-                vehicleinfoclass[classtype].total+=1;
-                vehicleinfoclass[classtype][condition]+=1;
+                if (vehicleinfo.total[condition] !== undefined) vehicleinfo.total[condition]+=1;
+                if (vehicleinfo[camp]) {
+                    vehicleinfo[camp].total+=1;
+                    if (vehicleinfo[camp][condition] !== undefined) vehicleinfo[camp][condition]+=1;
+                }
+                if (vehicleinfoclass[classtype]) {
+                    vehicleinfoclass[classtype].total+=1;
+                    if (vehicleinfoclass[classtype][condition] !== undefined) vehicleinfoclass[classtype][condition]+=1;
+                }
             }
         } else {
             html = '<tr><td colspan="9" style="text-align: center; padding: 2rem; color: #666;">No inventory data available</td></tr>';
@@ -402,12 +406,13 @@ function loadvehicledata() {
     });
 }
 let notificationDataCache = {};
+
+const notificationbody = document.getElementById('officer_notification');
 function loadnotifactions() {
     const dbRef = ref(db, 'officernotification/mto/notifications');
     get(dbRef).then((snapshot) => {
         notificationDataCache = snapshot.val();
         let html = '';
-        const notificationbody = document.getElementById('officer_notification');
         notificationbody.style.display='flex';
         if (notificationDataCache) {
             for (const key in notificationDataCache) {
@@ -422,6 +427,7 @@ function loadnotifactions() {
             notificationbody.innerHTML = html;
             notificationbody.style.minHeight='max-content';
             console.log("Notifications Loaded");
+            console.log(notificationDataCache);
             // Attach accept/reject handlers
             notificationbody.querySelectorAll('.accept-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -444,8 +450,9 @@ function loadnotifactions() {
 }
 if(role==='mto'){
     loadnotifactions();
-}   
-function updateVehicleHistoryRecord(vehicleKey, event, details, date) {
+}
+
+function updateVehicleHistoryRecord(vehicleKey, event, details, date, notificationKey) {
     const newKey = Date.now().toString();
     const updates = {};
     updates[`vehiclelist/${vehicleKey}/history/${newKey}`] = {
@@ -456,11 +463,14 @@ function updateVehicleHistoryRecord(vehicleKey, event, details, date) {
 
     update(ref(db), updates)
         .then(() => {
-            let dbref = ref(db, `officernotification/mto/notifications/${vehicleKey}`);
-            showNotification('Maintenance record added successfully.');
-            closeEditModal();
-            loadnotifactions();
-            loadvehicledata();
+            let dbref = ref(db, `officernotification/mto/notifications/${notificationKey}`);
+            remove(dbref)
+            .then(() => {
+                console.log('Notification removed successfully after updating history.');    
+            })
+            .catch((error) => {
+                console.error('Error removing notification:', error);
+            });
         })
         .catch((error) => {
             console.error('Error adding maintenance record:', error);
@@ -470,18 +480,20 @@ function updateVehicleHistoryRecord(vehicleKey, event, details, date) {
 function acceptNotificationMTO(key) {
     let dbref = ref(db, `clo_cc_notification/${Date.now()}`); 
     const notification = notificationDataCache?.[key];
+    notificationbody.innerHTML = '';
     console.log(notification);
     const event = notification?.event;
     const details = notification?.details;
     const date = notification?.date;
+    const vehiclekey = notification?.vehicleKey;
     const msg = event === 'Maintenance' ? 'has been accepted for Maintenance.' : event === 'Grounded' ? 'has been accepted to be Grounded.' : event === 'Marking as A LR' ? 'has been accepted to be marked as A LR.' : event === 'Marking as A SR' ? 'has been accepted to be marked as A SR.' : '';
     if (!notification) {
         console.error('Notification data not found for key:', key);
         return;
     }   
-    updateVehicleHistoryRecord(key, event, details, date);
+    updateVehicleHistoryRecord(vehiclekey, event, details, date, key);
     const notificationData = {
-        msg: 'Vehicle Number ' + key + ' '+ msg + ' Details: ' + details,
+        msg: 'Vehicle Number ' + vehiclekey + ' '+ msg + ' Details: ' + details,
     };
     update(dbref, notificationData)
     .then(() => {
@@ -490,20 +502,23 @@ function acceptNotificationMTO(key) {
     .catch((error) => {
         console.error('Error sending notification to CLOC:', error);
     });
-    dbref = ref(db, `vehiclelist/`+vehicleKey);
+    dbref = ref(db, `vehiclelist/`+vehiclekey);
     update(dbref, {condition: event === 'Maintenance' ? 'inmaintenance' : event === 'Grounded' ? 'grounded' : event === 'Marking as A LR' ? 'alr' : event === 'Marking as A SR' ? 'asr' : dataCache.condition})
     .then(() => {
-        loadvehicledata();
         console.log('Vehicle condition updated to In Maintenance.');
     })
     .catch((error) => {
         console.error('Error updating vehicle condition:', error);
     });
+    loadvehicledata();
+    setTimeout(() => {
+        loadnotifactions();
+        showNotification('Vehicle history updated successfully.', 'success', 'Update Successful');
+    }, 500);
 }
 
 loaditemdata();
 loadvehicledata();
-
 
 function searchItems() {
     const searchInput = document.getElementById('searchInput');

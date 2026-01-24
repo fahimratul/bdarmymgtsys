@@ -255,6 +255,8 @@ function updaterecord(event, details, date, msg) {
         update(dbref, notificationData)
         .then(() => {
             console.log('Notification sent to MTO successfully.');
+            showNotification('Request sent to MTO successfully.');
+            closeEditModal();
         })
         .catch((error) => {
             console.error('Error sending notification to MTO:', error);
