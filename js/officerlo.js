@@ -167,6 +167,7 @@ function loaditemdataBKNCO() {
         }
         
         tableBody.innerHTML = html;
+        document.getElementById('serial').textContent = serial;
         document.getElementById('totalItemsBKNCO').textContent = datainfo.total;
         document.getElementById('servicableItemsBKNCO').textContent = datainfo.servicable;
         document.getElementById('unservicableItemsBKNCO').textContent = datainfo.unservicable;
@@ -184,7 +185,9 @@ function loaditemdataBKNCO() {
 
         tableBody.querySelectorAll('.row-data').forEach(row => {
             row.addEventListener('click', (e) => {
-                if (e.target.classList.contains('edit-btn')) return;
+                if (e.target.classList.contains('edit-btn')) {
+                    openEditModal(key);
+                }
                 const key = row.dataset.key;
                 console.log("Row clicked for key:", key);
                 window.location.href = `itemdetails.html?key=${key}&type=bknco`;
