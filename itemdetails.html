@@ -14,12 +14,11 @@
 </head>
 <body>
     <div id="notification-toast" class="notification-toast"></div>
-    <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="loading-overlay">
+    <!-- <div id="loadingOverlay" class="loading-overlay">
         <div class="spinner"></div>
         <div class="loading-text">Loading Inventory Data</div>
         <div class="loading-subtext">Please wait...</div>
-    </div>
+    </div> -->
 
 
 	<div class="shell">
@@ -36,45 +35,50 @@
             <div class="card-body">
                     <div class="info">
                         <div class="info-group">
-                            <span class="info-label">Type of Vehicle:</span>
-                            <span class="info-value" id="typeofvehicle">Truck Utility/Cargo (2.5 to 5 ton)</span>
+                            <span class="info-label">Type of Item:</span>
+                            <span class="info-value" id="typeofitem"></span>
                         </div>
                         <div class="info-group">
-                            <span class="info-label">BA Number:</span>
-                            <span class="info-value" id="vehicleNumber">AB123CD</span>
+                            <span class="info-label">Authorized Unit:</span>
+                            <span class="info-value" id="authorized"></span>
                         </div>
                         <div class="info-group">
-                            <span class="info-label">UN Number:</span>
-                            <span class="info-value" id="unnumber">1212</span>
+                            <span class="info-label">Held:</span>
+                            <span class="info-value" id="held"></span>
                         </div>
                         <div class="info-group">
-                            <span class="info-label">Class:</span>
-                            <span class="info-value" id="classtype">Ford F-150</span>
+                            <span class="info-label">Issued:</span>
+                            <span class="info-value" id="issued"></span>
+                        </div>
+                        
+                        <div class="info-group">
+                            <span class="info-label">In store</span>
+                            <span class="info-value" id="instore"></span>
                         </div>
                         <div class="info-group">
-                            <span class="info-label">Camp</span>
-                            <span class="info-value" id="camp">BAYOO</span>
+                            <span class="info-label">Servicable:</span>
+                            <span class="info-value" id="servicable"></span>
                         </div>
                         <div class="info-group">
-                            <span class="info-label">Condition:</span>
-                            <span class="info-value" id="condition"></span>
+                            <span class="info-label">Unservicable:</span>
+                            <span class="info-value" id="unservicable"></span>
                         </div>  
                     </div>
                     <div class="button">
-                        <button id="sendformaintainace" class="maintainance-button">Send for Maintenance</button>
-                        <button id="markasgrounded" class="maintainance-button">Mark as Grounded</button>
-                        <button id="markasalr" class="maintainance-button">Mark as A LR</button>
-                        <button id="markasasr" class="maintainance-button">Mark as A SR</button>
+                        <button id="issueitem" class="maintainance-button">Issue Item</button>
+                        <button id="markasunservicable" class="maintainance-button">Mark as Unservicable</button>
                     </div>
                     <div class="history-section">
-                        <h2>Vehicle History</h2>
+                        <h2>Issue History</h2>
                         <table class="history-table">
                             <thead>
                                 <tr>
                                     <th>Voucher No</th>
                                     <th>Date</th>
-                                    <th>Event</th>
-                                    <th>Details</th>
+                                    <th>Person/Unit</th>
+                                    <th>Location</th>
+                                    <th>Quantity</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody id="history-tbody">
@@ -86,35 +90,69 @@
 		</div>
 	</div>
 
-    <div id="editModal" class="modal hidden">
+    <div id="issueModal" class="modal hidden">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Send for Maintenance</h2>
-                <button class="modal-close" id="modalCloseBtn" aria-label="Close">&times;</button>
+                <h2>Issue Item</h2>
+                <button class="modal-close" id="issueModalCloseBtn" aria-label="Close">&times;</button>
             </div>
-            <form id="editForm" class="modal-form">
+            <form id="issueForm" class="modal-form">
                 <div class="modal-grid">
                     <div class="field">
-                        <label for="editdate">Date</label>
-                        <input type="date" id="editdate" name="date" required>
+                        <label for="issuedate">Date</label>
+                        <input type="date" id="issuedate" name="date" required>
                     </div>
                     <div class="field">
-                        <label for="editevent">Event</label>
-                        <input type="text" id="editevent" name="event" disabled>
+                        <label for="issueevent">Person/Unit</label>
+                        <input type="text" id="issueevent" name="event" disabled>
                     </div>
                     <div class="field" style="grid-column: span 2;">
-                        <label for="editdetails">Details</label>
-                        <textarea id="editdetails" name="details" required></textarea>
+                        <label for="issuedetails">Location</label>
+                        <textarea id="issuedetails" name="details" required></textarea>
+                    </div>
+                    <div class="field">
+                        <label for="issuequantity">Quantity</label>
+                        <input type="number" id="issuequantity" name="quantity" required>
                     </div>
                 </div>
                 <div class="modal-actions">
-                    <button type="button" class="btn secondary" id="cancelEditBtn">Cancel</button>
+                    <button type="button" class="btn secondary" id="cancelIssueBtn">Cancel</button>
                     <button type="submit" class="btn primary">Submit</button>
                 </div>
             </form>
         </div>
     </div> 
 
+
+    
+    <div id="unsvcModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Mark as Unservicable</h2>
+                <button class="modal-close" id="modalCloseBtn" aria-label="Close">&times;</button>
+            </div>
+            <form id="unsvcForm" class="modal-form">
+                <div class="modal-grid">
+                    <div class="field">
+                        <label for="unsvcdate">Date</label>
+                        <input type="date" id="unsvcdate" name="date" required>
+                    </div>
+                    <div class="field">
+                        <label for="unsvcevent">Reasons</label>
+                        <input type="text" id="unsvcevent" name="event" disabled>
+                    </div>
+                    <div class="field">
+                        <label for="unsvcquantity">Quantity</label>
+                        <input type="number" id="unsvcquantity" name="quantity" required>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn secondary" id="cancelUnsvcBtn">Cancel</button>
+                    <button type="submit" class="btn primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div> 
 
 
 
