@@ -8,7 +8,6 @@
     <script src ="https://unpkg.com/lucide@latest" ></script>
     <link rel='icon' href='static/logo_small.png' type='image/x-icon' />
     <title>User management</title>
-</html>
 </head>
 <body>
     <div id="notification-toast" class="notification-toast"></div>
@@ -73,6 +72,14 @@
             }
             if(sessionStorage.getItem('role') === 'clo' || sessionStorage.getItem('role') === 'cc'){
                 window.location.href = 'clodashboard.html';
+                return;
+            }
+            if(sessionStorage.getItem('role') === 'mto'){
+                window.location.href = 'mt_dashboard.html';
+                return;
+            }
+            if(sessionStorage.getItem('role') === 'eo'){
+                window.location.href = 'officer_engr_dashboard.html?key=engr';
                 return;
             }
             window.location.href = 'officer_dashboard.html';

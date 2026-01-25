@@ -88,13 +88,13 @@ function loaditemdata() {
     const loadingOverlay = document.getElementById('loadingOverlay');
     let undercommandrole = {};
     if(role === 'eo'){
-        undercommandrole = ['engrnco'];
+        undercommandrole = ['engrnco', 'bqms'];
     }
     else if(role === 'so'){
         undercommandrole = ['signco'];
     }
     else if (role === 'lo'){
-        undercommandrole = ['bqms', 'bknco'];
+        undercommandrole = ['bknco'];
     }
     else if (role === 'mto'){
         undercommandrole = ['mtnco', 'mtjco'];

@@ -37,7 +37,11 @@
 						<input id="unnumber" name="unnumber" type="number" placeholder="e.g., Utility Knife" required>
                         <p class="inline-hint">Enter the UN number</p>
 					</div>
-					
+					<div class="field">
+						<label for ="typeofvehicle">Type of Vehicle</label>
+						<input id="typeofvehicle" name="typeofvehicle" type="text" placeholder="e.g., Truck or Bike" required>
+						<p class="inline-hint">Enter the type of vehicle</p>
+					</div>
 					<div class="field">
 						<label for="camp">Name of Camp</label>
 						<select id="camp" name="camp" required>
@@ -59,18 +63,13 @@
 						</select>
 					</div>
 					<div class="field">
-						<label for="type">Type </label>
-						<select id="type" name="type" required>
-							<option value="" disabled selected>Select class first</option>
-						</select>
-					</div>
-					<div class="field">
 						<label for="condition">Condition</label>
 						<select id="condition" name="condition" required>
 							<option value="" disabled selected>Select Condition</option>
-							<option value="serviceable">Serviceable</option>
-							<option value="unserviceable">Unserviceable</option>
+							<option value="alr">A LR</option>
+							<option value="asr">A SR</option>
 							<option value="inmaintenance">In Maintenance</option>
+							<option value="grounded">Grounded</option>
 						</select>
 					</div>
 				</div>
@@ -89,26 +88,6 @@
             const toast = document.getElementById("notification-toast");
             toast.classList.remove("show");
         }
-		classtypeSelect = document.getElementById('classtype');
-		typeSelect = document.getElementById('type');
-		classtypeSelect.addEventListener('change', function() {
-			const classType = classtypeSelect.value;
-			typeSelect.innerHTML = '<option value="" disabled selected>Select Type</option>';
-			if (classType === 'classA') {
-				typeSelect.innerHTML += '<option value="tank">Tank</option>';
-				typeSelect.innerHTML += '<option value="armored_vehicle">Armored Vehicle</option>';
-			} else if (classType === 'classB') {
-				typeSelect.innerHTML += '<option value="jeep">Jeep</option>';
-				typeSelect.innerHTML += '<option value="bike">Bike</option>';
-				typeSelect.innerHTML += '<option value="ambulance">Ambulance</option>';
-				typeSelect.innerHTML += '<option value="car">Car</option>';
-			} else if (classType === 'classC') {
-				typeSelect.innerHTML += '<option value="truck">Truck</option>';
-				typeSelect.innerHTML += '<option value="van">Van</option>';
-				typeSelect.innerHTML += '<option value="pickup">Pickup</option>';
-				typeSelect.innerHTML += '<option value="3ton">3 Ton</option>';
-			}
-		});
     </script>
 </body>
 </html>

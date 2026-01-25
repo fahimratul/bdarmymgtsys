@@ -93,21 +93,15 @@ body {
 
 table{
     border-collapse: collapse;
-    width: 100%;
+    width: fit-content;
     max-width: 90vw;
     background: white;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     border-radius: 12px;
-    overflow-y: auto;
-    display: block;
-    min-height: 100vh;
-    white-space: wrap;
 }
- 
 thead th{
     position: sticky;
-    top:0;
-    background: #f3f4f6;
+    top: 50px;
     z-index: 2;
 }
 th, td {
@@ -116,7 +110,7 @@ th, td {
     border-bottom: 1px solid #f3f4f6;
 }
 th {
-    background-color: #57575734;
+    background-color: #575757;
     color: #000000;
     font-weight: 600;
     border-bottom: 1px solid #000000;

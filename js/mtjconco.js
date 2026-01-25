@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
 
-import { getDatabase, get, ref, update } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getDatabase, get, ref, update , remove} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
 
 const firebaseConfig = {
@@ -22,11 +22,13 @@ const db = getDatabase(app);
 console.log(db);
 console.log("Firebase Initialized");
 
+let allowedRoles = ['mtjco', 'mtnco', 'mto','cc', 'clo'];
+
 window.addEventListener('DOMContentLoaded', () => {
     let baNumber = sessionStorage.getItem('baNumber');
     let role = sessionStorage.getItem('role');
-    if (role !== 'mtjco' && role !== 'mtnco') {
-        console.error('Unauthorized role. Access denied.');
+    if (!allowedRoles.includes(role)) {
+        console.error('Unauthorized role for mto. Access denied.');
         window.location.href = 'login.html';
         return;
     }
@@ -76,6 +78,27 @@ let ranklist ={
     majorgen:"Major General",
     ltgen:"Lieutenant General",
     gen:"General"
+};
+
+let conditionlist={
+    alr:"A LR",
+    asr:"A SR",
+    inmaintenance:"In Maintenance",
+    grounded:"Grounded"
+};
+let classlist={
+    classA:"Class A",
+    classB:"Class B",
+    spl:"Spl Veh",
+    sp:"SP Veh",
+    watertrailer:"Water Trailer",
+    lowbed:"Low Bed/Fuel /Water /Trailer"
+};
+let camplist={
+    bayoo:"BAYOO",
+    drodro:"DRODRO",
+    rhoo:"RHOO",
+    ndromo:"NDROMO"
 };
 
 
@@ -192,44 +215,99 @@ function loaditemdata() {
     });
 }
 
-let vehicleDataCache = {
-    classA: {},
-    classB: {},
-    classC: {}
-};
+let vehicleDataCache = {};
 
-let vehicleinfo = {
-    classA: {
-        total:0,
-        servicable:0,
-        unservicable:0
-    },
-    classB: {
-        total:0,
-        servicable:0,
-        unservicable:0
-    },
-    classC: {
-        total:0,
-        servicable:0,
-        unservicable:0
-    }
-};
-
-function loadvehicledata(classType) {
-
-    const dbRef = ref(db, `vehiclelist/${classType}/`);
-    const loadingOverlay = document.getElementById('loadingOverlay');
-
-    vehicleinfo[classType] = {
-        total:0,
-        servicable:0,
-        unservicable:0
+    let vehicleinfoclass = { 
+        classA:{
+            total:0,
+            alr:0,
+            asr:0,
+            inmaintenance:0,
+            grounded:0
+        },
+        classB:{
+            total:0,
+            alr:0,
+            asr:0,
+            inmaintenance:0,
+            grounded:0
+        },
+        spl:{
+            total:0,
+            alr:0,
+            asr:0,
+            inmaintenance:0,
+            grounded:0
+        },
+        sp:{
+            total:0,
+            alr:0,
+            asr:0,
+            inmaintenance:0,
+            grounded:0
+        },
+        watertrailer:{
+            total:0,
+            alr:0,
+            asr:0,
+            inmaintenance:0,
+            grounded:0
+        },
+        lowbed:{
+            total:0,
+            alr:0,
+            asr:0,
+            inmaintenance:0,
+            grounded:0
+        }
+    };
+    let vehicleinfo = {
+        total:{
+            total:0,
+            alr:0,
+            asr:0,
+            inmaintenance:0,
+            grounded:0
+        },
+        bayoo:{
+            total:0,
+            alr:0,
+            asr:0,
+            inmaintenance:0,
+            grounded:0
+        },
+        drodro:{
+            total:0,
+            alr:0,
+            asr:0,
+            inmaintenance:0,
+            grounded:0
+        },
+        rhoo:{
+            total:0,
+            alr:0,
+            asr:0,
+            inmaintenance:0,
+            grounded:0
+        },
+        ndromo:{
+            total:0,
+            alr:0,
+            asr:0,
+            inmaintenance:0,
+            grounded:0
+        }
     };
 
+
+function loadvehicledata() {
+
+
+    const dbRef = ref(db, `vehiclelist/`);
+    const loadingOverlay = document.getElementById('loadingOverlay');
     get(dbRef).then((snapshot) => {
         const data = snapshot.val();
-        vehicleDataCache[classType] = data || {};
+        vehicleDataCache = data || {};
         let serial = 1;
         const tableBody = document.getElementById('VehicleTableBody');
         
@@ -245,35 +323,67 @@ function loadvehicledata(classType) {
         if (data) {
             for (const key in data) {
                 const vehicle = data[key];
-                const name = vehicle.name || '';
-                const total = vehicle.total ?? 0;
-                const servicable = vehicle.servicable ?? 0;
-                const unservicable = vehicle.unservicable ?? 0;
-                
-                html += `<tr id="${name}" data-key="${key}">
+                const vehiclenumber = vehicle.vehicleNumber || ''; 
+                const unnumber = vehicle.unnumber ?? '';
+                const typeofvehicle = vehicle.typeofvehicle ?? '';
+                const classtype = vehicle.classtype || '';
+                const condition = vehicle.condition || '';
+                const camp = vehicle.camp || '';
+                // console.log(vehicle);
+
+                html += `<tr id="${key}" data-key="${key}">
                             <td>${serial}</td>
-                            <td>${name}</td>
-                            <td>${total}</td>
-                            <td>${servicable}</td>
-                            <td>${unservicable}</td>
-                            <td><button class="edit-btn" data-key='${key}'>Edit</button></td>
+                            <td>${vehiclenumber}</td>
+                            <td>${unnumber}</td>
+                            <td>${typeofvehicle}</td>
+                            <td>${classlist[classtype] || classtype}</td>
+                            <td>${conditionlist[condition] || condition}</td>
+                            <td>${camplist[camp] || camp}</td>
+                            <td><button class="edit-btn" data-key='${key}'>Info</button></td>
                         </tr>`;
                 serial += 1;
-                vehicleinfo[classType].total += total;
-                vehicleinfo[classType].servicable += servicable;
-                vehicleinfo[classType].unservicable += unservicable;
+                vehicleinfo.total.total+=1;
+                if (vehicleinfo.total[condition] !== undefined) vehicleinfo.total[condition]+=1;
+                if (vehicleinfo[camp]) {
+                    vehicleinfo[camp].total+=1;
+                    if (vehicleinfo[camp][condition] !== undefined) vehicleinfo[camp][condition]+=1;
+                }
+                if (vehicleinfoclass[classtype]) {
+                    vehicleinfoclass[classtype].total+=1;
+                    if (vehicleinfoclass[classtype][condition] !== undefined) vehicleinfoclass[classtype][condition]+=1;
+                }
             }
         } else {
-            html = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: #666;">No inventory data available</td></tr>';
+            html = '<tr><td colspan="9" style="text-align: center; padding: 2rem; color: #666;">No inventory data available</td></tr>';
         }
         
         tableBody.innerHTML = html;
+        document.getElementById('totalVehicles').textContent = vehicleinfo.total.total;
+        document.getElementById('ALRVehicles').textContent = vehicleinfo.total.alr;
+        document.getElementById('ASRVehicles').textContent = vehicleinfo.total.asr;
+        document.getElementById('inMaintenanceVehicles').textContent = vehicleinfo.total.inmaintenance;
+        document.getElementById('groundedVehicles').textContent = vehicleinfo.total.grounded;
 
+        for (const camp in camplist) {
+            document.getElementById(`totalVehicles${camp}`).textContent = `Total: ${vehicleinfo[camp].total}`;
+            document.getElementById(`ALRVehicles${camp}`).textContent = `A LR: ${vehicleinfo[camp].alr}`;
+            document.getElementById(`ASRVehicles${camp}`).textContent = `A SR: ${vehicleinfo[camp].asr}`;
+            document.getElementById(`inMaintenanceVehicles${camp}`).textContent = `Maintenance: ${vehicleinfo[camp].inmaintenance}`;
+            document.getElementById(`groundedVehicles${camp}`).textContent = `Grounded: ${vehicleinfo[camp].grounded}`;
+            
+        }
+        for (const classtype in classlist) {
+            document.getElementById(`totalVehicles${classtype}`).textContent = `Total: ${vehicleinfoclass[classtype].total}`;
+            document.getElementById(`ALRVehicles${classtype}`).textContent = `A LR: ${vehicleinfoclass[classtype].alr}`;
+            document.getElementById(`ASRVehicles${classtype}`).textContent = `A SR: ${vehicleinfoclass[classtype].asr}`;
+            document.getElementById(`inMaintenanceVehicles${classtype}`).textContent = `In Maintenance: ${vehicleinfoclass[classtype].inmaintenance}`;
+            document.getElementById(`groundedVehicles${classtype}`).textContent = `Grounded: ${vehicleinfoclass[classtype].grounded}`;    
+        }
         // Attach edit handlers
         tableBody.querySelectorAll('.edit-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const key = btn.dataset.key;
-                openEditModal(key);
+                vehiclehistoryload(key);
             });
         });
         
@@ -287,7 +397,7 @@ function loadvehicledata(classType) {
         console.error('Error loading data:', error);
         const tableBody = document.getElementById('VehicleTableBody');
         if (tableBody) {
-            tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: #e53e3e;">Error loading data. Please refresh the page.</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem; color: #e53e3e;">Error loading data. Please refresh the page.</td></tr>';
         }
         // Hide loading overlay even on error
         if (loadingOverlay) {
@@ -297,12 +407,134 @@ function loadvehicledata(classType) {
         }
     });
 }
+let notificationDataCache = {};
 
+const notificationbody = document.getElementById('officer_notification');
+function loadnotifactions() {
+    const dbRef = ref(db, 'officernotification/mto/notifications');
+    get(dbRef).then((snapshot) => {
+        notificationDataCache = snapshot.val();
+        let html = '';
+        notificationbody.style.display='flex';
+        if (notificationDataCache) {
+            for (const key in notificationDataCache) {
+                const notification = notificationDataCache[key];
+                const message = notification.msg || '';
+                html += `<div class="msg">
+                        <p class="content">${message}<br><br> </p>
+                        <button class="accept-btn" data-key="${key}">Accept</button>
+                        <button class="reject-btn" data-key="${key}">Reject</button> 
+                    </div>`;
+            }
+            notificationbody.innerHTML = html;
+            notificationbody.style.minHeight='max-content';
+            console.log("Notifications Loaded");
+            console.log(notificationDataCache);
+            // Attach accept/reject handlers
+            notificationbody.querySelectorAll('.accept-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const key = btn.dataset.key;
+                    acceptNotificationMTO(key);
+                    console.log('Accepted notification with key:', key);
+                });
+            });
+            notificationbody.querySelectorAll('.reject-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const key = btn.dataset.key;
+                    rejectNotificationMTO(key);
+                    console.log('Rejected notification with key:', key);
+                });
+            });
+        }
+    }).catch((error) => {
+        console.error('Error loading notifications:', error);
+    });
+}
+if(role==='mto'){
+    loadnotifactions();
+}
+
+function updateVehicleHistoryRecord(vehicleKey, event, details, date, notificationKey) {
+    const newKey = Date.now().toString();
+    const updates = {};
+    updates[`vehiclelist/${vehicleKey}/history/${newKey}`] = {
+        event: event,
+        details: details,
+        date: date
+    };
+
+    update(ref(db), updates)
+        .then(() => {
+            let dbref = ref(db, `officernotification/mto/notifications/${notificationKey}`);
+            remove(dbref)
+            .then(() => {
+                console.log('Notification removed successfully after updating history.');    
+            })
+            .catch((error) => {
+                console.error('Error removing notification:', error);
+            });
+        })
+        .catch((error) => {
+            console.error('Error adding maintenance record:', error);
+        });
+    
+}
+function acceptNotificationMTO(key) {
+    let dbref = ref(db, `clo_cc_notification/${Date.now()}`); 
+    const notification = notificationDataCache?.[key];
+    notificationbody.innerHTML = '';
+    console.log(notification);
+    const event = notification?.event;
+    const details = notification?.details;
+    const date = notification?.date;
+    const vehiclekey = notification?.vehicleKey;
+    const msg = event === 'Maintenance' ? 'has been accepted for Maintenance.' : event === 'Grounded' ? 'has been accepted to be Grounded.' : event === 'Marking as A LR' ? 'has been accepted to be marked as A LR.' : event === 'Marking as A SR' ? 'has been accepted to be marked as A SR.' : '';
+    if (!notification) {
+        console.error('Notification data not found for key:', key);
+        return;
+    }   
+    updateVehicleHistoryRecord(vehiclekey, event, details, date, key);
+    const notificationData = {
+        msg: 'Vehicle Number ' + vehiclekey + ' '+ msg + ' Details: ' + details,
+    };
+    update(dbref, notificationData)
+    .then(() => {
+        console.log('Notification sent to CLOC successfully.');
+    })
+    .catch((error) => {
+        console.error('Error sending notification to CLOC:', error);
+    });
+    dbref = ref(db, `vehiclelist/`+vehiclekey);
+    update(dbref, {condition: event === 'Maintenance' ? 'inmaintenance' : event === 'Grounded' ? 'grounded' : event === 'Marking as A LR' ? 'alr' : event === 'Marking as A SR' ? 'asr' : dataCache.condition})
+    .then(() => {
+        console.log('Vehicle condition updated to In Maintenance.');
+    })
+    .catch((error) => {
+        console.error('Error updating vehicle condition:', error);
+    });
+    loadvehicledata();
+    setTimeout(() => {
+        loadnotifactions();
+        showNotification('Vehicle history updated successfully.', 'success', 'Update Successful');
+    }, 500);
+}
+
+function rejectNotificationMTO(key) {
+    let dbref = ref(db, `officernotification/mto/notifications/${key}`);
+    remove(dbref).then(() => {
+        console.log('Notification rejected and removed successfully.');
+    }).catch((error) => {
+        console.error('Error removing notification:', error);
+    });
+    setTimeout(() => {
+        loadnotifactions();
+        showNotification('Notification rejected successfully.', 'success', 'Rejection Successful');
+    }, 500);
+}
 
 
 loaditemdata();
-loadvehicledata('classA');
-
+loadvehicledata();
 
 function searchItems() {
     const searchInput = document.getElementById('searchInput');
@@ -320,7 +552,23 @@ function searchItems() {
     });
 }
 
+function searchVehicles() {
+    const searchInput = document.getElementById('searchInputVehicle');
+    const tableBody = document.getElementById('VehicleTableBody');
+    const rows = tableBody.getElementsByTagName('tr');
+    const searchTerm = searchInput.value.toLowerCase();
+    Array.from(rows).forEach(row => {
+        const vehicleNumber = row.cells[1]?.textContent || '';
+        if (vehicleNumber.toLowerCase().includes(searchTerm)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
 document.getElementById('searchInput')?.addEventListener('keyup', searchItems);
+document.getElementById('searchInputVehicle')?.addEventListener('keyup', searchVehicles);
 
 function openEditModal(key) {
     const item = dataCache?.[key];
@@ -463,3 +711,33 @@ function changePassword() {
 document.getElementById('passwordChangeSubmitBtn')?.addEventListener('click', changePassword);
 
 
+function filterVehicles() {
+    const classFilter = document.getElementById('classFilter')?.value || '';
+    const conditionFilter = document.getElementById('conditionFilter')?.value || '';
+    const campFilter = document.getElementById('campFilter')?.value || '';
+    const tableBody = document.getElementById('VehicleTableBody');
+    const rows = tableBody.getElementsByTagName('tr');
+
+    Array.from(rows).forEach(row => {
+        const cells = row.getElementsByTagName('td');
+        const classtype = cells[4]?.textContent || '';
+        const condition = cells[5]?.textContent || '';
+        const camp = cells[6]?.textContent || '';
+
+        const matchClass = !classFilter || classtype === classlist[classFilter];
+        const matchCondition = !conditionFilter || condition === conditionlist[conditionFilter];
+         const matchCamp = !campFilter || camp === camplist[campFilter];
+
+        row.style.display = (matchClass && matchCondition && matchCamp) ? '' : 'none';
+    });
+}
+
+document.getElementById('classFilter')?.addEventListener('change', filterVehicles);
+document.getElementById('conditionFilter')?.addEventListener('change', filterVehicles);
+document.getElementById('campFilter')?.addEventListener('change', filterVehicles);
+
+function vehiclehistoryload(key) {
+    const vehicle = vehicleDataCache?.[key];
+    if (!vehicle) return;
+    window.location.href = `vehiclehistory.html?key=${key}`;
+}
