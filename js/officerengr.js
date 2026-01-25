@@ -114,7 +114,7 @@ function loaditemdata() {
         dbRef = ref(db, 'engrinventory/');
     }
     else if(typeKey === 'bqms') {
-        dbRef = ref(db, 'bqmsinventory/');
+        dbRef = ref(db, 'bkncoinventory/');
     }
     else {
         console.error('Invalid role:', role);
@@ -334,7 +334,7 @@ editForm?.addEventListener('submit', (e) => {
 
     }
     else if(typeKey === 'bqms') {    
-        update(ref(db, 'bqmsinventory/' + currentEditKey), updated)
+        update(ref(db, 'bkncoinventory/' + currentEditKey), updated)
         .then(() => {
             console.log('Data updated successfully');
             showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
@@ -377,7 +377,7 @@ deleteItemBtn?.addEventListener('click', (e) => {
 
     }
     else if(typeKey === 'bqms') {    
-        remove(ref(db, 'bqmsinventory/' + currentEditKey))
+        remove(ref(db, 'bkncoinventory/' + currentEditKey))
         .then(() => {
             console.log('Data deleted successfully');
             showNotification('Inventory item is pending for deletion.', 'success', 'Deletion Successful');

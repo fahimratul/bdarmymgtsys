@@ -18,7 +18,7 @@
     <nav id="notforclo">
         <ul>
             <li><a href="officer_engr_dashboard.html?key=engr" class="active" id="engr">Engr Inventory</a></li>
-            <li><a href="officer_engr_dashboard.html?key=bqms" id="bqms">BQMS Inventory</a></li>
+            <li><a href="officer_engr_dashboard.html?key=bqms" id="bqms">BKNCO Inventory</a></li>
             <li><a href="user_management.html">User Management</a></li>
             <li ><a href="#" onclick="popupmenu()"> User ▼ </a> </li>
         </ul>
@@ -42,7 +42,7 @@
         <div class="loading-subtext">Please wait...</div>
     </div>
 
-    <h1>Engineer Officer Dashboard</h1>
+    <h1 id="title">Engineering Inventory</h1>
      <div id="officer_notification_issue" class="officernotification"></div>
 
     <div id="officer_notification_unsvc" class="officernotification"></div>
@@ -314,7 +314,8 @@
             console.log(typeKey);
             if(typeKey === 'bqms'){    
                 document.getElementById("engr").classList.remove('active')
-                document.getElementById("bqms").classList.add('active')    
+                document.getElementById("bqms").classList.add('active')
+                document.getElementById("title").innerText = "BKNCO Inventory"    
             }
         });
           

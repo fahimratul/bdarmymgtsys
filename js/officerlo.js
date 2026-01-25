@@ -114,7 +114,7 @@ function loaditemdataBKNCO() {
         issue:0,
         instore:0
     };
-    let dbRef = ref(db, 'bkncoinventory/');
+    let dbRef = ref(db, 'bqmsinventory/');
     const loadingOverlay = document.getElementById('loadingOverlay');
 
     get(dbRef).then((snapshot) => {
@@ -340,7 +340,7 @@ editForm?.addEventListener('submit', (e) => {
         dbRef = ref(db, 'bqmsinventory/' + currentEditKey);
     }
     else if(itemType ==='bknco'){
-        dbRef = ref(db, 'bkncoinventory/' + currentEditKey);
+        dbRef = ref(db, 'bqmsinventory/' + currentEditKey);
     }
     update(dbRef, updated)
     .then(() => {
@@ -478,7 +478,7 @@ function acceptissue(key){
     const quantity = issueitem.quantity || 0;
     const newissue = (mainitem.issue || 0) + quantity;
     const newInstore = (mainitem.instore || 0) - quantity;
-    update(ref(db, 'bkncoinventory/' + key), {
+    update(ref(db, 'bqmsinventory/' + key), {
         issue: newissue,
         instore: newInstore
     }).then(() => {
@@ -487,7 +487,7 @@ function acceptissue(key){
         console.error('Error updating inventory for issue acceptance:', error);
     });
 
-    set(ref(db, 'bkncoinventory/' + key + '/history/'+ Date.now()), {
+    set(ref(db, 'bqmsinventory/' + key + '/history/'+ Date.now()), {
         date: issueitem.date || '',
         quantity: issueitem.quantity || 0,
         location: issueitem.location || '',
@@ -537,7 +537,7 @@ function acceptunsvc(key){
     }).catch((error) => {
         console.error('Error removing unservicable notification:', error);
     });
-    update(ref(db, 'bkncoinventory/' + key), {
+    update(ref(db, 'bqmsinventory/' + key), {
         unservicable: newunservicable,
         servicable: newservicable
     }).then(() => {
@@ -545,7 +545,7 @@ function acceptunsvc(key){
     }).catch((error) => {
         console.error('Error updating inventory for unservicable acceptance:', error);
     });
-    set(ref(db, 'bkncoinventory/' + key + '/unsvc/'+ Date.now()), {
+    set(ref(db, 'bqmsinventory/' + key + '/unsvc/'+ Date.now()), {
         date: unsvcitem.date || '',
         quantity: unsvcitem.quantity || 0,
         reason: unsvcitem.reason || '',
