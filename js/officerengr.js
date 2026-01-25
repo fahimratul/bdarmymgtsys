@@ -31,14 +31,14 @@ window.addEventListener('DOMContentLoaded', () => {
         window.location.href = 'login.html';
         return;
     }
-    if( role_type !== 'officer'){ 
+    if( role_type !== 'officer' && role_type !== 'clo' && role_type !== 'cc'){ 
         console.error('Unauthorized role type:', role_type);
         alert('Unauthorized access. Please log in with the correct credentials.');
         window.location.href = 'login.html';
         return;
     }
     if (!baNumber) {
-        console.error('BA Number not found in local storage.');
+        console.error('BA Number not found in session storage.');
         alert('Session expired. Please log in again.');
         window.location.href = 'login.html';
         return;
@@ -151,16 +151,16 @@ function loaditemdata() {
                 const issue = item.issue ?? 0;
                 const instore = item.instore ?? 0;
                 
-                html += `<tr id="${name}" data-key="${key}">
+                html += `<tr class ="row-data" data-key="${key}" style="cursor: pointer;">
     
                             <td>${serial}</td>
                             <td>${name}</td>
                             <td>${authorized}</td>
                             <td>${total}</td>
-                            <td><button class="issue-btn" data-key='${key}'>${issue}</button></td>
+                            <td>${issue}</td>
                             <td>${instore}</td>
                             <td>${servicable}</td>
-                            <td><button class="unservicable-btn" data-key='${key}'>${unservicable}</button></td>
+                            <td>${unservicable}</td>
                             <td>
                             <button class="edit-btn" data-key='${key}'>Edit</button>
                             </td>
@@ -192,18 +192,12 @@ function loaditemdata() {
                 openEditModal(key);
             });
         });
-        tableBody.querySelectorAll('.issue-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const key = btn.dataset.key;
-                console.log("Issue button clicked for key:", key);
-                addIssued(key);
-            });
-        });
-        tableBody.querySelectorAll('.unservicable-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const key = btn.dataset.key;
-                console.log("Unservicable button clicked for key:", key);
-                addUnservicable(key);
+        tableBody.querySelectorAll('.row-data').forEach(row => {
+            row.addEventListener('click', (e) => {
+                if (e.target.classList.contains('edit-btn')) return;
+                const key = row.dataset.key;
+                console.log("Row clicked for key:", key);
+                typeKey === 'engr' ? window.location.href = `itemdetails.html?key=${key}&type=engrnco` : window.location.href = `itemdetails.html?key=${key}&type=bqms`;  
             });
         });
         
@@ -217,7 +211,7 @@ function loaditemdata() {
         console.error('Error loading data:', error);
         const tableBody = document.getElementById('itemTableBody');
         if (tableBody) {
-            tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem; color: #e53e3e;">Error loading data. Please refresh the page.</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 2rem; color: #e53e3e;">Error loading data. Please refresh the page.</td></tr>';
         }
         // Hide loading overlay even on error
         if (loadingOverlay) {
@@ -229,216 +223,12 @@ function loaditemdata() {
 }
 
 
-function loadpendingissueditemdata() {
-    let dbRef;
-    let dbPendingRef;
-    if(typeKey === 'engr') {
-        dbPendingRef = ref(db, 'officerapproval/issue/engrinventory/');
-    }
-    else if(typeKey === 'bqms') {
-        dbPendingRef = ref(db, 'officerapproval/issue/bqmsinventory/');
-    }
-    else {
-        console.error('Invalid role:', role);
-        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
-        alert('Invalid role. Please log in again.');
-        window.location.href = 'login.html';
-        return;
-    }
-    get(dbPendingRef).then((snapshot) => {
-        const data = snapshot.val();
-        pendingissueCache= data || {};
-        let serial = 1;
-        const pendingissueitemdiv = document.getElementById('pendingIssuedItemforApproval');
-        const tableBody = document.getElementById('pendingIssuedItemTableBody');
-        
-        if (!tableBody) {
-            console.error('itemTableBody element not found');
-            return;
-        }
-        
-        let html = '';
-        
-        // Build table rows
-        if (data) {
-            for (const key in data) {
-                const item = data[key];
-                const mainItemData = dataCache[key] || {};
-                html += `<tr id="${item.name}" data-key="${key}">
-                            <td rowspan="2">${serial}</td>
-                            <td>${mainItemData.name}</td>
-                            <td>${mainItemData.authorized}</td>
-                            <td>${mainItemData.total}</td>
-                            <td>${mainItemData.servicable}</td>
-                            <td>${mainItemData.unservicable}</td>
-                            <td>${mainItemData.issue}</td>
-                            <td>${mainItemData.instore}</td>
-                            <td rowspan="2">
-                            <button class="pendingbtn edit" data-key='${key}'>Edit</button>
-                                <button class="pendingbtn approve" data-key='${key}'>Approve</button>
-                                <button class="pendingbtn danger" data-key='${key}'>Reject</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>${item.name}</td>
-                            <td>${item.authorized}</td>
-                            <td>${item.total}</td>
-                            <td>${item.servicable}</td>
-                            <td>${item.unservicable}</td>
-                            <td>${item.issue}</td>
-                            <td>${item.instore}</td>
-                        </tr>`;
-                serial += 1;
-            }
-        } else {
-            pendingissueitemdiv.style.display='none';    
-        }
-        
-        tableBody.innerHTML = html;
-
-        tableBody.querySelectorAll('.edit').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const key = btn.dataset.key;
-                openEditModal(key);
-            });
-        });
-        tableBody.querySelectorAll('.approve').forEach(btn => {
-            btn.addEventListener('click', () => {
-                showNotification("Approving issued item...", "info", "Please Wait");
-                const key = btn.dataset.key;
-                approveIssuedItem(key, pendingissueCache[key]);
-            });
-        });
-        tableBody.querySelectorAll('.danger').forEach(btn => {
-            btn.addEventListener('click', () => {
-                showNotification("Rejecting issued item...", "info", "Please Wait");
-                const key = btn.dataset.key;
-                rejectIssuedItem(key);
-            });
-        });
-        
-    }).catch((error) => {
-        console.error('Error loading data:', error);
-    }
-    );
-}
-
-function loadnewitemdata() {
-    let dbRef;
-    if(typeKey === 'engr') {
-        dbRef = ref(db, 'officerapproval/new/engrinventory/');
-    }
-    else if(typeKey === 'bqms') {
-        dbRef = ref(db, 'officerapproval/new/bqmsinventory/');
-    }
-    else {
-        console.error('Invalid role:', role);
-        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
-        alert('Invalid role. Please log in again.');
-        window.location.href = 'login.html';
-        return;
-    }
-    const loadingOverlay = document.getElementById('loadingOverlay');
-
-    get(dbRef).then((snapshot) => {
-        const data = snapshot.val();
-        newitemCache = data || {};
-        let serial = 1;
-        const divNewItem = document.getElementById('pendingNewItemforApproval');
-        const tableBody = document.getElementById('pendingNewItemTableBody');
-        
-        if (!tableBody) {
-            console.error('itemTableBody element not found');
-            if (loadingOverlay) loadingOverlay.classList.add('hidden');
-            return;
-        }
-        
-        let html = '';
-        
-        // Build table rows
-        if (data) {
-            for (const key in data) {
-                const item = data[key];
-                const name = item.name || '';
-                const authorized = item.authorized ?? '';
-                const total = item.total ?? 0;
-                const servicable = item.servicable ?? 0;
-                const unservicable = item.unservicable ?? 0;
-                const issue = item.issue ?? 0;
-                const instore = item.instore ?? 0;
-                
-                html += `<tr id="${name}" data-key="${key}">
-    
-                            <td>${serial}</td>
-                            <td>${name}</td>
-                            <td>${authorized}</td>
-                            <td>${total}</td>
-                            <td>${issue}</td>
-                            <td>${instore}</td>
-                            <td>${servicable}</td>
-                            <td>${unservicable}</td>
-                            <td>
-                            <button class="pendingbtn edit" data-key='${key}'>Edit</button>
-                                <button class="pendingbtn approve" data-key='${key}'>Approve</button>
-                                <button class="pendingbtn danger" data-key='${key}'>Reject</button>
-                            </td>
-                        </tr>`;
-                serial += 1;
-            }
-        } else {
-            divNewItem.style.display='none';
-        }
-        
-        tableBody.innerHTML = html;
-        tableBody.querySelectorAll('.edit').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const key = btn.dataset.key;
-                openEditModal(key);
-            });
-        });
-        tableBody.querySelectorAll('.approve').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const key = btn.dataset.key;
-                approveNewItem(key, newitemCache[key]);
-            });
-        });
-        tableBody.querySelectorAll('.danger').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const key = btn.dataset.key;
-                rejectNewItem(key);
-            });
-        });
-
-        // Hide loading overlay after data is loaded
-        if (loadingOverlay) {
-            setTimeout(() => {
-                loadingOverlay.classList.add('hidden');
-            }, 100);
-        }
-    }).catch((error) => {
-        console.error('Error loading data:', error);
-        const tableBody = document.getElementById('pendingNewItemTableBody');
-        if (tableBody) {
-            tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem; color: #e53e3e;">Error loading data. Please refresh the page.</td></tr>';
-        }
-        // Hide loading overlay even on error
-        if (loadingOverlay) {
-            setTimeout(() => {
-                loadingOverlay.classList.add('hidden');
-            }, 100);
-        }
-    });
-}
 
 
 
 
 loaditemdata();
 console.log("Loading Pending Issued Items for Approval");
-loadpendingissueditemdata();
-console.log("Loading New Items for Approval");
-loadnewitemdata();
-
 
 function searchItems() {
     const searchInput = document.getElementById('searchInput');
@@ -622,153 +412,207 @@ logoutButton?.addEventListener('click', () => {
 });
 
 
-function approveNewItem(key, data) {
-    let dbremoveRef;
-    if(role === 'engr') {
-        set(ref(db, 'engrinventory/' + key),{
-            name: data.name,
-            authorized: data.authorized,
-            total: data.total,
-            servicable: data.servicable,
-            unservicable: data.unservicable,
-            issue: data.issue,
-            instore: data.instore
-        });
-        dbremoveRef = ref(db, 'officerapproval/new/engrinventory/' + key);
-        showNotification("Item approved successfully!", "success", "Success");
-    }
-    else if(typeKey === 'bqms') {
-        set(ref(db, 'bqmsinventory/' + key),{
-            name: data.name,
-            authorized: data.authorized,
-            total: data.total,
-            servicable: data.servicable,
-            unservicable: data.unservicable,
-            issue: data.issue,
-            instore: data.instore
-        });
-        dbremoveRef = ref(db, 'officerapproval/new/siginventory/' + key);
-        showNotification("Item approved successfully!", "success", "Success");
-    }
-    else {
-        console.error('Invalid role:', role);
-        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
-        window.location.href = 'login.html';
-        return;
-    }
-    remove(dbremoveRef)
-    .then(() => {
-        console.log('Pending new item removed successfully after approval');
-    })
-    .catch((error) => {
-        console.error('Error removing pending new item:', error);
+
+let isssuenotificationDataCache = {};
+
+const issuenotificationbody = document.getElementById('officer_notification_issue');
+function loadissuenotifactions() {
+    const dbRef = ref(db, 'issuepending/eo');
+    get(dbRef).then((snapshot) => {
+        isssuenotificationDataCache = snapshot.val();
+        let html = '';
+        issuenotificationbody.style.display='flex';
+        if (isssuenotificationDataCache) {
+            for (const key in isssuenotificationDataCache) {
+                const notification = isssuenotificationDataCache[key];
+                const message = notification.msg || '';
+                html += `<div class="msg">
+                        <p class="content">${message}<br><br> </p>
+                        <button class="accept-btn" data-key="${key}">Accept</button>
+                        <button class="reject-btn" data-key="${key}">Reject</button> 
+                    </div>`;
+            }
+            issuenotificationbody.innerHTML = html;
+            issuenotificationbody.style.minHeight='max-content';
+            console.log("Notifications Loaded");
+            console.log(isssuenotificationDataCache);
+            // Attach accept/reject handlers
+            issuenotificationbody.querySelectorAll('.accept-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const key = btn.dataset.key;
+                    acceptissue(key);
+                    console.log('Accepted notification with key:', key);
+                });
+            });
+            issuenotificationbody.querySelectorAll('.reject-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const key = btn.dataset.key;
+                    rejectissue(key);
+                    console.log('Rejected notification with key:', key);
+                });
+            });
+        }
+    }).catch((error) => {
+        console.error('Error loading notifications:', error);
     });
-    loadnewitemdata();
 }
 
 
-function approveIssuedItem(key, data) {
-    let dbremoveRef;
-    if(typeKey === 'engr') {
-        set(ref(db, 'engrinventory/' + key),{
-            name: data.name,
-            authorized: data.authorized,
-            total: data.total,
-            servicable: data.servicable,
-            unservicable: data.unservicable,
-            issue: data.issue,
-            instore: data.instore
-        });
-        dbremoveRef = ref(db, 'officerapproval/issue/engrinventory/' + key);
-        showNotification("Item approved successfully! Waiting For Cheif Logistic Officer's Approval", "success", "Success");
-    }
-    else if(typeKey === 'bqms') {
-        set(ref(db, 'bqmsinventory/' + key),{
-            name: data.name,
-            authorized: data.authorized,
-            total: data.total,
-            servicable: data.servicable,
-            unservicable: data.unservicable,
-            issue: data.issue,
-            instore: data.instore
-        });
-        dbremoveRef = ref(db, 'officerapproval/issue/siginventory/' + key);
-        showNotification("Item approved successfully! Waiting For Cheif Logistic Officer's Approval", "success", "Success");
-    }
-    else {
-        console.error('Invalid role:', role);
-        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
-        window.location.href = 'login.html';
-        return;
-    }
-    remove(dbremoveRef)
-    .then(() => {
-        console.log('Pending issued item removed successfully after approval');
-    })
-    .catch((error) => {
-        console.error('Error removing pending new item:', error);
+let unsvcnotificationDataCache = {};
+
+const unsvcnotificationbody = document.getElementById('officer_notification_unsvc');
+function loadunsvcnotifactions() {
+    const dbRef = ref(db, 'unsvcpending/eo');
+    get(dbRef).then((snapshot) => {
+        unsvcnotificationDataCache = snapshot.val();
+        let html = '';
+        unsvcnotificationbody.style.display='flex';
+        if (unsvcnotificationDataCache) {
+            for (const key in unsvcnotificationDataCache) {
+                const notification = unsvcnotificationDataCache[key];
+                const message = notification.msg || '';
+                html += `<div class="msg">
+                        <p class="content">${message}<br><br> </p>
+                        <button class="accept-btn" data-key="${key}">Accept</button>
+                        <button class="reject-btn" data-key="${key}">Reject</button> 
+                    </div>`;
+            }
+            unsvcnotificationbody.innerHTML = html;
+            unsvcnotificationbody.style.minHeight='max-content';
+            console.log("Notifications Loaded");
+            console.log(unsvcnotificationDataCache);
+            // Attach accept/reject handlers
+            unsvcnotificationbody.querySelectorAll('.accept-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const key = btn.dataset.key;
+                    acceptunsvc(key);
+                    console.log('Accepted notification with key:', key);
+                });
+            });
+            unsvcnotificationbody.querySelectorAll('.reject-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const key = btn.dataset.key;
+                    rejectunsvc(key);
+                    console.log('Rejected notification with key:', key);
+                });
+            });
+        }
+    }).catch((error) => {
+        console.error('Error loading notifications:', error);
     });
-    loadpendingissueditemdata();
+} 
+
+
+if(role==='eo'){
+    loadissuenotifactions();
+    loadunsvcnotifactions();
 }
-
-function rejectNewItem(key) {
-    let dbremoveRef;
-    if(typeKey === 'bqms') {
-        dbremoveRef = ref(db, 'officerapproval/new/bqmsinventory/' + key);
-    }
-    else if(typeKey === 'so') {
-        dbremoveRef = ref(db, 'officerapproval/new/engrinventory/' + key);
-    }
-    else {
-        console.error('Invalid role:', typeKey);
-        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
-        window.location.href = 'login.html';
-        return;
-    }
-    remove(dbremoveRef)
-    .then(() => {
-        console.log('Pending new item removed successfully after rejection');
-        showNotification("Item rejected successfully!", "success", "Success");
-        loadnewitemdata();
-    })
-    .catch((error) => {
-        console.error('Error removing pending new item:', error);
-    });
-    loadnewitemdata();
-}
-
-
-function rejectIssuedItem(key) {
-    let dbremoveRef;
-    if(typeKey === 'engr') {
-        dbremoveRef = ref(db, 'officerapproval/issue/engrinventory/' + key);
-    }
-    else if(typeKey === 'bqms') {
-        dbremoveRef = ref(db, 'officerapproval/issue/bqmsinventory/' + key);
-    }
-    else {
-        console.error('Invalid role:', typeKey);
-        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
-        window.location.href = 'login.html';
-        return;
-    }
-    remove(dbremoveRef)
-    .then(() => {
-        console.log('Pending issued item removed successfully after rejection');
-        showNotification("Item rejected successfully!", "success", "Success");
-        loadpendingissueditemdata();
-    })
-    .catch((error) => {
-        console.error('Error removing pending issued item:', error);
-    });
-    loadpendingissueditemdata();
-}
-
 const issueModal = document.getElementById('issuelistModal');
 
-function addIssued(key) {
-    const item = dataCache?.[key];
-    if (!item) return;
-    currentEditKey = key;
-    issueModal.classList.remove('hidden');
+function acceptissue(key){
+    issuenotificationbody.innerHTML = '';
+    const issueitem = isssuenotificationDataCache[key];
+    const mainitem = dataCache[key];
+    if(!issueitem) return;
+    const quantity = issueitem.quantity || 0;
+    const newissue = (mainitem.issue || 0) + quantity;
+    const newInstore = (mainitem.instore || 0) - quantity;
+    update(ref(db, 'engrinventory/' + key), {
+        issue: newissue,
+        instore: newInstore
+    }).then(() => {
+        console.log('Issue accepted and inventory updated');        
+    }).catch((error) => {
+        console.error('Error updating inventory for issue acceptance:', error);
+    });
+
+    set(ref(db, 'engrinventory/' + key + '/history/'+ Date.now()), {
+        date: issueitem.date || '',
+        quantity: issueitem.quantity || 0,
+        location: issueitem.location || '',
+        person: issueitem.person || '',
+        issued_by: issueitem.issued_by || '',
+    }).then(() => {
+        console.log('Issue history recorded successfully');
+    }).catch((error) => {
+        console.error('Error recording issue history:', error);
+    });
+    remove(ref(db, 'issuepending/eo/' + key)).then(() => {
+        console.log('Issue notification removed successfully');
+    }).catch((error) => {
+        console.error('Error removing issue notification:', error);
+    });
+    setTimeout(() => {
+        loadissuenotifactions();
+        loaditemdata();
+        showNotification('Issue request accepted and inventory updated.', 'success', 'Issue Accepted');
+    }, 500);
+}
+function rejectissue(key){
+    issuenotificationbody.innerHTML = '';
+    remove(ref(db, 'issuepending/eo/' + key)).then(() => {
+        console.log('Issue notification removed successfully');
+    }).catch((error) => {
+        console.error('Error removing issue notification:', error);
+    });
+    setTimeout(() => {
+        showNotification('Issue request rejected.', 'info', 'Issue Rejected');
+        loadissuenotifactions();
+    }, 500);
+}
+
+function acceptunsvc(key){
+    unsvcnotificationbody.innerHTML = '';
+    const unsvcitem = unsvcnotificationDataCache[key];
+    const mainitem = dataCache[key];
+    console.log(mainitem, unsvcitem);
+    if(!unsvcitem) return;
+    const quantity = unsvcitem.quantity || 0;
+    const newunservicable = (mainitem.unservicable || 0) + quantity;
+    const newservicable = (mainitem.servicable || 0) - quantity;
+    
+    remove(ref(db, 'unsvcpending/eo/' + key)).then(() => {
+        console.log('Unservicable notification removed successfully');
+    }).catch((error) => {
+        console.error('Error removing unservicable notification:', error);
+    });
+    update(ref(db, 'engrinventory/' + key), {
+        unservicable: newunservicable,
+        servicable: newservicable
+    }).then(() => {
+        console.log('Unservicable accepted and inventory updated');        
+    }).catch((error) => {
+        console.error('Error updating inventory for unservicable acceptance:', error);
+    });
+    set(ref(db, 'engrinventory/' + key + '/unsvc/'+ Date.now()), {
+        date: unsvcitem.date || '',
+        quantity: unsvcitem.quantity || 0,
+        reason: unsvcitem.reason || '',
+        marked_by: unsvcitem.marked_by || '',
+    }).then(() => {
+        console.log('Unservicable history recorded successfully');
+    }).catch((error) => {
+        console.error('Error recording unservicable history:', error);
+    });
+    setTimeout(() => {
+        showNotification('Unservicable request accepted and inventory updated.', 'success', 'Unservicable Accepted');
+        loaditemdata();
+        loadunsvcnotifactions();
+    }, 700);
+    loaditemdata();
+    loadissuenotifactions();
+}
+function rejectunsvc(key){
+    unsvcnotificationbody.innerHTML = '';
+    remove(ref(db, 'unsvcpending/eo/' + key)).then(() => {
+        console.log('Unservicable notification removed successfully');
+    }).catch((error) => {
+        console.error('Error removing unservicable notification:', error);
+    });
+    setTimeout(() => {
+        showNotification('Unservicable request rejected.', 'info', 'Unservicable Rejected');
+        loadunsvcnotifactions();
+    }, 700);
+    loadissuenotifactions();
+    loadunsvcnotifactions();
 }

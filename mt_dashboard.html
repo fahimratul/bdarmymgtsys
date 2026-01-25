@@ -24,9 +24,9 @@
     <h1>MT Dashboard</h1>
         <nav id="notforclo">
         <ul>
-            <li><a href="#" onclick="loadtransport()" id= "viewTrBtn" class="active">View Transport State</a></li>
-            <li><a href="#" onclick="loadinventory()" id= "viewInrBtn">View Inventory</a></li>
-            <li><a href="user_management.html">User Management</a></li>
+            <li><a href="#" onclick="window.location.href='mt_dashboard.html?key=viewtr'" id= "viewTrBtn" class="active">View Transport State</a></li>
+            <li><a href="#" onclick="window.location.href='mt_dashboard.html?key=viewinr'" id= "viewInrBtn">View Inventory</a></li>
+            <li id="notformtjco"><a href="user_management.html">User Management</a></li>
             <li ><a href="#" onclick="popupmenu()"> User Info </a> </li>
         </ul>
     </nav>
@@ -35,15 +35,6 @@
             <li><a href="clodashboard.html" >Home</a></li>
             <li><a href="user_management.html">User Management</a></li>
             <li><a href="notifications.html">Notifications</a></li>
-            <li><select id="inventorySelect" onchange="handleInventoryChange(this.value)">
-                <option value="">Reports</option>
-                <option value="engr">Engineer Inventory</option>
-                <option value="sig">Signal Inventory</option>
-                <option value="mt">MT Inventory</option>
-                <option value="bknco">Bknco Inventory</option>
-                <option value="bqms">BQMS Inventory</option>    
-            </select>
-            </li>
             <li><a href="ammodashboard.html">Ammo Dashboard</a></li>
             <li><a href="mt_dashboard.html" class="active">Mt Dashboard</a></li>
             <li ><a href="#" onclick="popupmenu()"> User Info </a> </li>
@@ -544,6 +535,13 @@
             document.getElementById('transportTableContainer').style.display = 'flex';
         }   
         window.addEventListener('DOMContentLoaded', () => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const key = urlParams.get('key');
+                if (key === 'viewinr') {
+                    loadinventory();
+                } else {
+                    loadtransport();
+                }
                 const role=sessionStorage.getItem('role');
                 if(role==='clo' || role === 'cc'){
                     document.getElementById('notforclo').style.display='none';
@@ -551,6 +549,9 @@
                 } else {
                     document.getElementById('forclo').style.display='none';
                     document.getElementById('notforclo').style.display='block';
+                }
+                if(role==='mtjco' || role==='mtnco'){
+                    document.getElementById('notformtjco').style.display='none';
                 }
         });
     </script>

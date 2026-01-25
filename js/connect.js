@@ -106,7 +106,7 @@ function handlelogin() {
                         }
                         else {
                             console.log("Redirecting to officer dashboard");
-                            window.location.href = 'officer_dashboard.html';
+                            window.location.href = 'officer_so_dashboard.html';
                         }
                     } 
                     else if (role_type === 'bqms'){

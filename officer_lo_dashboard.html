@@ -15,7 +15,7 @@
 </head>
 <body>
     
-    <nav>
+    <nav id="notforclo">
         <ul>
             <li><a href="officer_lo_dashboard.html" class="active">Barrack NCO Inventory</a></li>
             <li><a href="user_management.html">User Management</a></li>
@@ -24,6 +24,16 @@
         </ul>
     </nav>
 
+    <nav id="forclo">
+        <ul>
+            <li><a href="clodashboard.html" >Home</a></li>
+            <li><a href="user_management.html">User Management</a></li>
+            <li><a href="notifications.html">Notifications</a></li>
+            <li><a href="ammodashboard.html">Ammo Dashboard</a></li>
+            <li><a href="mt_dashboard.html" class="active">Mt Dashboard</a></li>
+            <li ><a href="#" onclick="popupmenu()"> User Info </a> </li>
+        </ul>
+    </nav>
     <div id="notification-toast" class="notification-toast"></div>   
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay">
@@ -42,6 +52,10 @@
         <button class="btn primary" id="changePasswordBtn" onclick="passwordChangeModal()">Change Password</button>
         <button class="btn secondary" id="logoutButton" onclick="logout()">Logout</button>        
     </div>
+    <div id="officer_notification_issue" class="officernotification"></div>
+
+    <div id="officer_notification_unsvc" class="officernotification"></div>
+
     <h2>Barrack NCO Inventory Status Overview</h2>    
         <div class="dashboard-card">
             <div class="card">

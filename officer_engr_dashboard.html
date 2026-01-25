@@ -15,11 +15,21 @@
 </head>
 <body>
     
-    <nav>
+    <nav id="notforclo">
         <ul>
             <li><a href="officer_engr_dashboard.html?key=engr" class="active" id="engr">Engr Inventory</a></li>
             <li><a href="officer_engr_dashboard.html?key=bqms" id="bqms">BQMS Inventory</a></li>
             <li><a href="user_management.html">User Management</a></li>
+            <li ><a href="#" onclick="popupmenu()"> User Info </a> </li>
+        </ul>
+    </nav>
+    <nav id="forclo">
+        <ul>
+            <li><a href="clodashboard.html" >Home</a></li>
+            <li><a href="user_management.html">User Management</a></li>
+            <li><a href="notifications.html">Notifications</a></li>
+            <li><a href="ammodashboard.html">Ammo Dashboard</a></li>
+            <li><a href="mt_dashboard.html" class="active">Mt Dashboard</a></li>
             <li ><a href="#" onclick="popupmenu()"> User Info </a> </li>
         </ul>
     </nav>
@@ -33,6 +43,10 @@
     </div>
 
     <h1>Engineer Officer Dashboard</h1>
+     <div id="officer_notification_issue" class="officernotification"></div>
+
+    <div id="officer_notification_unsvc" class="officernotification"></div>
+
     
     <!-- User Info Container -->
     <div class="topdown-container" id="userInfoContainer" style="display: none;">
@@ -342,6 +356,17 @@
                 document.getElementById("engr").classList.remove('active')
                 document.getElementById("bqms").classList.add('active')    
             }
+        });
+          
+        window.addEventListener('DOMContentLoaded', () => {
+                const role=sessionStorage.getItem('role');
+                if(role==='clo' || role === 'cc'){
+                    document.getElementById('notforclo').style.display='none';
+                    document.getElementById('forclo').style.display='block';
+                } else {
+                    document.getElementById('forclo').style.display='none';
+                    document.getElementById('notforclo').style.display='block';
+                }
         });
 
     </script>
