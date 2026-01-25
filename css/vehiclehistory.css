@@ -45,6 +45,7 @@ body {
     max-height: 250px;
     min-height: 250px;
     border: 1px solid #ddd;
+    text-align: center;
 }
 .history-table {
     width: 100%;

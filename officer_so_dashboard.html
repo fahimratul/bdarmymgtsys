@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="css/pendingitem.css">
     <link rel="stylesheet" href="css/notification.css">
     <link rel="stylesheet" href="css/adduser.css">
+    <link rel="stylesheet" href="css/piechart.css">
     <script src ="https://unpkg.com/lucide@latest" ></script>
     <link rel='icon' href='static/logo_small.png' type='image/x-icon' />
     <title>Offr Inventory</title>
@@ -20,55 +21,29 @@
         <div class="loading-text">Loading Inventory Data</div>
         <div class="loading-subtext">Please wait...</div>
     </div>
+    
+    <nav id="notforclo">
+        <ul>
+            <li><a href="officer_so_dashboard.html" class="active">Inventory</a></li>
+            <li><a href="user_management.html">User Management</a></li>
+            <li ><a href="#" onclick="popupmenu()"> User Info </a> </li>
+        </ul>
+    </nav>
+    <nav id="forclo">
+        <ul>
+            <li><a href="clodashboard.html" >Home</a></li>
+            <li><a href="user_management.html">User Management</a></li>
+            <li><a href="notifications.html">Notifications</a></li>
+            <li><a href="ammodashboard.html">Ammo Dashboard</a></li>
+            <li><a href="mt_dashboard.html" class="active">Mt Dashboard</a></li>
+            <li ><a href="#" onclick="popupmenu()"> User Info </a> </li>
+        </ul>
+    </nav>
+    <h1 id="title">Signal Officer Inventory Management</h1>
+    
+    <div id="officer_notification_issue" class="officernotification"></div>
 
-    <h1 id="title"></h1>
-    <!-- User Info Dropdown -->
-    <div class="topdown-menu" onclick="popupmenu()">
-        <div class="userIcon">
-            <i data-lucide="user"></i>
-        </div>
-        <p>User Info</p>
-    </div>
-    <div id="pendingIssuedItemforApproval" class="pendingitem">
-        <h2>Pending Issued Items for Approval</h2>
-        <table class="pendingitemTable">
-            <thead>
-                <th>serial</th>
-                <th>Nomenclature/Name</th>
-                <th>Authorized Unit</th>
-                <th>Held</th>
-                <th>Issued</th>
-                <th>In store</th>
-                <th>Servicable</th>
-                <th>Unservicable</th>
-                <th>Actions</th>
-            </thead>
-            <tbody id="pendingIssuedItemTableBody">
-                <!-- Pending issued items will be dynamically inserted here -->
-            </tbody>
-        </table>
-    </div>
-
-    <div id="pendingNewItemforApproval" class="pendingitem">
-        <h2>Pending New Items for Approval</h2>
-        <table class="pendingitemTable">
-            <thead>
-                <th>serial</th>
-                <th>Nomenclature/Name</th>
-                <th>Authorized Unit</th>
-                <th>Held</th>
-                <th>Issued</th>
-                <th>In store</th>
-                <th>Servicable</th>
-                <th>Unservicable</th>
-                <th>Actions</th>
-            </thead>
-            <tbody id="pendingNewItemTableBody">
-                <!-- Pending new items will be dynamically inserted here -->
-            </tbody>
-        </table>
-    </div>
-
+    <div id="officer_notification_unsvc" class="officernotification"></div>
     <div class="topdown-container" id="userInfoContainer" style="display: none;">
         <h3 id ="username"></h3>
         <h4 id ="rank"></h4>
@@ -133,15 +108,6 @@
                     <p></p>
                 </div>
             </div>
-            <div class="card" onclick="OpenUserManagement()" style="cursor: pointer;">
-                <div class="card-icon">
-                    <i data-lucide="user-plus"></i>
-                </div>
-                <div class="card-info">
-                    <h2 id="userManagement">User Management</h2>
-                    <p></p>
-                </div>
-        </div>
     </div>
 
     <!-- Search and Add Item -->
@@ -318,6 +284,16 @@
             userInfoContainer.style.display = 'none';
             console.log('Password Change Modal Opened');
         }
+        window.addEventListener('DOMContentLoaded', () => {
+                const role=sessionStorage.getItem('role');
+                if(role==='clo' || role === 'cc'){
+                    document.getElementById('notforclo').style.display='none';
+                    document.getElementById('forclo').style.display='block';
+                } else {
+                    document.getElementById('forclo').style.display='none';
+                    document.getElementById('notforclo').style.display='block';
+                }
+        });
     </script>
 
     <script type="module" src="js/officer.js" defer></script>

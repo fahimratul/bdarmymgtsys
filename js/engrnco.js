@@ -163,7 +163,7 @@ function loaditemdata() {
                 const issue = item.issue ?? 0;
                 const instore = item.instore ?? 0;
                 
-                html += `<tr id="${name}" data-key="${key}">
+                html += `<tr class="data-row" data-key="${key}" style="cursor: pointer;" >
                             <td>${serial}</td>
                             <td>${name}</td>
                             <td>${authorized}</td>
@@ -197,6 +197,13 @@ function loaditemdata() {
             btn.addEventListener('click', () => {
                 const key = btn.dataset.key;
                 openEditModal(key);
+            });
+        });
+        tableBody.querySelectorAll('.data-row').forEach(row => {
+            row.addEventListener('click', (e) => {
+                if (e.target.classList.contains('edit-btn')) return;
+                const key = row.dataset.key;
+                window.location.href = `itemdetails.html?key=${key}&type=${role}`;
             });
         });
         
@@ -424,10 +431,4 @@ function changePassword() {
 
 
 document.getElementById('passwordChangeSubmitBtn')?.addEventListener('click', changePassword);
-
-
-
-
-
-
 

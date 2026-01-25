@@ -20,15 +20,6 @@
             <li><a href="clodashboard.html" class="active">Home</a></li>
             <li><a href="user_management.html">User Management</a></li>
             <li><a href="notifications.html">Notifications</a></li>
-            <li><select id="inventorySelect" onchange="handleInventoryChange(this.value)">
-                <option value="">Reports</option>
-                <option value="engr">Engineer Inventory</option>
-                <option value="sig">Signal Inventory</option>
-                <option value="mt">MT Inventory</option>
-                <option value="bknco">Bknco Inventory</option>
-                <option value="bqms">BQMS Inventory</option>    
-            </select>
-            </li>
             <li><a href="ammodashboard.html">Ammo Dashboard</a></li>
             <li><a href="mt_dashboard.html">Mt Dashboard</a></li>
             <li ><a href="#" onclick="popupmenu()"> User Info </a> </li>
@@ -54,7 +45,7 @@
     
     <h2>Inventory Status Overview</h2>
         <div class="dashboard-card">
-        <div class="card" onclick="handleInventoryChange('engr')" style="cursor: pointer;">
+        <div class="card" onclick="window.location.href='officer_engr_dashboard.html?key=engr'" style="cursor: pointer;">
             <div class="card-icon">
                 <i data-lucide="box"></i>
             </div>
@@ -64,7 +55,7 @@
                 <p>Total Items</p> 
             </div>
         </div>
-        <div class="card" onclick="handleInventoryChange('sig')" style="cursor: pointer;">
+        <div class="card" onclick="window.location.href='officer_so_dashboard.html'" style="cursor: pointer;">
             <div class="card-icon">
                 <i data-lucide="check-circle"></i>
             </div>
@@ -74,7 +65,7 @@
                 <p>Total Items</p> 
             </div>
         </div>
-        <div class="card" onclick="handleInventoryChange('mt')" style="cursor: pointer;">
+        <div class="card" onclick="window.location.href='mt_dashboard.html?key=viewinr'" style="cursor: pointer;">
             <div class="card-icon">
                 <i data-lucide="x-circle"></i>
             </div>
@@ -84,7 +75,7 @@
                 <p>Total Items</p> 
             </div>
         </div>
-        <div class="card" onclick="handleInventoryChange('bknco')" style="cursor: pointer;">
+        <div class="card" onclick="window.location.href='officer_lo_dashboard.html'" style="cursor: pointer;">
             <div class="card-icon">
                 <i data-lucide="truck"></i>
             </div>
@@ -94,7 +85,7 @@
                 <p>Total Items</p> 
             </div>
         </div>
-        <div class="card" onclick="handleInventoryChange('bqms')" style="cursor: pointer;">
+        <div class="card" onclick="window.location.href='officer_engr_dashboard.html?key=bqms'" style="cursor: pointer;">
             <div class="card-icon">
                 <i data-lucide="box"></i>
             </div>

@@ -17,9 +17,9 @@
 <body>
     <nav id="notforclo">
         <ul>
-            <li><a href="officer_dashboard.html">Home</a></li>
+            <li><a href="officer_lo_dashboard.html">Home</a></li>
             <li><a href="user_management.html">User Management</a></li>
-            <li><a href="ammodashboard.html" class="active">Ammo Inventory</a></li>
+            <li><a href="ammodashboard.html" class="active">Ammo Dashboard</a></li>
             <li ><a href="#" onclick="popupmenu()"> User Info </a> </li>
         </ul>
     </nav>
@@ -29,15 +29,6 @@
             <li><a href="clodashboard.html" class="active">Home</a></li>
             <li><a href="user_management.html">User Management</a></li>
             <li><a href="notifications.html">Notifications</a></li>
-            <li><select id="inventorySelect" onchange="handleInventoryChange(this.value)">
-                <option value="">Reports</option>
-                <option value="engr">Engineer Inventory</option>
-                <option value="sig">Signal Inventory</option>
-                <option value="mt">MT Inventory</option>
-                <option value="bknco">Bknco Inventory</option>
-                <option value="bqms">BQMS Inventory</option>    
-            </select>
-            </li>
             <li><a href="ammodashboard.html">Ammo Dashboard</a></li>
             <li><a href="mt_dashboard.html">Mt Dashboard</a></li>
             <li ><a href="#" onclick="popupmenu()"> User Info </a> </li>
@@ -60,7 +51,7 @@
         <button class="btn secondary" id="logoutButton" onclick="logout()">Logout</button>        
     </div>
     
-    <h1>Datails of</h1>
+    <h1>Details of</h1>
     <h2 id="ammotypeheading"></h2>
     <button class="btn primary" id="addAmmoBtn">Add New Lot</button>
     <br>

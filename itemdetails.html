@@ -14,11 +14,11 @@
 </head>
 <body>
     <div id="notification-toast" class="notification-toast"></div>
-    <!-- <div id="loadingOverlay" class="loading-overlay">
+    <div id="loadingOverlay" class="loading-overlay">
         <div class="spinner"></div>
         <div class="loading-text">Loading Inventory Data</div>
         <div class="loading-subtext">Please wait...</div>
-    </div> -->
+    </div>
 
 
 	<div class="shell">
@@ -71,10 +71,7 @@
                     <div class="history-section">
                         <h2>Issue History</h2>
                         <table class="history-table">
-                            <thead>
-                                <tr col-span="6">
-                                    <th colspan="6">Issue History Records</th>
-                                </tr> 
+                            <thead> 
                                 <tr>
                                     <th>Voucher No</th>
                                     <th>Date</th>
@@ -88,11 +85,9 @@
                                 <!-- History records will be populated here -->
                             </tbody>
                         </table>
-                        <table class="unsvc-table">
+                        <h2>Unservicable History</h2>
+                        <table class="history-table">
                             <thead>
-                                <tr col-span="6">
-                                    <th colspan="6">Unservicable History Records</th>
-                                </tr> 
                                 <tr>
                                     <th>Voucher No</th>
                                     <th>Date</th>
@@ -123,12 +118,12 @@
                         <input type="date" id="issuedate" name="date" required>
                     </div>
                     <div class="field">
-                        <label for="issueevent">Person/Unit</label>
-                        <input type="text" id="issueevent" name="event" disabled>
+                        <label for="issueperson">Person/Unit</label>
+                        <input type="text" id="issueperson" name="person" required>
                     </div>
                     <div class="field" style="grid-column: span 2;">
-                        <label for="issuedetails">Location</label>
-                        <textarea id="issuedetails" name="details" required></textarea>
+                        <label for="issuelocation">Location</label>
+                        <input type="text" id="issuelocation" name="location" required>
                     </div>
                     <div class="field">
                         <label for="issuequantity">Quantity</label>
@@ -159,7 +154,7 @@
                     </div>
                     <div class="field">
                         <label for="unsvcreason">Reasons</label>
-                        <input type="text" id="unsvcreason" name="event" disabled>
+                        <input type="text" id="unsvcreason" name="event" required>
                     </div>
                     <div class="field">
                         <label for="unsvcquantity">Quantity</label>
@@ -183,5 +178,6 @@
             toast.classList.remove("show");
         }
     </script>
+    <script type="module" src="js/itemdetails.js" defer></script>
 </body>
 </html>
