@@ -165,7 +165,7 @@ function loaditemdata() {
         }
         
         tableBody.innerHTML = html;
-        document.getElementById('serial').textContent = serial;
+        document.getElementById('serial').textContent = serial-1;
         document.getElementById('totalItems').textContent = datainfo.total;
         document.getElementById('servicableItems').textContent = datainfo.servicable;
         document.getElementById('unservicableItems').textContent = datainfo.unservicable;

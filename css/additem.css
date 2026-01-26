@@ -272,6 +272,7 @@ form {
         align-self: flex-start;
         padding: 0.6rem 0.85rem;
         font-size: 0.9rem;
+        cursor: pointer;
     }
 
     .grid {

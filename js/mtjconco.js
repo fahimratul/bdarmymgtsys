@@ -339,7 +339,7 @@ function loadvehicledata() {
                             <td>${classlist[classtype] || classtype}</td>
                             <td>${conditionlist[condition] || condition}</td>
                             <td>${camplist[camp] || camp}</td>
-                            <td><button class="edit-btn" data-key='${key}'>Info</button></td>
+                            <td><button class="edit-btn" data-key='${key}'>Take Action</button></td>
                         </tr>`;
                 serial += 1;
                 vehicleinfo.total.total+=1;

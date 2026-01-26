@@ -167,7 +167,7 @@ function loaditemdataBKNCO() {
         }
         
         tableBody.innerHTML = html;
-        document.getElementById('serial').textContent = serial;
+        document.getElementById('serial').textContent = serial-1;
         document.getElementById('totalItemsBKNCO').textContent = datainfo.total;
         document.getElementById('servicableItemsBKNCO').textContent = datainfo.servicable;
         document.getElementById('unservicableItemsBKNCO').textContent = datainfo.unservicable;

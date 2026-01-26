@@ -51,7 +51,7 @@
 .card-info h4{
     font-weight: bold;
     margin: 0;
-    width: 47%;
+    width: 45%;
     text-align: left;
     font-size: 1rem;
     color: #333;
@@ -92,3 +92,15 @@
     box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
 }
 
+.mt h4{
+    background: #aab7f3;
+    border-radius: 6px;
+    padding: .7rem .25rem;
+    color: #1e293b;
+    margin: 0.25rem;
+    font-size: .75rem;
+}
+.card-icon h3{
+    font-size: 1.25rem;
+    margin: 0;
+}
