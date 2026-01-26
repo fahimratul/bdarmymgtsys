@@ -84,7 +84,7 @@ function loadvehicledata() {
             document.getElementById('typeofvehicle').textContent = dataCache.typeofvehicle || '';
             document.getElementById('unnumber').textContent = dataCache.unnumber || '';
             document.getElementById('classtype').textContent = classlist[dataCache.classtype] || dataCache.classtype || '';
-            document.getElementById('camp').textContent = camplist[dataCache.camp] || dataCache.camp || '';
+            document.getElementById('camp').value = camplist[dataCache.camp] || dataCache.camp || '';
             document.getElementById('condition').textContent = conditionlist[dataCache.condition] || dataCache.condition || '';
             // Disable buttons based on condition
             document.getElementById('sendformaintainace').disabled = false;
@@ -122,6 +122,21 @@ function loadvehicledata() {
     });
 }
 
+
+document.getElementById('camp').addEventListener('change', (e) => {
+    
+    const newCamp = e.target.value;
+    const dbRef = ref(db, `vehiclelist/` + vehicleKey);
+    update(dbRef, {camp: newCamp})
+    .then(() => {
+        showNotification('Camp updated successfully.');
+        console.log('Camp updated successfully to', newCamp);
+        loadvehicledata();
+    })
+    .catch((error) => {
+        console.error('Error updating camp:', error);
+    }); 
+});
 
 
 loadvehicledata();

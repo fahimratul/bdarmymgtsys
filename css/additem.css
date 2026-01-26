@@ -81,6 +81,7 @@ h1 {
     font-weight: 600;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
 }
 
 .back-link:hover {

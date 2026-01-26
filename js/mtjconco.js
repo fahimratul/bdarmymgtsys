@@ -587,6 +587,7 @@ function searchVehicles() {
     });
 }
 
+
 document.getElementById('searchInput')?.addEventListener('keyup', searchItems);
 document.getElementById('searchInputVehicle')?.addEventListener('keyup', searchVehicles);
 
