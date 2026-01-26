@@ -122,7 +122,6 @@ function loadvehicledata() {
     });
 }
 
-
 if(role !== 'mto' && role !== 'cc' && role !== 'clo'){
     document.getElementById('camp').disabled = true;
 }

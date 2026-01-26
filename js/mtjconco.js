@@ -66,13 +66,13 @@ const inputs = {
 inputs.issue.addEventListener('click', (e) => {
     e.preventDefault();
     if (!currentEditKey) return;   
-    window.location.href = `itemdetails.html?key=${currentEditKey}&type=signco`;
+    window.location.href = `itemdetails.html?key=${currentEditKey}&type=mtnco`;
 });
 
 inputs.unservicable.addEventListener('click', (e) => {
     e.preventDefault();
     if (!currentEditKey) return;
-    window.location.href = `itemdetails.html?key=${currentEditKey}&type=signco`;
+    window.location.href = `itemdetails.html?key=${currentEditKey}&type=mtnco`;
 });
 
 let ranklist ={
@@ -210,7 +210,7 @@ function loaditemdata() {
         tableBody.querySelectorAll('.row-data').forEach(row => {
             row.addEventListener('click', () => {
                 const key = row.dataset.key;
-                window.location.href = `itemdetails.html?key=${key}&type=mt`;
+                window.location.href = `itemdetails.html?key=${key}&type=mtnco`;
             });
         });
 

@@ -106,13 +106,19 @@ const inputs = {
 inputs.issue.addEventListener('click', (e) => {
     e.preventDefault();
     if (!currentEditKey) return;   
-    window.location.href = `itemdetails.html?key=${currentEditKey}&type=signco`;
+    if(typeKey === 'engr') {
+        window.location.href = `itemdetails.html?key=${currentEditKey}&type=engrnco`;
+    }
+    window.location.href = `itemdetails.html?key=${currentEditKey}&type=bknco`;
 });
 
 inputs.unservicable.addEventListener('click', (e) => {
     e.preventDefault();
     if (!currentEditKey) return;
-    window.location.href = `itemdetails.html?key=${currentEditKey}&type=signco`;
+    if(typeKey === 'engr') {
+        window.location.href = `itemdetails.html?key=${currentEditKey}&type=engrnco`;
+    }
+    window.location.href = `itemdetails.html?key=${currentEditKey}&type=bknco`;
 });
 
 

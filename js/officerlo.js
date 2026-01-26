@@ -109,13 +109,13 @@ const inputs = {
 inputs.issue.addEventListener('click', (e) => {
     e.preventDefault();
     if (!currentEditKey) return;   
-    window.location.href = `itemdetails.html?key=${currentEditKey}&type=signco`;
+    window.location.href = `itemdetails.html?key=${currentEditKey}&type=bqms`;
 });
 
 inputs.unservicable.addEventListener('click', (e) => {
     e.preventDefault();
     if (!currentEditKey) return;
-    window.location.href = `itemdetails.html?key=${currentEditKey}&type=signco`;
+    window.location.href = `itemdetails.html?key=${currentEditKey}&type=bqms`;
 });
 
 
@@ -203,7 +203,7 @@ function loaditemdataBKNCO() {
                 }
                 const key = row.dataset.key;
                 console.log("Row clicked for key:", key);
-                window.location.href = `itemdetails.html?key=${key}&type=bknco`;
+                window.location.href = `itemdetails.html?key=${key}&type=bqms`;
             });
         });
         
