@@ -106,6 +106,19 @@ const inputs = {
 };
 
 
+inputs.issue.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!currentEditKey) return;   
+    window.location.href = `itemdetails.html?key=${currentEditKey}&type=signco`;
+});
+
+inputs.unservicable.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!currentEditKey) return;
+    window.location.href = `itemdetails.html?key=${currentEditKey}&type=signco`;
+});
+
+
 function loaditemdataBKNCO() {
     let datainfo={
         total:0,
@@ -143,7 +156,7 @@ function loaditemdataBKNCO() {
                 const issue = item.issue ?? 0;
                 const instore = item.instore ?? 0;
                 
-                html += `<tr class="row-data" data-key="${key}" style="cursor: pointer;">    
+                html += `<tr class="row-data" id="${name}" data-key="${key}" style="cursor: pointer;">    
                             <td>${serial}</td>
                             <td>${name}</td>
                             <td>${authorized}</td>

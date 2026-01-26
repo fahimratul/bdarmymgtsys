@@ -53,6 +53,22 @@ const inputs = {
     instore: document.getElementById('editInstore'),
 };
 
+
+
+
+inputs.issue.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!currentEditKey) return;   
+    window.location.href = `itemdetails.html?key=${currentEditKey}&type=signco`;
+});
+
+inputs.unservicable.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!currentEditKey) return;
+    window.location.href = `itemdetails.html?key=${currentEditKey}&type=signco`;
+});
+
+
 let ranklist ={
     snk:"Sainik",
     lcpl:"Lance Corporal",
@@ -163,7 +179,7 @@ function loaditemdata() {
                 const issue = item.issue ?? 0;
                 const instore = item.instore ?? 0;
                 
-                html += `<tr class="data-row" data-key="${key}" style="cursor: pointer;" >
+                html += `<tr class="data-row" id="${name}" data-key="${key}" style="cursor: pointer;" >
                             <td>${serial}</td>
                             <td>${name}</td>
                             <td>${authorized}</td>

@@ -100,6 +100,32 @@ const inputs = {
     deleteitem: document.getElementById('deleteitem')
 };
 
+
+
+inputs.issue.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!currentEditKey) return;   
+    window.location.href = `itemdetails.html?key=${currentEditKey}&type=signco`;
+});
+
+inputs.unservicable.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!currentEditKey) return;
+    window.location.href = `itemdetails.html?key=${currentEditKey}&type=signco`;
+});
+
+
+inputs.issue.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!currentEditKey) return;   
+    window.location.href = `itemdetails.html?key=${currentEditKey}&type=signco`;
+});
+
+inputs.unservicable.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!currentEditKey) return;
+    window.location.href = `itemdetails.html?key=${currentEditKey}&type=signco`;
+});
 function loaditemdata() {
     let datainfo={
         total:0,
@@ -138,7 +164,7 @@ function loaditemdata() {
                 const issue = item.issue ?? 0;
                 const instore = item.instore ?? 0;
                 
-                html += `<tr class="row-data" data-key="${key}" style="cursor: pointer;">
+                html += `<tr class="row-data" id="${name}" data-key="${key}" style="cursor: pointer;">
     
                             <td>${serial}</td>
                             <td>${name}</td>
@@ -378,6 +404,8 @@ function recalcModalTotals() {
 [inputs.total, inputs.servicable, inputs.issue].forEach(el => {
     el.addEventListener('input', recalcModalTotals);
 });
+
+
 
 modalCloseBtn?.addEventListener('click', closeEditModal);
 cancelEditBtn?.addEventListener('click', closeEditModal);

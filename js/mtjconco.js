@@ -61,6 +61,20 @@ const inputs = {
     instore: document.getElementById('editInstore'),
 };
 
+
+
+inputs.issue.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!currentEditKey) return;   
+    window.location.href = `itemdetails.html?key=${currentEditKey}&type=signco`;
+});
+
+inputs.unservicable.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!currentEditKey) return;
+    window.location.href = `itemdetails.html?key=${currentEditKey}&type=signco`;
+});
+
 let ranklist ={
     snk:"Sainik",
     lcpl:"Lance Corporal",
@@ -156,7 +170,7 @@ function loaditemdata() {
                 const issue = item.issue ?? 0;
                 const instore = item.instore ?? 0;
                 
-                html += `<tr id="${name}" data-key="${key}">
+                html += `<tr id="${name}" data-key="${key}" class="row-data" style="cursor: pointer;">
     
                             <td>${serial}</td>
                             <td>${name}</td>
@@ -193,7 +207,13 @@ function loaditemdata() {
                 openEditModal(key);
             });
         });
-        
+        tableBody.querySelectorAll('.row-data').forEach(row => {
+            row.addEventListener('click', () => {
+                const key = row.dataset.key;
+                window.location.href = `itemdetails.html?key=${key}&type=mt`;
+            });
+        });
+
         // Hide loading overlay after data is loaded
         if (loadingOverlay) {
             setTimeout(() => {
@@ -331,7 +351,7 @@ function loadvehicledata() {
                 const camp = vehicle.camp || '';
                 // console.log(vehicle);
 
-                html += `<tr id="${key}" data-key="${key}">
+                html += `<tr id="${key}"data-key="${key}">
                             <td>${serial}</td>
                             <td>${vehiclenumber}</td>
                             <td>${unnumber}</td>

@@ -127,6 +127,18 @@ const inputs = {
 
 
 
+inputs.issue.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!currentEditKey) return;   
+    window.location.href = `itemdetails.html?key=${currentEditKey}&type=signco`;
+});
+
+inputs.unservicable.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!currentEditKey) return;
+    window.location.href = `itemdetails.html?key=${currentEditKey}&type=signco`;
+});
+
 function loaditemdata() {
     let datainfo={
         total:0,

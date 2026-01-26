@@ -96,7 +96,7 @@ function loadammodata() {
             for (const key in data) {
                 const ammo = data[key];
                 html += `
-                    <tr class="ammo-row" data-key="${key}" style="cursor: pointer;">
+                    <tr class="ammo-row" id="${ammo.name}" data-key="${key}" style="cursor: pointer;">
                         <td>${serial++}</td>
                         <td>${ammo.name}</td>
                     </tr>
