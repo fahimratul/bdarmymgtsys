@@ -381,11 +381,12 @@ function approveNewtotalItem(key) {
         msg: `SIgnal Inventory item "${currentItem.name || ''}" total has been updated by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`
     }).then(() => {
         
-        set(ref(db, 'clonotification'), true);
         console.log('CLO/CC notified successfully about the update.');
     }).catch((error) => {
         console.error('Error notifying CLO/CC about the update:', error);
     });
+    
+    set(ref(db, 'clonotification'), true);
 }
 
 
@@ -600,11 +601,12 @@ editForm?.addEventListener('submit', (e) => {
         set(ref(db, 'clo_cc_notification/' + Date.now()), {
             msg: `SIgnal Inventory item "${inputs.name.value.trim()}" has been updated by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`
         }).then(() => {
-            set(ref(db, 'clonotification'), true);
             console.log('CLO/CC notified successfully about the update.');
         }).catch((error) => {
             console.error('Error notifying CLO/CC about the update:', error);
         });
+        
+    set(ref(db, 'clonotification'), true);
     closeEditModal();
 });
 
@@ -687,8 +689,6 @@ function acceptissue(key){
     set(ref(db, 'clo_cc_notification/' + Date.now()), {
         msg: isssuenotificationDataCache[key].msg || ''
     }).then(() => {
-        
-            set(ref(db, 'clonotification'), true);
         console.log('CLO/CC notified successfully about accepted issue.');
     }).catch((error) => {
         console.error('Error notifying CLO/CC about accepted issue:', error);
@@ -698,6 +698,8 @@ function acceptissue(key){
     }).catch((error) => {
         console.error('Error removing issue notification:', error);
     });
+    
+    set(ref(db, 'clonotification'), true);
     setTimeout(() => {
         window.location.reload();
     }, 1000);
@@ -760,11 +762,12 @@ function acceptunsvc(key){
         msg: unsvcitem.msg || ''
     }).then(() => {
         
-        set(ref(db, 'clonotification'), true);
         console.log('CLO/CC notified successfully about accepted unservicable.');
     }).catch((error) => {
         console.error('Error notifying CLO/CC about accepted unservicable:', error);
     });
+    
+    set(ref(db, 'clonotification'), true);
     loaditemdata();
     loadissuenotifactions();
 }
