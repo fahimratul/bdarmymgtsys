@@ -37,6 +37,9 @@ window.addEventListener('DOMContentLoaded', () => {
         return;
     }
     console.log('Logged in as BA Number:', baNumber);
+    
+    // Add print button event listener
+    document.getElementById('printHistoryBtn').addEventListener('click', printVehicleHistory);
 });
  
 
@@ -261,9 +264,10 @@ function updateVehicleHistoryRecord(event, details, date) {
 }
 
 function updaterecord(event, details, date, msg) {
+    const voucherNo = Date.now().toString();
     if(role==='mtjco' || role==='mtnco'){
         const baNumber = sessionStorage.getItem('baNumber');
-        let dbref = ref(db, `officernotification/mto/notifications/${Date.now()}`);
+        let dbref = ref(db, `officernotification/mto/notifications/${voucherNo}`);
         const notificationData = {
             vehicleKey: vehicleKey,
             event: event,
@@ -283,7 +287,7 @@ function updaterecord(event, details, date, msg) {
     }
     if(role==='mto' || role==='cc' || role==='clo'){
         if(role ==='mto'){
-            let dbref = ref(db, `clo_cc_notification/${Date.now()}`);    
+            let dbref = ref(db, `clo_cc_notification/${voucherNo}`);    
             updateVehicleHistoryRecord(event, details, date);
             const notificationData = {
                 msg: 'Vehicle Number ' + vehicleKey + ' '+ msg + ' Details: ' + details,
@@ -296,7 +300,7 @@ function updaterecord(event, details, date, msg) {
                 console.error('Error sending notification to CLOC:', error);
             });
         }
-        dbref = ref(db, `vehiclelist/`+vehicleKey);
+        const dbref = ref(db, `vehiclelist/`+vehicleKey);
         update(dbref, {condition: event === 'Maintenance' ? 'inmaintenance' : event === 'Grounded' ? 'grounded' : event === 'Marking as A LR' ? 'alr' : event === 'Marking as A SR' ? 'asr' : dataCache.condition})
         .then(() => {
             loadvehicledata();
@@ -306,6 +310,7 @@ function updaterecord(event, details, date, msg) {
             console.error('Error updating vehicle condition:', error);
         });
     }
+    printVehicleReciept(date, event, details, voucherNo);
 }
 
 
@@ -334,4 +339,214 @@ function closeEditModal() {
 modalCloseBtn.addEventListener('click', closeEditModal);
 cancelEditBtn.addEventListener('click', closeEditModal);
 
+// Print function for vehicle history
+function printVehicleHistory() {
+    // Get vehicle details
+    const vehicleType = document.getElementById('typeofvehicle').textContent;
+    const vehicleNumber = document.getElementById('vehicleNumber').textContent;
+    const unnumber = document.getElementById('unnumber').textContent;
+    const classType = document.getElementById('classtype').textContent;
+    const camp = document.getElementById('camp').value;
+    const condition = document.getElementById('condition').textContent;
+    
+    // Get history table data
+    const historyTableBody = document.getElementById('history-tbody');
+    let historyRows = '';
+    
+    // Build table rows from tbody
+    for (let row of historyTableBody.rows) {
+        historyRows += `
+            <tr>
+                <td>${row.cells[0].textContent}</td>
+                <td>${row.cells[1].textContent}</td>
+                <td>${row.cells[2].textContent}</td>
+                <td>${row.cells[3].textContent}</td>
+            </tr>
+        `;
+    }
+    
+    // Create PDF content
+    const pdfContent = `
+        <div style="font-family: 'Inter', Arial, sans-serif; color: #333; line-height: 1.6; padding: 20px;">
+            <div style="text-align: center; border-bottom: 2px solid #007bff; padding-bottom: 20px; margin-bottom: 30px;">
+                <h1 style="margin: 0; color: #007bff;">Vehicle History Report</h1>
+                <p style="margin: 10px 0; color: #666;">Generated on ${new Date().toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })}</p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
+                <div style="display: flex;">
+                    <span style="font-weight: 600; margin-right: 10px; min-width: 120px;">Type of Vehicle:</span>
+                    <span style="color: #666;">${vehicleType}</span>
+                </div>
+                <div style="display: flex;">
+                    <span style="font-weight: 600; margin-right: 10px; min-width: 120px;">BA Number:</span>
+                    <span style="color: #666;">${vehicleNumber}</span>
+                </div>
+                <div style="display: flex;">
+                    <span style="font-weight: 600; margin-right: 10px; min-width: 120px;">UN Number:</span>
+                    <span style="color: #666;">${unnumber}</span>
+                </div>
+                <div style="display: flex;">
+                    <span style="font-weight: 600; margin-right: 10px; min-width: 120px;">Class:</span>
+                    <span style="color: #666;">${classType}</span>
+                </div>
+                <div style="display: flex;">
+                    <span style="font-weight: 600; margin-right: 10px; min-width: 120px;">Camp:</span>
+                    <span style="color: #666;">${camp}</span>
+                </div>
+                <div style="display: flex;">
+                    <span style="font-weight: 600; margin-right: 10px; min-width: 120px;">Condition:</span>
+                    <span style="color: #666;">${condition}</span>
+                </div>
+            </div>
+            
+            <div style="font-size: 18px; font-weight: 600; margin-bottom: 15px; color: #007bff;">Vehicle History</div>
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                <thead>
+                    <tr>
+                        <th style="padding: 10px; text-align: left; border: 1px solid #ddd; background-color: #007bff; color: white; font-weight: 600;">Voucher No</th>
+                        <th style="padding: 10px; text-align: left; border: 1px solid #ddd; background-color: #007bff; color: white; font-weight: 600;">Date</th>
+                        <th style="padding: 10px; text-align: left; border: 1px solid #ddd; background-color: #007bff; color: white; font-weight: 600;">Event</th>
+                        <th style="padding: 10px; text-align: left; border: 1px solid #ddd; background-color: #007bff; color: white; font-weight: 600;">Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${historyRows}
+                </tbody>
+            </table>
+            
+            <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 12px; color: #666;">
+                <p>BD Army Store Management System - Vehicle History Report</p>
+            </div>
+        </div>
+    `;
+    
+    // Create temporary element for PDF generation
+    const element = document.createElement('div');
+    element.innerHTML = pdfContent;
+    
+    // Configure PDF options
+    const opt = {
+        margin: 0.5,
+        filename: `Vehicle_History_${vehicleNumber}_${new Date().toISOString().split('T')[0]}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { 
+            scale: 2,
+            useCORS: true,
+            letterRendering: true
+        },
+        jsPDF: { 
+            unit: 'in', 
+            format: 'a4', 
+            orientation: 'portrait' 
+        }
+    };
+    
+    // Generate and download PDF
+    html2pdf().set(opt).from(element).save().then(() => {
+        console.log('PDF downloaded successfully');
+    }).catch((error) => {
+        console.error('Error generating PDF:', error);
+    });
+}
+
+
+
+
+function printVehicleReciept(date, maintenanceType, description, voucherNo) {
+    // Get vehicle details
+    const vehicleType = document.getElementById('typeofvehicle').textContent;
+    const vehicleNumber = document.getElementById('vehicleNumber').textContent;
+    const unnumber = document.getElementById('unnumber').textContent;
+    const classType = document.getElementById('classtype').textContent;
+    const camp = document.getElementById('camp').value;
+    const condition = document.getElementById('condition').textContent;
+    
+    // Create PDF content
+    const pdfContent = `
+        <div style="font-family: 'Inter', Arial, sans-serif; color: #333; line-height: 1.6; padding: 20px;">
+            <div style="text-align: center; border-bottom: 2px solid #007bff; padding-bottom: 20px; margin-bottom: 30px;">
+                <h1 style="margin: 0; color: #007bff;">Maintenance Report</h1>
+                <p style="margin: 10px 0; color: #666;">Generated on ${new Date().toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })}</p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
+                <div style="display: flex;">
+                    <span style="font-weight: 600; margin-right: 10px; min-width: 120px;">Type of Vehicle:</span>
+                    <span style="color: #666;">${vehicleType}</span>
+                </div>
+                <div style="display: flex;">
+                    <span style="font-weight: 600; margin-right: 10px; min-width: 120px;">BA Number:</span>
+                    <span style="color: #666;">${vehicleNumber}</span>
+                </div>
+                <div style="display: flex;">
+                    <span style="font-weight: 600; margin-right: 10px; min-width: 120px;">UN Number:</span>
+                    <span style="color: #666;">${unnumber}</span>
+                </div>
+                <div style="display: flex;">
+                    <span style="font-weight: 600; margin-right: 10px; min-width: 120px;">Class:</span>
+                    <span style="color: #666;">${classType}</span>
+                </div>
+                <div style="display: flex;">
+                    <span style="font-weight: 600; margin-right: 10px; min-width: 120px;">Camp:</span>
+                    <span style="color: #666;">${camp}</span>
+                </div>
+                <div style="display: flex;">
+                    <span style="font-weight: 600; margin-right: 10px; min-width: 120px;">Condition:</span>
+                    <span style="color: #666;">${condition}</span>
+                </div>
+            </div>
+            <p style=" text-align: center; font-size: 18px; font-weight: 600; margin-bottom: 15px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">Voucher No:  <span style="font-weight: 400; color: #666;">  ${voucherNo}</span></p>
+            <div style="text-align: left;margin-top: 20px;">
+                <p style="font-size: 16px; font-weight: 600; margin-bottom: 10px; padding-bottom: 5px;">Date: <span style="font-size: 14px; font-weight: 400; color: #666;"> ${date}</span></p>
+                <p style="font-size: 16px; font-weight: 600; margin-bottom: 10px; padding-bottom: 5px; margin-top: 20px;">Maintenance Type: <span style="font-size: 14px; font-weight: 400; color: #666;">${maintenanceType}</span></p>
+                <p style="font-size: 16px; font-weight: 600; margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-top: 20px;">Description of Maintenance:</p>
+                <p style="font-size: 14px; color: #666;">${description}</p>
+                <p style="text-align:right; font-size: 16px; font-weight: 600; margin-bottom: 10px; margin-top: 150px; ">Performed By:</p>
+            </div>
+            <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 12px; color: #666;">
+                <p>BANRDB Store Management System - Vehicle Maintenance Report</p>
+            </div>
+        </div>`;
+    
+    // Create temporary element for PDF generation
+    const element = document.createElement('div');
+    element.innerHTML = pdfContent;
+    
+    // Configure PDF options
+    const opt = {
+        margin: 0.5,
+        filename: `Maintenance_Report_${vehicleNumber}_${voucherNo}_${new Date().toISOString().split('T')[0]}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { 
+            scale: 2,
+            useCORS: true,
+            letterRendering: true
+        },
+        jsPDF: { 
+            unit: 'in', 
+            format: 'a4', 
+            orientation: 'portrait' 
+        }
+    };
+    
+    // Generate and download PDF
+    html2pdf().set(opt).from(element).save().then(() => {
+        console.log('PDF downloaded successfully');
+    }).catch((error) => {
+        console.error('Error generating PDF:', error);
+    });
+}
 

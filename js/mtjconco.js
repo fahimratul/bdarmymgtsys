@@ -762,3 +762,171 @@ function vehiclehistoryload(key) {
     if (!vehicle) return;
     window.location.href = `vehiclehistory.html?key=${key}`;
 }
+
+
+function filterVehiclesbyclick(classFilter, conditionFilter, campFilter) {
+    const tableBody = document.getElementById('VehicleTableBody');
+    const rows = tableBody.getElementsByTagName('tr');
+
+    Array.from(rows).forEach(row => {
+        const cells = row.getElementsByTagName('td');
+        const classtype = cells[4]?.textContent || '';
+        const condition = cells[5]?.textContent || '';
+        const camp = cells[6]?.textContent || '';
+
+        const matchClass = !classFilter || classtype === classlist[classFilter];
+        const matchCondition = !conditionFilter || condition === conditionlist[conditionFilter];
+         const matchCamp = !campFilter || camp === camplist[campFilter];
+
+        row.style.display = (matchClass && matchCondition && matchCamp) ? '' : 'none';
+    });
+}
+
+
+document.getElementById('Allvehicles').addEventListener('click', () => {
+    filterVehiclesbyclick('', '', '');
+    showNotification('Showing all vehicles', 'info', 'Filter Applied');
+});
+
+document.getElementById('alrvehicles').addEventListener('click', () => {
+    filterVehiclesbyclick('', 'alr', '');
+    showNotification('Showing ALR vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('asrvehicles').addEventListener('click', () => {
+    filterVehiclesbyclick('', 'asr', '');
+    showNotification('Showing ASR vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('MaintenanceVehicles').addEventListener('click', () => {
+    filterVehiclesbyclick('', 'inmaintenance', '');
+    showNotification('Showing Maintenance vehicles', 'info', 'Filter Applied');
+}); 
+document.getElementById('GroundedVehicles').addEventListener('click', () => {
+    filterVehiclesbyclick('', 'grounded', '');
+    showNotification('Showing Grounded vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('totalVehiclesclassA').addEventListener('click', () => {
+    filterVehiclesbyclick('classA', '', '');
+    showNotification('Showing Class A vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('totalVehiclesclassB').addEventListener('click', () => {
+    filterVehiclesbyclick('classB', '', '');
+    showNotification('Showing Class B vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('totalVehiclesspl').addEventListener('click', () => {
+    filterVehiclesbyclick('spl', '', '');
+    showNotification('Showing SPL vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('totalVehiclessp').addEventListener('click', () => {
+    filterVehiclesbyclick('sp', '', '');
+    showNotification('Showing SP vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('totalVehicleswatertrailer').addEventListener('click', () => {
+    filterVehiclesbyclick('watertrailer', '', '');
+    showNotification('Showing Water Trailer vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('totalVehicleslowbed').addEventListener('click', () => { 
+    filterVehiclesbyclick('lowbed', '', '');
+    showNotification('Showing Low Bed vehicles', 'info', 'Filter Applied');
+});
+
+document.getElementById('ALRVehiclesclassA')?.addEventListener('click', () => {
+    filterVehiclesbyclick('classA', 'alr', '');
+    showNotification('Showing Class A ALR vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('ASRVehiclesclassA')?.addEventListener('click', () => {
+    filterVehiclesbyclick('classA', 'asr', '');
+    showNotification('Showing Class A ASR vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('inMaintenanceVehiclesclassA')?.addEventListener('click', () => {  
+    filterVehiclesbyclick('classA', 'inmaintenance', '');
+    showNotification('Showing Class A Maintenance vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('groundedVehiclesclassA')?.addEventListener('click', () => {  
+    filterVehiclesbyclick('classA', 'grounded', '');
+    showNotification('Showing Class A Grounded vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('ALRVehiclesclassB')?.addEventListener('click', () => {
+    filterVehiclesbyclick('classB', 'alr', '');
+    showNotification('Showing Class B ALR vehicles', 'info', 'Filter Applied');
+}); 
+
+document.getElementById('ASRVehiclesclassB')?.addEventListener('click', () => {
+    filterVehiclesbyclick('classB', 'asr', '');
+    showNotification('Showing Class B ASR vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('inMaintenanceVehiclesclassB')?.addEventListener('click', () => {
+    filterVehiclesbyclick('classB', 'inmaintenance', '');
+    showNotification('Showing Class B Maintenance vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('groundedVehiclesclassB')?.addEventListener('click', () => {
+    filterVehiclesbyclick('classB', 'grounded', '');
+    showNotification('Showing Class B Grounded vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('ALRVehiclesspl')?.addEventListener('click', () => {
+    filterVehiclesbyclick('spl', 'alr', '');
+    showNotification('Showing SPL ALR vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('ASRVehiclesspl')?.addEventListener('click', () => {
+    filterVehiclesbyclick('spl', 'asr', '');
+    showNotification('Showing SPL ASR vehicles', 'info', 'Filter Applied');
+}); 
+document.getElementById('inMaintenanceVehiclesspl')?.addEventListener('click', () => {
+    filterVehiclesbyclick('spl', 'inmaintenance', '');
+    showNotification('Showing SPL Maintenance vehicles', 'info', 'Filter Applied');
+});
+
+document.getElementById('groundedVehiclesspl')?.addEventListener('click', () => {
+    filterVehiclesbyclick('spl', 'grounded', '');
+    showNotification('Showing SPL Grounded vehicles', 'info', 'Filter Applied');
+});
+
+document.getElementById('ALRVehiclessp')?.addEventListener('click', () => {
+    filterVehiclesbyclick('sp', 'alr', '');
+    showNotification('Showing SP ALR vehicles', 'info', 'Filter Applied');
+});
+
+document.getElementById('ASRVehiclessp')?.addEventListener('click', () => {
+    filterVehiclesbyclick('sp', 'asr', '');
+    showNotification('Showing SP ASR vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('inMaintenanceVehiclessp')?.addEventListener('click', () => {
+    filterVehiclesbyclick('sp', 'inmaintenance', '');
+    showNotification('Showing SP Maintenance vehicles', 'info', 'Filter Applied');
+}); 
+document.getElementById('groundedVehiclessp')?.addEventListener('click', () => {
+    filterVehiclesbyclick('sp', 'grounded', '');
+    showNotification('Showing SP Grounded vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('ALRVehicleswatertrailer')?.addEventListener('click', () => {   
+    filterVehiclesbyclick('watertrailer', 'alr', '');
+    showNotification('Showing Water Trailer ALR vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('ASRVehicleswatertrailer')?.addEventListener('click', () => {    
+    filterVehiclesbyclick('watertrailer', 'asr', '');
+    showNotification('Showing Water Trailer ASR vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('inMaintenanceVehicleswatertrailer')?.addEventListener('click', () => {    
+    filterVehiclesbyclick('watertrailer', 'inmaintenance', '');
+    showNotification('Showing Water Trailer Maintenance vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('groundedVehicleswatertrailer')?.addEventListener('click', () => {    
+    filterVehiclesbyclick('watertrailer', 'grounded', '');
+    showNotification('Showing Water Trailer Grounded vehicles', 'info', 'Filter Applied');
+});
+
+document.getElementById('ALRVehicleslowbed')?.addEventListener('click', () => {    
+    filterVehiclesbyclick('lowbed', 'alr', '');
+    showNotification('Showing Low Bed ALR vehicles', 'info', 'Filter Applied');
+}); 
+document.getElementById('ASRVehicleslowbed')?.addEventListener('click', () => {    
+    filterVehiclesbyclick('lowbed', 'asr', '');
+    showNotification('Showing Low Bed ASR vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('inMaintenanceVehicleslowbed')?.addEventListener('click', () => {    
+    filterVehiclesbyclick('lowbed', 'inmaintenance', '');
+    showNotification('Showing Low Bed Maintenance vehicles', 'info', 'Filter Applied');
+}); 
+document.getElementById('groundedVehicleslowbed')?.addEventListener('click', () => {    
+    filterVehiclesbyclick('lowbed', 'grounded', '');
+    showNotification('Showing Low Bed Grounded vehicles', 'info', 'Filter Applied');
+});

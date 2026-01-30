@@ -32,18 +32,11 @@ window.addEventListener('DOMContentLoaded', () => {
         window.location.href = 'login.html';
         return;
     }
-
-    console.log('Logged in as BA Number:', baNumber);
 });
  
-
-
-import {showNotification} from './notification.js';
-console.log("Script Loaded");
+import {showNotification} from './../js/notification.js';
 
 let dataCache = {};
-let currentEditKey = null;
-
 
 
 function loaditemsdetails() {
@@ -52,26 +45,7 @@ function loaditemsdetails() {
     typeKey = urlparams.get('type');
     console.log('Item Key:', itemKey);
     console.log('Type Key:', typeKey);
-    let dbRef ;
-    if(typeKey === 'engrnco'){
-        dbRef = ref(db, `engrinventory/`+ itemKey);
-    }
-    else if(typeKey === 'signco'){
-        dbRef = ref(db, `siginventory/`+ itemKey);
-    }
-    else if(typeKey === 'bknco'){
-        dbRef = ref(db, `bkncoinventory/`+ itemKey);
-    }
-    else if (typeKey === 'bqms'){
-        dbRef = ref(db, `bqmsinventory/`+ itemKey);
-    }
-    else if( typeKey === 'mtnco' || typeKey === 'mtjco'){
-        dbRef = ref(db, `mtinventory/`+ itemKey);
-    }
-    else{
-        console.error('Invalid type key:', typeKey);
-        return;
-    }
+    let dbRef = ref(db, `siginventory/`+ itemKey);
     const loadingOverlay = document.getElementById('loadingOverlay');
     get(dbRef).then((snapshot) => {
         dataCache = snapshot.val();
@@ -109,26 +83,7 @@ loaditemsdetails();
 
 let itemhistoryCache = {};
 function loaditemhistory() {
-let dbRef ;
-    if(typeKey === 'engrnco'){
-        dbRef = ref(db, `engrinventory/`+ itemKey + `/history`);
-    }
-    else if(typeKey === 'signco'){
-        dbRef = ref(db, `siginventory/`+ itemKey + `/history`);
-    }
-    else if(typeKey === 'bknco'){
-        dbRef = ref(db, `bkncoinventory/`+ itemKey + `/history`);
-    }
-    else if (typeKey === 'bqms'){
-        dbRef = ref(db, `bqmsinventory/`+ itemKey + `/history`);
-    }
-    else if( typeKey === 'mtnco' || typeKey === 'mtjco'){
-        dbRef = ref(db, `mtinventory/`+ itemKey + `/history`);
-    }
-    else{
-        console.error('Invalid type key:', typeKey);
-        return;
-    }
+    let dbRef = ref(db, `siginventory/`+ itemKey + `/history`);
     const loadingOverlay = document.getElementById('loadingOverlay');
     get(dbRef).then((snapshot) => {
         const data = snapshot.val();
@@ -197,26 +152,7 @@ let dbRef ;
 loaditemhistory();
 let itemunsvccache = {};
 function loaditemunsvc() {
-let dbRef ;
-    if(typeKey === 'engrnco'){
-        dbRef = ref(db, `engrinventory/`+ itemKey + `/unsvc`);
-    }
-    else if(typeKey === 'signco'){
-        dbRef = ref(db, `siginventory/`+ itemKey + `/unsvc`);
-    }
-    else if(typeKey === 'bknco'){
-        dbRef = ref(db, `bkncoinventory/`+ itemKey + `/unsvc`);
-    }
-    else if (typeKey === 'bqms'){
-        dbRef = ref(db, `bqmsinventory/`+ itemKey + `/unsvc`);
-    }
-    else if( typeKey === 'mtnco' || typeKey === 'mtjco'){
-        dbRef = ref(db, `mtinventory/`+ itemKey + `/unsvc`);
-    }
-    else{
-        console.error('Invalid type key:', typeKey);
-        return;
-    }
+    let dbRef = ref(db, `siginventory/`+ itemKey + `/unsvc`);
     const loadingOverlay = document.getElementById('loadingOverlay');
     get(dbRef).then((snapshot) => {
         const data = snapshot.val();
@@ -330,21 +266,7 @@ issueForm.addEventListener('submit', (e) => {
     const newInstore = (dataCache.instore || 0) - quantity;
     let dbRef ;
     let path;
-    if(typeKey === 'engrnco'){
-        path = `engrinventory/`+ itemKey;
-    }
-    else if(typeKey === 'signco'){
-        path = `siginventory/`+ itemKey;
-    }
-    else if(typeKey === 'bknco'){
-        path = `bkncoinventory/`+ itemKey;
-    }
-    else if (typeKey === 'bqms'){
-        path = `bqmsinventory/`+ itemKey;
-    }
-    else if( typeKey === 'mtnco' || typeKey === 'mtjco'){
-        path = `mtinventory/`+ itemKey;
-    }
+    path = `siginventory/`+ itemKey;
     const updates = {};
     updates['issue'] = newissue;
     updates['instore'] = newInstore;
@@ -385,22 +307,7 @@ issueForm.addEventListener('submit', (e) => {
     }
     else{
         path= '';
-        if(role === 'engrnco'){
-            path = `issuepending/eo/`+ itemKey;
-        }
-        else if(role === 'signco'){
-            path = `issuepending/so/`+ itemKey;
-        }
-        else if(role === 'bknco'){
-            path = `issuepending/lo/`+ itemKey;
-        }
-        else if (role === 'bqms'){
-            path = `issuepending/eo/`+ itemKey;
-        }
-        else if( role === 'mtnco' || role === 'mtjco'){
-            path = `issuepending/mto/`+ itemKey;
-        }
-
+        path = `issuepending/so/`+ itemKey;
         history['msg'] = `Request to issue item: ${dataCache.name}, Quantity: ${quantity} , Location: ${location}`;
         set(ref(db, path), history).then(() => {
             showNotification('Issue request submitted for approval', 'success');            
@@ -429,22 +336,7 @@ function returnItemToStore(recordKey) {
     const newissue = (dataCache.issue || 0) - quantity;
     const newInstore = (dataCache.instore || 0) + quantity;
     let path;
-    console.log(itemKey);
-    if(typeKey === 'engrnco' || role === 'engrnco'){
-        path = `engrinventory/`+ itemKey;
-    }
-    else if(typeKey === 'signco' || role === 'signco'){
-        path = `siginventory/`+ itemKey;  
-    }
-    else if(typeKey === 'bknco' || role === 'bknco'){
-        path = `bkncoinventory/`+ itemKey;
-    }
-    else if (typeKey === 'bqms' || role === 'bqms'){
-        path = `bqmsinventory/`+ itemKey;
-    }
-    else if( typeKey === 'mt ' || typeKey === 'mtjco' || role === 'mtjco'){
-        path = `mtinventory/`+ itemKey;
-    }
+    path = `siginventory/`+ itemKey;  
     const updates = {};
     updates['issue'] = newissue;
     updates['instore'] = newInstore;
@@ -517,22 +409,7 @@ unsvcForm.addEventListener('submit', (e) => {
 
     if(role_type === 'officer' || role_type === 'cc' || role_type === 'clo'){
         let path;
-        if(typeKey === 'engrnco'){
-            path = `engrinventory/`+ itemKey;
-        }
-        else if(typeKey === 'signco'){
-            path = `siginventory/`+ itemKey;
-        }
-        else if(typeKey === 'bknco'){
-            path = `bkncoinventory/`+ itemKey;
-        }
-        else if (typeKey === 'bqms'){
-            path = `bqmsinventory/`+ itemKey;
-        }
-        else if( typeKey === 'mtnco' || typeKey === 'mtjco'){
-            path = `mtinventory/`+ itemKey;
-        }
-
+        path = `siginventory/`+ itemKey;
         update(ref(db, path), updates).then(() => {
             showNotification('Item marked as unservicable successfully', 'success');
             loaditemhistory();
@@ -555,21 +432,7 @@ unsvcForm.addEventListener('submit', (e) => {
         });
     }
     else{
-        if(role === 'engrnco'){
-            path = `unsvcpending/eo/`+ itemKey;
-        }
-        else if(role === 'signco'){
-            path = `unsvcpending/so/`+ itemKey;
-        }
-        else if(role === 'bknco'){
-            path = `unsvcpending/lo/`+ itemKey;
-        }
-        else if (role === 'bqms'){
-            path = `unsvcpending/eo/`+ itemKey;
-        }
-        else if( role === 'mtnco' || role === 'mtjco'){
-            path = `unsvcpending/mto/`+ itemKey;
-        }
+        path = `unsvcpending/so/`+ itemKey;
         historyKey['msg'] = `Request to mark item as unservicable: ${dataCache.name}, Quantity: ${quantity}, Reason: ${reason}`;
         set(ref(db, path),historyKey).then(() => {
             showNotification('Unservicable request submitted for approval', 'success');
@@ -597,22 +460,7 @@ function markAsServicable(recordKey) {
     const quantity = parseInt(record.quantity, 10);
     const newUnservicable = (dataCache.unservicable || 0) - quantity;
     const newServicable = (dataCache.servicable || 0) + quantity;
-    let dbRef ;
-    if(typeKey === 'engrnco' || role === 'engrnco'){
-        dbRef = ref(db, `engrinventory/`+ itemKey);
-    }
-    else if(typeKey === 'signco' || role === 'signco'){
-        dbRef = ref(db, `siginventory/`+ itemKey);
-    }
-    else if(typeKey === 'bknco' || role === 'bknco'){
-        dbRef = ref(db, `bkncoinventory/`+ itemKey);
-    }
-    else if (typeKey === 'bqms' || role === 'bqms'){
-        dbRef = ref(db, `bqmsinventory/`+ itemKey);
-    }
-    else if( typeKey === 'mt' || role === 'mtnco' || role === 'mtjco'){
-        dbRef = ref(db, `mtinventory/`+ itemKey);
-    }
+    let dbRef = ref(db, `siginventory/`+ itemKey);
     const updates = {};
     updates['unservicable'] = newUnservicable;
     updates['servicable'] = newServicable;
@@ -815,7 +663,7 @@ function printItemDetails() {
         </head>
         <body>
             <div class="report-header">
-                <div class="report-title">Bangladesh Army Store Management System</div>
+                <div class="report-title">BANRDB Management System</div>
                 <div class="report-subtitle">Item Details Report</div>
                 <div class="report-meta">
                     <span>Generated on: ${reportDate} at ${reportTime}</span>
@@ -868,7 +716,7 @@ function printItemDetails() {
             </div>
 
             <div class="report-footer">
-                <p><strong>Bangladesh Army Store Management System</strong></p>
+                <p><strong>BANRDB Management System</strong></p>
                 <p>This is a computer-generated report. No signature is required.</p>
                 <p>For any queries, please contact the Store Management Department.</p>
             </div>

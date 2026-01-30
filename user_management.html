@@ -22,7 +22,7 @@
 
     <div class="search-container">
         <div class="button-action">
-            <div class="additem-btn" onclick="opendashboard()"><i data-lucide="Home"></i>Dashboard</div>
+            <div class="additem-btn" onclick="window.history.back()"><i data-lucide="Home"></i>Dashboard</div>
             <div class="additem-btn"  onclick="adduser()" id="AddUserBtn"><i data-lucide="user-plus"></i>Add New User</div>
             <div class="additem-btn" id="PendingUser" style="display: none;" >View Pending Approvals</div>
 
@@ -64,32 +64,9 @@
         function adduser() {
             window.location.href = 'adduser.html';
         }
-
-        function opendashboard() {
-            if(sessionStorage.getItem('role') === 'lo'){
-                window.location.href = 'officer_lo_dashboard.html';
-                return;
-            }
-            if(sessionStorage.getItem('role') === 'clo' || sessionStorage.getItem('role') === 'cc'){
-                window.location.href = 'clodashboard.html';
-                return;
-            }
-            if(sessionStorage.getItem('role') === 'mto'){
-                window.location.href = 'mt_dashboard.html';
-                return;
-            }
-            if(sessionStorage.getItem('role') === 'eo'){
-                window.location.href = 'officer_engr_dashboard.html?key=engr';
-                return;
-            }
-            window.location.href = 'officer_so_dashboard.html';
-        }
     </script>
     <script type="module" src="js/user_management.js" defer></script>
-
-
     
-
 </body> 
 
 </html>

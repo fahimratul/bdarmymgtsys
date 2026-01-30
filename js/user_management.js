@@ -39,14 +39,14 @@ window.addEventListener('DOMContentLoaded', () => {
     console.log('Logged in as BA Number:', baNumber);
     if(roleType === 'clo' || roleType === 'cc'){
         document.getElementById('PendingUser').style.display = 'inline-block';
-        document.getElementById('AddUserBtn').style.display = 'none';
     }
 });
 
 let userrole ={
     engrnco:"Storeman (Engineer)",
     signco:"Storeman (Signal)",
-    bqms:"Battalion Quartermaster Sergeant",
+    bqms:"BQMS",
+    ammonco:"Ammo NCO",
     bknco:"Barrack NCO",
     mtnco:"MT NCO",
     mtjco:"MT JCO",
@@ -88,13 +88,13 @@ function loaditemdata() {
     const loadingOverlay = document.getElementById('loadingOverlay');
     let undercommandrole = {};
     if(role === 'eo'){
-        undercommandrole = ['engrnco', 'bqms'];
+        undercommandrole = ['engrnco', 'bknco'];
     }
     else if(role === 'so'){
         undercommandrole = ['signco'];
     }
     else if (role === 'lo'){
-        undercommandrole = ['bknco'];
+        undercommandrole = ['bqms', 'ammonco'];
     }
     else if (role === 'mto'){
         undercommandrole = ['mtnco', 'mtjco'];

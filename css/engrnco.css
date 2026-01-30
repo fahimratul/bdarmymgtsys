@@ -413,7 +413,7 @@ th {
         text-align: center;
     }
     table {
-        display: block;
+        display: table;
         min-height: 100vh;
         overflow-x: auto;
         white-space: nowrap;

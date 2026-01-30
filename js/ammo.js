@@ -22,13 +22,14 @@ const db = getDatabase(app);
 console.log(db);
 console.log("Firebase Initialized");
 
-let allowedRoles = ['lo', 'cc', 'clo'];
+let allowedRoles = ['lo', 'cc', 'clo', 'ammonco'];
 
 window.addEventListener('DOMContentLoaded', () => {
     let baNumber = sessionStorage.getItem('baNumber');
     let role = sessionStorage.getItem('role');
+    console.log('User role:', role);
     if (!allowedRoles.includes(role)) {
-        console.error('Unauthorized role for mto. Access denied.');
+        console.error('Unauthorized role for ammonco. Access denied.');
         window.location.href = 'login.html';
         return;
     }

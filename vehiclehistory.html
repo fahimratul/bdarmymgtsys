@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/notification.css">
     <link rel="stylesheet" href="css/vehiclehistory.css">
     <link rel='icon' href='static/logo_small.png' type='image/x-icon' />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
     <div id="notification-toast" class="notification-toast"></div>
@@ -67,7 +68,10 @@
                         <button id="markasasr" class="maintainance-button">Mark as A SR</button>
                     </div>
                     <div class="history-section">
-                        <h2>Vehicle History</h2>
+                        <div class="history-header">
+                            <h2>Vehicle History</h2>
+                            <button id="printHistoryBtn" class="print-button">🖨️ Print History</button>
+                        </div>
                         <table class="history-table">
                             <thead>
                                 <tr>

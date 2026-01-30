@@ -45,9 +45,7 @@ const loAddItemRole = sessionStorage.getItem('lo_add_item_role');
 const form = document.getElementById('addItemForm');
 const total = document.getElementById('total');
 const servicable = document.getElementById('servicable');
-const issue = document.getElementById('issue');
 const unservicable = document.getElementById('unservicable');
-const instore = document.getElementById('instore');
 
 function toNumber(value) {
     const parsed = parseFloat(value);
@@ -59,18 +57,11 @@ function recalc() {
         showNotification('Servicable quantity cannot exceed Total quantity. Adjusting Servicable to match Total.', 'warning', 'Input Adjusted');
         servicable.value = total.value;
     }
-    if(toNumber(issue.value) > toNumber(servicable.value)) {
-        showNotification('Issue quantity cannot exceed Servicable quantity. Adjusting Issue to match Servicable.', 'warning', 'Input Adjusted');
-        issue.value = servicable.value;
-    }
     const unservicableValue = toNumber(total.value)-toNumber(servicable.value);
-
-    const instoreValue = toNumber(total.value) - toNumber(issue.value);
     unservicable.value = Math.max(unservicableValue, 0);
-    instore.value = Math.max(instoreValue, 0);
 }
 
-[total, servicable, issue].forEach(input => {
+[total, servicable].forEach(input => {
     input.addEventListener('input', recalc);
 });
 
@@ -86,15 +77,14 @@ form.addEventListener('submit', (event) => {
         total: toNumber(form.total.value),
         servicable: toNumber(form.servicable.value),
         unservicable: toNumber(form.unservicable.value),
-        issue: toNumber(form.issue.value),
-        instore: toNumber(form.instore.value)
+        issue: 0,
+        instore: toNumber(form.total.value)
     };
     console.table(payload);
     writeInventoryItem(payload.name, payload);
     form.reset();
     total.value = 0;
     servicable.value = 0;
-    issue.value = 0;
     recalc();
 });
 
@@ -201,70 +191,86 @@ function writeInventoryItem(name, data) {
             }
             else if(role === 'bknco') {
                 set(ref(db, 'officerapproval/new/bkncoinventory/' + newname),{
-                name: name,
-                authorized: data.authorized,
-                total: data.total,
-                servicable: data.servicable,
-                unservicable: data.unservicable,
-                issue: data.issue,
-                instore: data.instore
-            });
+                    name: name,
+                    authorized: data.authorized,
+                    total: data.total,
+                    servicable: data.servicable,
+                    unservicable: data.unservicable,
+                    issue: data.issue,
+                    instore: data.instore
+                });
             }
             else if(role === 'eo') {
-                set(ref(db, 'cloapproval/new/engrinventory/' + newname),{
-                name: name,
-                authorized: data.authorized,
-                total: data.total,
-                servicable: data.servicable,
-                unservicable: data.unservicable,
-                issue: data.issue,
-                instore: data.instore
-            });
+                set(ref(db, 'engrinventory/' + newname),{
+                    name: name,
+                    authorized: data.authorized,
+                    total: data.total,
+                    servicable: data.servicable,
+                    unservicable: data.unservicable,
+                    issue: data.issue,
+                    instore: data.instore
+                });
+                
+                set(ref(db, 'clo_cc_notifications/' + Date.now()),{
+                    msg: `New inventory item "${name}" has been added by Engineer Officer.`
+                });
             }
             else if(role === 'so') {
-                set(ref(db, 'cloapproval/new/siginventory/' + newname),{
-                name: name,
-                authorized: data.authorized,
-                total: data.total,
-                servicable: data.servicable,
-                unservicable: data.unservicable,
-                issue: data.issue,
-                instore: data.instore
-            });
+                set(ref(db, 'siginventory/' + newname),{
+                    name: name,
+                    authorized: data.authorized,
+                    total: data.total,
+                    servicable: data.servicable,
+                    unservicable: data.unservicable,
+                    issue: data.issue,
+                    instore: data.instore
+                });
+                set(ref(db, 'clo_cc_notifications/' + Date.now()),{
+                    msg: `New inventory item "${name}" has been added by Signal Officer.`
+                });
             }
             else if(role === 'mto'){
-                set(ref(db, 'cloapproval/new/mtinventory/' + newname),{
-                name: name,
-                authorized: data.authorized,
-                total: data.total,
-                servicable: data.servicable,
-                unservicable: data.unservicable,
-                issue: data.issue,
-                instore: data.instore
-            });
+                set(ref(db, 'mtinventory/' + newname),{
+                    name: name,
+                    authorized: data.authorized,
+                    total: data.total,
+                    servicable: data.servicable,
+                    unservicable: data.unservicable,
+                    issue: data.issue,
+                    instore: data.instore
+                });
+                set(ref(db, 'clo_cc_notifications/' + Date.now()),{
+                        msg: `New inventory item "${name}" has been added by  Logistics Officer.`
+                });
             }
             else if(role === 'lo') {
                 if(loAddItemRole === 'bqms') {
-                    set(ref(db, 'cloapproval/new/bqmsinventory/' + newname),{
-                    name: name,
-                    authorized: data.authorized,
-                    total: data.total,
-                    servicable: data.servicable,
-                    unservicable: data.unservicable,
-                    issue: data.issue,
-                    instore: data.instore
-                });
+                    set(ref(db, 'bqmsinventory/' + newname),{
+                        name: name,
+                        authorized: data.authorized,
+                        total: data.total,
+                        servicable: data.servicable,
+                        unservicable: data.unservicable,
+                        issue: data.issue,
+                        instore: data.instore
+                    });
+                    set(ref(db, 'clo_cc_notifications/' + Date.now()),{
+                        msg: `New inventory item "${name}" has been added by  Logistics Officer.`
+                    });
                 }
                 else if(loAddItemRole === 'bknco') {
-                    set(ref(db, 'cloapproval/new/bkncoinventory/' + newname),{
-                    name: name,
-                    authorized: data.authorized,
-                    total: data.total,
-                    servicable: data.servicable,
-                    unservicable: data.unservicable,
-                    issue: data.issue,
-                    instore: data.instore
-                });
+                    set(ref(db, 'bkncoinventory/' + newname),{
+                        name: name,
+                        authorized: data.authorized,
+                        total: data.total,
+                        servicable: data.servicable,
+                        unservicable: data.unservicable,
+                        issue: data.issue,
+                        instore: data.instore
+                    });
+                    set(ref(db, 'clo_cc_notifications/' + Date.now()),{
+                        msg: `New inventory item "${name}" has been added by Central Logistics Officer.`
+                    });
                 }
             }
             else {
