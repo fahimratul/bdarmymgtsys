@@ -89,40 +89,9 @@ const editForm = document.getElementById('editForm');
 const inputs = {
     name: document.getElementById('editName'),
     authorized: document.getElementById('editAuthorized'),
-    total: document.getElementById('edittotal'),
-    servicable: document.getElementById('editServicable'),
-    unservicable: document.getElementById('editunservicable'),
-    issue: document.getElementById('editIssue'),
-    instore: document.getElementById('editInstore'),
-    deleteitem: document.getElementById('deleteitem')
+    total: document.getElementById('edittotal')
 };
 
-
-
-inputs.issue.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (!currentEditKey) return;   
-    window.location.href = `itemdetails.html?key=${currentEditKey}&type=signco`;
-});
-
-inputs.unservicable.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (!currentEditKey) return;
-    window.location.href = `itemdetails.html?key=${currentEditKey}&type=signco`;
-});
-
-
-inputs.issue.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (!currentEditKey) return;   
-    window.location.href = `itemdetails.html?key=${currentEditKey}&type=signco`;
-});
-
-inputs.unservicable.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (!currentEditKey) return;
-    window.location.href = `itemdetails.html?key=${currentEditKey}&type=signco`;
-});
 function loaditemdata() {
     let datainfo={
         total:0,
@@ -268,16 +237,9 @@ function openEditModal(key) {
     const item = dataCache?.[key];
     if (!item) return;
     currentEditKey = key;
-
     inputs.name.value = item.name || '';
     inputs.authorized.value = item.authorized ?? 'NOS';
     inputs.total.value = item.total ?? 0;
-    inputs.servicable.value = item.servicable ?? 0;
-    inputs.unservicable.value = item.unservicable ?? 0;
-    inputs.issue.value = item.issue ?? 0;
-    inputs.instore.value = item.instore ?? 0;
-    recalcModalTotals();
-
     modal.classList.remove('hidden');
 }
 
@@ -286,30 +248,7 @@ function closeEditModal() {
     currentEditKey = null;
     editForm.reset();
     inputs.total.value = '';
-    inputs.servicable.value = '';
-    inputs.unservicable.value = '';
-    inputs.issue.value = '';
-    inputs.instore.value = '';
 }
-
-function recalcModalTotals() {
-    if(Number(inputs.servicable.value) > Number(inputs.total.value)) {
-        showNotification('Servicable quantity cannot exceed Total quantity. Adjusting Servicable to match Total.', 'warning', 'Input Adjusted');
-        inputs.servicable.value = inputs.total.value;
-    }
-    if(Number(inputs.issue.value) > Number(inputs.servicable.value)) {
-        showNotification('Issued quantity cannot exceed Servicable quantity. Adjusting Issued to match Servicable.', 'warning', 'Input Adjusted');
-        inputs.issue.value = inputs.servicable.value;
-    }
-    const unservicable = (Number(inputs.total.value) || 0) - (Number(inputs.servicable.value) || 0);
-    const instore = (Number(inputs.total.value) || 0) - (Number(inputs.issue.value) || 0);
-    inputs.unservicable.value = Math.max(unservicable, 0);
-    inputs.instore.value = Math.max(instore, 0);
-}
-
-[inputs.total, inputs.servicable, inputs.issue].forEach(el => {
-    el.addEventListener('input', recalcModalTotals);
-});
 
 
 
@@ -323,122 +262,25 @@ editForm?.addEventListener('submit', (e) => {
     e.preventDefault();
     if (!currentEditKey) return;
 
-    const updated = {
-        ...dataCache[currentEditKey],
+   const updated = {
         name: inputs.name.value.trim(),
         authorized: inputs.authorized.value,
-        total: Number(inputs.total.value) || 0,
-        servicable: Number(inputs.servicable.value) || 0,
-        issue: Number(inputs.issue.value) || 0,
-        unservicable: Number(inputs.unservicable.value) || 0,
-        instore: Number(inputs.instore.value) || 0
+        total: Number(inputs.total.value) || 0
     };
-    updated.unservicable = updated.total - updated.servicable;
-    updated.instore = Math.max(updated.total - updated.issue, 0);
 
     console.table({ key: currentEditKey, updated });
-
-    if(role === 'eo') {
-        update(ref(db, 'engrinventory/' + currentEditKey), updated)
-            .then(() => {
-                console.log('Data updated successfully');
-                showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
-
-                loaditemdata();
-            })
-            .catch((error) => {
-                console.error('Error updating data:', error);
-            }); 
-
-    }
-    else if(role === 'so') {    
-        update(ref(db, 'siginventory/' + currentEditKey), updated)
-        .then(() => {
-            console.log('Data updated successfully');
-            showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
-
-            loaditemdata();
-        })
-        .catch((error) => {
-            console.error('Error updating data:', error);
-        }); 
-    }
-    else if(role === 'mto') {
-        update(ref(db, 'mtinventory/' + currentEditKey), updated)
-        .then(() => {
-            console.log('Data updated successfully');
-            showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
-
-            loaditemdata();
-        })
-        .catch((error) => {
-            console.error('Error updating data:', error);
-        }); 
-    }
-    else {
-        console.error('Invalid role:', role);
-        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
-        alert('Invalid role. Please log in again.');
-        window.location.href = 'login.html';
-        return;
-    }
+    const dbRef = ref(db, 'officerapproval/newtotal/siginventory/' + currentEditKey);
+    set(dbRef, updated).then(() => {
+        showNotification('Item update request submitted for approval.', 'info', 'Update Requested');
+        loaditemdata();
+    }).catch((error) => {
+        console.error('Error submitting update request:', error);
+        showNotification('Error submitting update request. Please try again.', 'error', 'Update Failed');   
+    });
     closeEditModal();
 });
 
-deleteItemBtn?.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (!currentEditKey) return;
-    if (inputs.deleteitem.value.trim() !== 'CONFIRM') {
-        showNotification("To delete the item, please type 'CONFIRM' in the delete field.", "error", "Deletion Failed");
-        return;
-    }
-    
-    if(role === 'eo') {
-        remove(ref(db, 'engrinventory/' + currentEditKey))
-            .then(() => {
-                console.log('Data deleted successfully');
-                showNotification('Inventory item is pending for deletion.', 'success', 'Deletion Successful');
-                loaditemdata();
-            })
-            .catch((error) => {
-                console.error('Error deleting data:', error);
-                showNotification('Error deleting item. Please try again.', 'error', 'Deletion Failed');
-            });
 
-    }
-    else if(role === 'so') {    
-        remove(ref(db, 'siginventory/' + currentEditKey))
-        .then(() => {
-            console.log('Data deleted successfully');
-            showNotification('Inventory item is pending for deletion.', 'success', 'Deletion Successful');
-            loaditemdata();
-        })
-        .catch((error) => {
-            console.error('Error deleting data:', error);
-            showNotification('Error deleting item. Please try again.', 'error', 'Deletion Failed');
-        });
-    }
-    else if(role === 'mto') {
-        remove(ref(db, 'mtinventory/' + currentEditKey))
-        .then(() => {
-            console.log('Data deleted successfully');
-            showNotification('Inventory item is pending for deletion.', 'success', 'Deletion Successful');
-            loaditemdata();
-        })
-        .catch((error) => {
-            console.error('Error deleting data:', error);
-            showNotification('Error deleting item. Please try again.', 'error', 'Deletion Failed');
-        });
-    }
-    else{
-        console.error('Invalid role:', role);
-        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
-        alert('Invalid role. Please log in again.');
-        window.location.href = 'login.html';
-        return;
-    }
-    closeEditModal();
-});
 
 
 const logoutButton = document.getElementById('logoutButton');
@@ -450,7 +292,7 @@ logoutButton?.addEventListener('click', () => {
     sessionStorage.removeItem('role_type');
     sessionStorage.removeItem('username');
     sessionStorage.removeItem('rank');
-    window.location.href = 'index.html';
+    window.location.href = './../index.html';
 });
 
 

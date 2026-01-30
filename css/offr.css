@@ -44,6 +44,104 @@ body {
 .additem-btn:hover{
     background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
 }
+
+/* PDF Download Buttons */
+.pdf-buttons-container {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.pdf-btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+    color: white;
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+.pdf-btn:hover {
+    background: linear-gradient(135deg, #218838 0%, #1ca085 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+}
+
+.pdf-btn:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.pdf-btn i {
+    width: 16px;
+    height: 16px;
+}
+
+/* Selection mode styles */
+.select-column {
+    width: 40px;
+    text-align: center;
+}
+
+.row-selected {
+    background-color: #e3f2fd !important;
+}
+
+.row-selected:hover {
+    background-color: #bbdefb !important;
+}
+
+/* Action buttons container */
+.action-buttons-container {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+/* Issue button styles */
+.issue-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    color: white;
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(23, 162, 184, 0.4);
+    white-space: nowrap;
+}
+
+.issue-btn:hover {
+    background: linear-gradient(135deg, #138496 0%, #117a8b 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(23, 162, 184, 0.5);
+}
+
+.issue-btn i {
+    width: 16px;
+    height: 16px;
+}
+
+/* Initially hide the print selected button */
+#printSelectedRows {
+    display: none;
+}
+
+.additem-btn:hover{
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
 .library-search-container {
     position: relative;
     margin: 2rem 0 1.5rem;
@@ -101,7 +199,7 @@ table{
 }
 thead th{
     position: sticky;
-    top: 50px;
+    top: -5px;
     z-index: 2;
 }
 th, td {
@@ -417,7 +515,12 @@ th {
     overflow: auto;
     
 }
-
+.tableshow {
+    max-width: 100vw;
+    overflow: scroll;
+    min-height: 92vh;
+    max-height: 95vh;
+}
 /* Responsive */
 @media (max-width: 900px) {
     body {
@@ -428,6 +531,8 @@ th {
     }
     table {
         max-width: 100%;
+        overflow: auto;
+        max-width: 100vw;
     }
     .dashboard-card {
         gap: 1.5rem;

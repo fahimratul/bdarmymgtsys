@@ -77,7 +77,6 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('username').textContent='Name: ' + username;
     document.getElementById('rank').textContent=ranklist[rank] ? 'Rank: ' + ranklist[rank] : 'Rank: ' + rank;
     document.getElementById('banumber').textContent='BA Number: ' + banumber;
-    const titleElement = document.getElementById('title');
 });
 
 
@@ -99,39 +98,9 @@ const inputs = {
     name: document.getElementById('editName'),
     authorized: document.getElementById('editAuthorized'),
     total: document.getElementById('edittotal'),
-    servicable: document.getElementById('editServicable'),
-    unservicable: document.getElementById('editunservicable'),
-    issue: document.getElementById('editIssue'),
-    instore: document.getElementById('editInstore'),
     deleteitem: document.getElementById('deleteitem')
 };
 
-
-
-inputs.issue.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (!currentEditKey) return;   
-    window.location.href = `itemdetails.html?key=${currentEditKey}&type=signco`;
-});
-
-inputs.unservicable.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (!currentEditKey) return;
-    window.location.href = `itemdetails.html?key=${currentEditKey}&type=signco`;
-});
-
-
-inputs.issue.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (!currentEditKey) return;   
-    window.location.href = `itemdetails.html?key=${currentEditKey}&type=signco`;
-});
-
-inputs.unservicable.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (!currentEditKey) return;
-    window.location.href = `itemdetails.html?key=${currentEditKey}&type=signco`;
-});
 function loaditemdata() {
     let datainfo={
         total:0,
@@ -275,9 +244,6 @@ function pendingnewitemdata() {
                 const instore = item.instore ?? 0;
                 
                 html += `<tr class="row-data" id="${name}" data-key="${key}" style="cursor: pointer;">
-                            <td class="select-column" style="display: none;">
-                                <input type="checkbox" class="row-select" data-key="${key}">
-                            </td>
                             <td>${serial}</td>
                             <td>${name}</td>
                             <td>${authorized}</td>
@@ -321,8 +287,117 @@ function pendingnewitemdata() {
         console.error('Error loading pending new item data:', error);
     });
 } 
+let newtotalitemCache = {};
+function pendingnewtotalitemdata() {
+    let dbRef =ref(db, 'officerapproval/newtotal/siginventory/');
+    const newpendingtotalitem = document.getElementById('newpendingtotalitem');
+    const newitemtotalTableBody = document.getElementById('newitemtotalTableBody');
 
-pendingnewitemdata();
+    get(dbRef).then((snapshot) => {
+        const data = snapshot.val();
+        newtotalitemCache = data || {};
+        let html = '';
+        if (data) {
+            let serial = 1;
+            newpendingtotalitem.style.display='flex';
+            for (const key in data) {
+                console.log(key);
+                const item = data[key];
+                const name = item.name || '';
+                const authorized = item.authorized ?? '';
+                const oldtotal = dataCache[key]?.total ?? 0;
+                const newtotal = item.total ?? 0;
+                const total = oldtotal + newtotal;
+                console.log(oldtotal, newtotal, total);
+                html += `<tr class="row-data" id="${name}" data-key="${key}" style="cursor: pointer;">
+                            <td>${serial}</td>
+                            <td>${name}</td>
+                            <td>${authorized}</td>
+                            <td>${oldtotal}</td>
+                            <td>${newtotal}</td>
+                            <td>${total}</td>
+                            <td>
+                            <button class="approve-btn" data-key='${key}'>Accept</button>
+                            <button class="reject-btn" data-key='${key}'>Reject</button>
+                            </td>
+                        </tr>`;
+                serial += 1;
+            }
+            newitemtotalTableBody.innerHTML = html;
+        }
+        else {
+            newpendingtotalitem.style.display='none';
+        }
+
+        newitemtotalTableBody.querySelectorAll('.approve-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.dataset.key;
+                console.log('Approved new item with key:', key);
+                approveNewtotalItem(key); 
+            });
+        });
+        newitemtotalTableBody.querySelectorAll('.reject-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.dataset.key;
+                console.log('Rejected new item with key:', key);
+                rejectNewtotalItem(key);
+            });
+        });
+
+
+    }).catch((error) => {
+        console.error('Error loading pending new item data:', error);
+    });
+} 
+
+
+
+
+function approveNewtotalItem(key) {
+    const newItem = newtotalitemCache[key];
+    if (!newItem) return;
+    const currentItem = newtotalitemCache[key] || {};
+    console.log(currentItem);
+    const updatedTotal = (dataCache[key]?.total || 0) + (currentItem.total || 0);
+    console.log(updatedTotal);
+    update(ref(db, 'siginventory/' + key), {
+        name: currentItem.name || '',
+        authorized: currentItem.authorized || '',
+        total: updatedTotal
+    }).then(() => {
+        console.log('New total item approved and updated in inventory');
+        remove(ref(db, 'officerapproval/newtotal/siginventory/' + key)).then(() => {
+            console.log('New total item request removed from pending approvals');
+            pendingnewtotalitemdata();
+            loaditemdata();
+            showNotification('New total inventory item approved and updated successfully.', 'success', 'Item Approved');
+        }).catch((error) => {
+            console.error('Error removing new total item request from pending approvals:', error);
+        });
+    }).catch((error) => {
+        console.error('Error approving new total item:', error);
+    });
+    set(ref(db, 'clo_cc_notification/' + Date.now()), {
+        msg: `SIgnal Inventory item "${currentItem.name || ''}" total has been updated by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`
+    }).then(() => {
+        console.log('CLO/CC notified successfully about the update.');
+    }).catch((error) => {
+        console.error('Error notifying CLO/CC about the update:', error);
+    });
+}
+
+
+
+function rejectNewtotalItem(key) {
+    remove(ref(db, 'officerapproval/newtotal/siginventory/' + key)).then(() => {
+        console.log('New total item request rejected and removed from pending approvals');
+        pendingnewtotalitemdata();
+        showNotification('New total inventory item request rejected successfully.', 'info', 'Item Rejected');
+    }).catch((error) => { 
+        console.error('Error rejecting new total item request:', error);
+    });
+}
+
 
 function approveNewItem(key) {
     const newItem = newitemCache[key];
@@ -351,15 +426,6 @@ function rejectNewItem(key) {
         console.error('Error rejecting new item request:', error);
     });
 }
-
-
-
-
-
-
-
-
-
 
 
 let isssuenotificationDataCache = {};
@@ -455,6 +521,10 @@ function loadunsvcnotifactions() {
 if(role==='so'){
     loadissuenotifactions();
     loadunsvcnotifactions();
+    pendingnewitemdata();
+    setTimeout(() => {
+        pendingnewtotalitemdata();
+    }, 1000);
 }
 
 
@@ -485,16 +555,9 @@ function openEditModal(key) {
     const item = dataCache?.[key];
     if (!item) return;
     currentEditKey = key;
-
     inputs.name.value = item.name || '';
     inputs.authorized.value = item.authorized ?? 'NOS';
     inputs.total.value = item.total ?? 0;
-    inputs.servicable.value = item.servicable ?? 0;
-    inputs.unservicable.value = item.unservicable ?? 0;
-    inputs.issue.value = item.issue ?? 0;
-    inputs.instore.value = item.instore ?? 0;
-    recalcModalTotals();
-
     modal.classList.remove('hidden');
 }
 
@@ -503,32 +566,7 @@ function closeEditModal() {
     currentEditKey = null;
     editForm.reset();
     inputs.total.value = '';
-    inputs.servicable.value = '';
-    inputs.unservicable.value = '';
-    inputs.issue.value = '';
-    inputs.instore.value = '';
 }
-
-function recalcModalTotals() {
-    if(Number(inputs.servicable.value) > Number(inputs.total.value)) {
-        showNotification('Servicable quantity cannot exceed Total quantity. Adjusting Servicable to match Total.', 'warning', 'Input Adjusted');
-        inputs.servicable.value = inputs.total.value;
-    }
-    if(Number(inputs.issue.value) > Number(inputs.servicable.value)) {
-        showNotification('Issued quantity cannot exceed Servicable quantity. Adjusting Issued to match Servicable.', 'warning', 'Input Adjusted');
-        inputs.issue.value = inputs.servicable.value;
-    }
-    const unservicable = (Number(inputs.total.value) || 0) - (Number(inputs.servicable.value) || 0);
-    const instore = (Number(inputs.total.value) || 0) - (Number(inputs.issue.value) || 0);
-    inputs.unservicable.value = Math.max(unservicable, 0);
-    inputs.instore.value = Math.max(instore, 0);
-}
-
-[inputs.total, inputs.servicable, inputs.issue].forEach(el => {
-    el.addEventListener('input', recalcModalTotals);
-});
-
-
 
 modalCloseBtn?.addEventListener('click', closeEditModal);
 cancelEditBtn?.addEventListener('click', closeEditModal);
@@ -539,66 +577,31 @@ modal?.addEventListener('click', (e) => {
 editForm?.addEventListener('submit', (e) => {
     e.preventDefault();
     if (!currentEditKey) return;
-
-    const updated = {
+    const newtotalitem = Number(inputs.total.value) + dataCache[currentEditKey].total;
+   const updated = {
         ...dataCache[currentEditKey],
         name: inputs.name.value.trim(),
         authorized: inputs.authorized.value,
-        total: Number(inputs.total.value) || 0,
-        servicable: Number(inputs.servicable.value) || 0,
-        issue: Number(inputs.issue.value) || 0,
-        unservicable: Number(inputs.unservicable.value) || 0,
-        instore: Number(inputs.instore.value) || 0
-    };
-    updated.unservicable = updated.total - updated.servicable;
-    updated.instore = Math.max(updated.total - updated.issue, 0);
-
-    console.table({ key: currentEditKey, updated });
-
-    if(role === 'eo') {
-        update(ref(db, 'engrinventory/' + currentEditKey), updated)
-            .then(() => {
-                console.log('Data updated successfully');
-                showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
-
-                loaditemdata();
-            })
-            .catch((error) => {
-                console.error('Error updating data:', error);
-            }); 
-
-    }
-    else if(role === 'so') {    
-        update(ref(db, 'siginventory/' + currentEditKey), updated)
+        total: newtotalitem
+    }; 
+    update(ref(db, 'siginventory/' + currentEditKey), updated)
         .then(() => {
             console.log('Data updated successfully');
             showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
-
             loaditemdata();
         })
         .catch((error) => {
             console.error('Error updating data:', error);
-        }); 
-    }
-    else if(role === 'mto') {
-        update(ref(db, 'mtinventory/' + currentEditKey), updated)
-        .then(() => {
-            console.log('Data updated successfully');
-            showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
+            showNotification('Error updating item. Please try again.', 'error', 'Update Failed');
+        });
 
-            loaditemdata();
-        })
-        .catch((error) => {
-            console.error('Error updating data:', error);
-        }); 
-    }
-    else {
-        console.error('Invalid role:', role);
-        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
-        alert('Invalid role. Please log in again.');
-        window.location.href = 'login.html';
-        return;
-    }
+        set(ref(db, 'clo_cc_notification/' + Date.now()), {
+            msg: `SIgnal Inventory item "${inputs.name.value.trim()}" has been updated by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`
+        }).then(() => {
+            console.log('CLO/CC notified successfully about the update.');
+        }).catch((error) => {
+            console.error('Error notifying CLO/CC about the update:', error);
+        });
     closeEditModal();
 });
 
@@ -610,64 +613,27 @@ deleteItemBtn?.addEventListener('click', (e) => {
         return;
     }
     
-    if(role === 'eo') {
-        remove(ref(db, 'engrinventory/' + currentEditKey))
-            .then(() => {
-                console.log('Data deleted successfully');
-                showNotification('Inventory item is pending for deletion.', 'success', 'Deletion Successful');
-                loaditemdata();
-            })
-            .catch((error) => {
-                console.error('Error deleting data:', error);
-                showNotification('Error deleting item. Please try again.', 'error', 'Deletion Failed');
-            });
-
-    }
-    else if(role === 'so') {    
-        remove(ref(db, 'siginventory/' + currentEditKey))
-        .then(() => {
-            console.log('Data deleted successfully');
-            showNotification('Inventory item is pending for deletion.', 'success', 'Deletion Successful');
-            loaditemdata();
-        })
-        .catch((error) => {
-            console.error('Error deleting data:', error);
-            showNotification('Error deleting item. Please try again.', 'error', 'Deletion Failed');
-        });
-    }
-    else if(role === 'mto') {
-        remove(ref(db, 'mtinventory/' + currentEditKey))
-        .then(() => {
-            console.log('Data deleted successfully');
-            showNotification('Inventory item is pending for deletion.', 'success', 'Deletion Successful');
-            loaditemdata();
-        })
-        .catch((error) => {
-            console.error('Error deleting data:', error);
-            showNotification('Error deleting item. Please try again.', 'error', 'Deletion Failed');
-        });
-    }
-    else{
-        console.error('Invalid role:', role);
-        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
-        alert('Invalid role. Please log in again.');
-        window.location.href = 'login.html';
-        return;
-    }
+    remove(ref(db, 'siginventory/' + currentEditKey))
+    .then(() => {
+        console.log('Data deleted successfully');
+        showNotification('Inventory item is pending for deletion.', 'success', 'Deletion Successful');
+        loaditemdata();
+    })
+    .catch((error) => {
+        console.error('Error deleting data:', error);
+        showNotification('Error deleting item. Please try again.', 'error', 'Deletion Failed');
+    });
     closeEditModal();
 });
 
-
 const logoutButton = document.getElementById('logoutButton');
-
-
 
 logoutButton?.addEventListener('click', () => {
     sessionStorage.removeItem('baNumber');
     sessionStorage.removeItem('role_type');
     sessionStorage.removeItem('username');
     sessionStorage.removeItem('rank');
-    window.location.href = 'index.html';
+    window.location.href = './../index.html';
 });
 
 
@@ -682,32 +648,45 @@ function addIssued(key) {
 
 
 function acceptissue(key){
-    issuenotificationbody.innerHTML = '';
-    const issueitem = isssuenotificationDataCache[key];
-    const mainitem = dataCache[key];
-    if(!issueitem) return;
-    const quantity = issueitem.quantity || 0;
-    const newissue = (mainitem.issue || 0) + quantity;
-    const newInstore = (mainitem.instore || 0) - quantity;
-    update(ref(db, 'siginventory/' + key), {
-        issue: newissue,
-        instore: newInstore
+    const issueitem = isssuenotificationDataCache[key].items;
+    for(const itemkey in issueitem){
+        const issueitemdata = issueitem[itemkey];
+        const mainkey = issueitemdata.key;
+        const mainitem = dataCache[mainkey];
+        console.log(mainitem, issueitemdata);
+        if(!mainitem) continue;
+        const quantity = issueitemdata.quantity || 0;
+        const newissue = (mainitem.issue || 0) + quantity;
+        const newinstore = (mainitem.instore || 0) - quantity;
+        if(newinstore < 0){
+            showNotification(`Insufficient instore quantity for item ${mainitem.name}. Cannot accept issue request.`, 'error', 'Issue Failed');
+            continue;
+        }
+        update(ref(db, 'siginventory/' + mainkey), {
+            issue: newissue,
+            instore: newinstore
+        }).then(() => {
+            console.log('Issue accepted and inventory updated for item:', mainitem.name);
+        }).catch((error) => {
+            console.error('Error updating inventory for issue acceptance:', error);
+        });
+        set(ref(db, 'siginventory/' + mainkey + '/history/'+ issueitemdata.voucherNumber), {
+            date: issueitemdata.date || '',
+            quantity: issueitemdata.quantity || 0,
+            location: issueitemdata.location || ''
+        }).then(() => {
+            console.log('Issue history recorded successfully for item:', mainitem.name);
+        }).catch((error) => {
+            console.error('Error recording issue history:', error);
+        });
+    }
+    showNotification('Issue request accepted and inventory updated.', 'success', 'Issue Accepted');
+    set(ref(db, 'clo_cc_notification/' + Date.now()), {
+        msg: isssuenotificationDataCache[key].msg || ''
     }).then(() => {
-        console.log('Issue accepted and inventory updated');        
+        console.log('CLO/CC notified successfully about accepted issue.');
     }).catch((error) => {
-        console.error('Error updating inventory for issue acceptance:', error);
-    });
-
-    set(ref(db, 'siginventory/' + key + '/history/'+ Date.now()), {
-        date: issueitem.date || '',
-        quantity: issueitem.quantity || 0,
-        location: issueitem.location || '',
-        person: issueitem.person || '',
-        issued_by: issueitem.issued_by || '',
-    }).then(() => {
-        console.log('Issue history recorded successfully');
-    }).catch((error) => {
-        console.error('Error recording issue history:', error);
+        console.error('Error notifying CLO/CC about accepted issue:', error);
     });
     remove(ref(db, 'issuepending/so/' + key)).then(() => {
         console.log('Issue notification removed successfully');
@@ -715,11 +694,12 @@ function acceptissue(key){
         console.error('Error removing issue notification:', error);
     });
     setTimeout(() => {
-        loadissuenotifactions();
-        loaditemdata();
-        showNotification('Issue request accepted and inventory updated.', 'success', 'Issue Accepted');
-    }, 500);
+        window.location.reload();
+    }, 1000);
+
 }
+
+
 function rejectissue(key){
     issuenotificationbody.innerHTML = '';
     remove(ref(db, 'issuepending/so/' + key)).then(() => {
@@ -771,6 +751,13 @@ function acceptunsvc(key){
         loaditemdata();
         loadunsvcnotifactions();
     }, 700);
+    set(ref(db, 'clo_cc_notification/' + Date.now()), {
+        msg: unsvcitem.msg || ''
+    }).then(() => {
+        console.log('CLO/CC notified successfully about accepted unservicable.');
+    }).catch((error) => {
+        console.error('Error notifying CLO/CC about accepted unservicable:', error);
+    });
     loaditemdata();
     loadissuenotifactions();
 }

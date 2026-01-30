@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <link rel="stylesheet" href="../css/pendingitem.css">
     <link rel="stylesheet" href="../css/offr.css">
     <link rel="stylesheet" href="../css/card.css">
+    <link rel="stylesheet" href="../css/pendingitem.css">
     <link rel="stylesheet" href="../css/notification.css">
     <link rel="stylesheet" href="../css/adduser.css">
     <link rel="stylesheet" href="../css/piechart.css">
@@ -52,7 +51,25 @@
         <button class="btn secondary" id="logoutButton" onclick="logout()">Logout</button>        
     </div>
 
-
+    <div class="pendingitem" id="newpendingtotalitem">
+        <h2>Pending New Items</h2>
+        <table class="pendingitemTable">
+        <thead>
+            <tr>
+                <th>serial</th>
+                <th>Nomenclature/Name</th>
+                <th>Authorized Unit</th>
+                <th>Previous Held</th>
+                <th>Upcoming</th>
+                <th>New Held</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="newitemtotalTableBody">
+            <!-- Inventory items will be dynamically inserted here -->
+        </tbody>
+        </table>
+    </div>
     <!--pending new item-->
     <div class="pendingitem" id="newpendingitem">
         <h2>Pending New Items</h2>
@@ -175,15 +192,14 @@
     </div>
 
 
-
-    <!-- Inventory Table -->
+    <div class="tableshow">
     <table>
         <thead>
             <tr>
                 <th class="select-column" id="selectColumnHeader" style="display: none;">
                     <input type="checkbox" id="selectAll" title="Select all rows">
-                </th>
-                <th>serial</th>
+                 <th>serial</th>
+               </th>
                 <th>Nomenclature/Name</th>
                 <th>Authorized Unit</th>
                 <th>Held</th>
@@ -198,6 +214,10 @@
             <!-- Inventory items will be dynamically inserted here -->
         </tbody>
     </table>
+        
+    </div>
+    <!-- Inventory Table -->
+
 
     <!-- Edit Item Modal -->
     <div id="editModal" class="modal hidden">
@@ -219,24 +239,6 @@
                     <div class="field">
                         <label for="edittotal">Total</label>
                         <input type="number" id="edittotal" name="total" min="0" step="1" required>
-                    </div>
-                    <div class="field">
-                        <label for="editservicable">Servicable</label>
-                        <input type="number" id="editServicable" name="servicable" min="0" step="1" required>
-                    </div>
-                    <div class="field">
-                        <label for="editIssue">Issued</label>
-                        <input type="number" id="editIssue" name="issue" min="0" step="1" required>
-                    </div>
-                    <div class="field">
-                        <label for="editunservicable">Unservicable</label>
-                        <input type="number" id="editunservicable" name="unservicable" min="0" step="1" readonly>
-                        <p class="inline-hint">Auto: Total - Servicable</p>
-                    </div>
-                    <div class="field">
-                        <label for="editinstore">In store</label>
-                        <input type="number" id="editInstore" name="instore" min="0" step="1" readonly>
-                        <p class="inline-hint">Auto: Total - Issued</p>
                     </div>
                     <div class="field">
                         <label for="deleteitem">To Delete this Item write 'CONFIRM'</label>
