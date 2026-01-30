@@ -81,9 +81,10 @@
         
         .section-header {
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
+            gap: 1rem;
         }
         
         .section-header h3 {
@@ -131,9 +132,9 @@
         
         .item-form {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
+            grid-template-columns: 2fr 1fr ;
             gap: 1rem;
-            align-items: end;
+            align-items: baseline;
         }
         
         .remove-item-btn {
