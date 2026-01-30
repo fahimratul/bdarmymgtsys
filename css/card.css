@@ -22,8 +22,7 @@
     text-align: center;
 }
 .mt{
-    flex: 1 1 calc(25% - 2rem);
-    min-width: 120px;
+    flex: 1 1 calc(20% - 2rem);
 }
 .card:hover{
     transform: translateY(-5px);

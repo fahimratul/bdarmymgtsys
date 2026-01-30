@@ -16,7 +16,7 @@ nav {
     min-height: 50px;
     position: fixed;
     top: 0;
-    width: 100%;
+    width: 100vw;
     justify-items: end;
 }
 
@@ -94,6 +94,9 @@ nav ul li a:hover, nav ul li a.active {
 
 /* Small phones */
 @media screen and (max-width: 480px) {
+    nav{
+        padding: 0;
+    }
     nav ul li {
         margin-right: 10px;
     }
