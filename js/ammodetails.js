@@ -22,13 +22,13 @@ const db = getDatabase(app);
 console.log(db);
 console.log("Firebase Initialized");
 
-let allowedRoles = ['lo', 'cc', 'clo', 'bknco'];
+let allowedRoles = ['lo', 'cc', 'clo', 'ammonco'];
 
 window.addEventListener('DOMContentLoaded', () => {
     let baNumber = sessionStorage.getItem('baNumber');
     let role = sessionStorage.getItem('role');
     if (!allowedRoles.includes(role)) {
-        console.error('Unauthorized role for mto. Access denied.');
+        console.error('Unauthorized role for ammonco. Access denied.');
         window.location.href = 'login.html';
         return;
     }
@@ -91,6 +91,7 @@ function loadammodata() {
     let insvcquantity=0;
     let unsvcquantity=0;
     let inmagquantity=0;
+    let expenditure=0;
     let inf1quantity=0;
     let inf2quantity=0;
     let inf3quantity=0;
@@ -124,6 +125,7 @@ function loadammodata() {
                         <td>${ammo.unsvcquantity}</td>
                         <td>${ammo.insvcquantity}</td>
                         <td>${ammo.inmagquantity}</td>
+                        <td>${ammo.expenditure || 0}</td>
                         <td>${ammo.inf1quantity}</td>
                         <td>${ammo.inf2quantity}</td>
                         <td>${ammo.inf3quantity}</td>
@@ -141,6 +143,7 @@ function loadammodata() {
                 insvcquantity += ammo.insvcquantity || 0;
                 unsvcquantity += ammo.unsvcquantity || 0;
                 inmagquantity += ammo.inmagquantity || 0;
+                expenditure += ammo.expenditure || 0;
                 inf1quantity += ammo.inf1quantity || 0;
                 inf2quantity += ammo.inf2quantity || 0;
                 inf3quantity += ammo.inf3quantity || 0;

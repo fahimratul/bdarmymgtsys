@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/offr.css">
-    <link rel="stylesheet" href="css/card.css">
-    <link rel="stylesheet" href="css/pendingitem.css">
-    <link rel="stylesheet" href="css/notification.css">
-    <link rel="stylesheet" href="css/adduser.css">
-    <link rel="stylesheet" href="css/piechart.css">
+    <link rel="stylesheet" href="../css/offr.css">
+    <link rel="stylesheet" href="../css/card.css">
+    <link rel="stylesheet" href="../css/pendingitem.css">
+    <link rel="stylesheet" href="../css/notification.css">
+    <link rel="stylesheet" href="../css/adduser.css">
+    <link rel="stylesheet" href="../css/piechart.css">
     <script src ="https://unpkg.com/lucide@latest" ></script>
+
     <link rel='icon' href='static/logo_small.png' type='image/x-icon' />
     <title>Offr Inventory</title>
 </head>
@@ -22,26 +23,17 @@
         <div class="loading-subtext">Please wait...</div>
     </div>
     
-    <nav id="notforclo">
+    <nav>
         <ul>
             <li><a href="officer_so_dashboard.html" class="active">Inventory</a></li>
-            <li><a href="user_management.html">User Management</a></li>
             <li ><a href="#" onclick="popupmenu()"> User ▼ </a> </li>
         </ul>
     </nav>
-    <nav id="forclo">
-        <ul>
-            <li><a href="clodashboard.html" >Home</a></li>
-            <li><a href="user_management.html">User Management</a></li>
-            <li><a href="notifications.html">Notifications</a></li>
-            <li ><a href="#" onclick="popupmenu()"> User ▼ </a> </li>
-        </ul>
-    </nav>
-    <h1 id="title">Signal Officer Inventory Management</h1>
-    
+    <h1 id="title">Signal Inventory Management</h1>
     <div id="officer_notification_issue" class="officernotification"></div>
 
     <div id="officer_notification_unsvc" class="officernotification"></div>
+    
     <div class="topdown-container" id="userInfoContainer" style="display: none;">
         <h3 id ="username"></h3>
         <h4 id ="rank"></h4>
@@ -106,12 +98,21 @@
                 <p>In Store Items</p>
             </div>
         </div>
-            <div class="card" onclick="window.location.href='additem.html'" style="cursor: pointer;">
+            <div class="card" onclick="window.location.href='../additem.html'" style="cursor: pointer;">
                 <div class="card-icon">
                     <i data-lucide="plus-circle"></i>
                 </div>
                 <div class="card-info">
                     <h2 id="addItems">Add Items</h2>
+                    <p></p>
+                </div>
+            </div>
+            <div class="card" id="issueItemBtn" style="cursor: pointer;">
+                <div class="card-icon">
+                    <i data-lucide="send"></i>
+                </div>
+                <div class="card-info">
+                    <h2 id="addItems">Issue Items</h2>
                     <p></p>
                 </div>
             </div>
@@ -125,8 +126,18 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
             <input type="text" id="searchInput" class="library-search-input" placeholder="Search Item...">
-        </div>   
-        <button class="additem-btn" id="addItemBtn">Add Item</button> 
+        </div>
+        <div class="pdf-buttons-container">
+            <button class="pdf-btn" id="printAllTable" title="Print entire table">
+                <i data-lucide="printer"></i> Print All
+            </button>
+            <button class="pdf-btn" id="printSelectedRows" title="Print selected rows" style="display: none;">
+                <i data-lucide="file-check"></i> Print Selected
+            </button>
+            <button class="pdf-btn" id="toggleSelectMode" title="Toggle row selection mode">
+                <i data-lucide="check-square"></i> Select Rows
+            </button>
+        </div>
     </div>
 
 
@@ -135,6 +146,9 @@
     <table>
         <thead>
             <tr>
+                <th class="select-column" id="selectColumnHeader" style="display: none;">
+                    <input type="checkbox" id="selectAll" title="Select all rows">
+                </th>
                 <th>serial</th>
                 <th>Nomenclature/Name</th>
                 <th>Authorized Unit</th>
@@ -255,18 +269,12 @@
 
     <script>
         lucide.createIcons();
-        addItemBtn = document.getElementById('addItemBtn');
-        addItemBtn.addEventListener('click', function() {
-            window.location.href = 'additem.html';
-        });
         function hideNotification() {
             const toast = document.getElementById("notification-toast");
             toast.classList.remove("show");
         }
-        function OpenUserManagement(){
-            window.location.href = 'user_management.html';
-        }
-                function popupmenu() {
+
+        function popupmenu() {
             const userInfoContainer = document.getElementById('userInfoContainer');
             if (userInfoContainer.style.display === 'none' || userInfoContainer.style.display === '') {
                 userInfoContainer.style.display = 'flex';
@@ -291,19 +299,9 @@
             userInfoContainer.style.display = 'none';
             console.log('Password Change Modal Opened');
         }
-        window.addEventListener('DOMContentLoaded', () => {
-                const role=sessionStorage.getItem('role');
-                if(role==='clo' || role === 'cc'){
-                    document.getElementById('notforclo').style.display='none';
-                    document.getElementById('forclo').style.display='block';
-                } else {
-                    document.getElementById('forclo').style.display='none';
-                    document.getElementById('notforclo').style.display='block';
-                }
-        });
     </script>
 
-    <script type="module" src="js/officer.js" defer></script>
+    <script type="module" src="storeman.js" defer></script>
 
 </body> 
 

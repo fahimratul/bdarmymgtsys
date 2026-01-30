@@ -194,3 +194,18 @@
     background-color: #dc2626;
 }
 /* End of Notification Toast */
+
+.delete-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    color: white;
+    background: linear-gradient(135deg, #ea6683 0%, #770303 100%);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    transition: background 0.3s ease;
+}
+.delete-btn:hover {
+    background: linear-gradient(135deg, #770303 0%, #ea6683 100%);
+}

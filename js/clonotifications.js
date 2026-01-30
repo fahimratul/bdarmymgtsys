@@ -146,3 +146,41 @@ logoutButton?.addEventListener('click', () => {
 });
 
 
+document.getElementById('clear_notifications')?.addEventListener('click', () => {
+    const confirmClear = confirm("Are you sure you want to clear all notifications?");
+    if (confirmClear) {
+        let dbref = ref(db, `clo_cc_notification/`);
+        remove(dbref).then(() => {
+            showNotification("All notifications cleared successfully.", "success", "Notifications Cleared");
+            notificationbody.innerHTML = '<p>No notifications available.</p>';
+            notificationbody.style.minHeight='50px';
+            console.log("Notifications Cleared");
+        }).catch((error) => {
+            console.error('Error clearing notifications:', error);
+            showNotification("Failed to clear notifications. Please try again later.", "error", "Clear Failed");
+        });
+    }
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+    if(role=== 'clo'){
+        get(ref(db, 'clonotificationcount')).then((snapshot) => {
+            if (snapshot.exists()) {
+                document.getElementById('notificationCount').style.display='block';
+            }
+        }).catch((error) => {
+            console.error(error);
+        });
+    }vv  
+});
+
+document.getElementById('notification_menu').addEventListener('click', () => {
+    if(role=== 'clo'){
+        remove(ref(db, 'clonotificationcount')).then(() => {
+            document.getElementById('notificationCount').style.display='none';
+            console.log("Notification count reset");
+        }).catch((error) => {
+            console.error(error);
+        });
+    }
+});

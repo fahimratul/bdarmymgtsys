@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <link rel="stylesheet" href="css/adduser.css">
-    <link rel="stylesheet" href="css/card.css">
     <link rel="stylesheet" href="css/engrnco.css">
     <link rel="stylesheet" href="css/notification.css">
     <link rel="stylesheet" href="css/piechart.css">
+    <link rel="stylesheet" href="css/mt_dashboard.css">
     <script src ="https://unpkg.com/lucide@latest" ></script>
     <link rel='icon' href='static/logo_small.png' type='image/x-icon' />
     <title>Inventory</title>
@@ -21,7 +21,6 @@
         <div class="loading-text">Loading Inventory Data</div>
         <div class="loading-subtext">Please wait...</div>
     </div>
-    <h1>MT Dashboard</h1>
         <nav id="notforclo">
         <ul>
             <li><a href="#" onclick="window.location.href='mt_dashboard.html?key=viewtr'" id= "viewTrBtn" class="active">View Transport State</a></li>
@@ -35,8 +34,6 @@
             <li><a href="clodashboard.html" >Home</a></li>
             <li><a href="user_management.html">User Management</a></li>
             <li><a href="notifications.html">Notifications</a></li>
-            <li><a href="ammodashboard.html">Ammo Inventory</a></li>
-            <li><a href="mt_dashboard.html" class="active">MT Dashboard</a></li>
             <li ><a href="#" onclick="popupmenu()"> User Info </a> </li>
         </ul>
     </nav>
@@ -140,10 +137,11 @@
 
 
 
-    <div class="table-container" id="transportTableContainer" >
     <div id="officer_notification" class="officernotification"></div>
-    <div class="dashboard-card">
-        <div class="card mt">
+    <div class="table-container" id="transportTableContainer" >
+    <div>
+        <div class="dashboard-card">
+        <div class="card mt" id="Allvehicles">
             <div class="card-icon">
                 <i data-lucide="truck"></i>
             </div>
@@ -152,7 +150,7 @@
                 <p>Total Vehicles</p>
             </div>
         </div>
-        <div class="card mt">
+        <div class="card mt" id="alrvehicles">
             <div class="card-icon">
                 <i data-lucide="truck-electric"></i>
             </div>
@@ -161,16 +159,16 @@
                 <p>A LR</p>
             </div>
         </div>
-        <div class="card mt">
+        <div class="card mt" id="asrvehicles">
             <div class="card-icon">
-                <i data-lucide="x-circle"></i>
+                <i data-lucide="van"></i>
             </div>
             <div class="card-info">
                 <h2 id="ASRVehicles">0</h2>
                 <p>A SR Vehicles</p>
             </div>
         </div>
-        <div class="card mt">
+        <div class="card mt" id="MaintenanceVehicles">
             <div class="card-icon">
                 <i data-lucide="wrench"></i>
             </div>
@@ -180,7 +178,7 @@
             </div>
         </div>
 
-        <div class="card mt">
+        <div class="card mt" id="GroundedVehicles">
             <div class="card-icon">
                 <i data-lucide="wrench"></i>
             </div>
@@ -193,11 +191,8 @@
     
     <h2>Vehicle Overview Classes Wise</h2>
     <div class="dashboard-card">
-        <div class="card">
-            <div class="card-icon">
-                <i data-lucide="car"></i>
+        <div class="card nohover" >
                 <h4>Class A</h4>
-            </div>
             <div class="card-info mt">
                 <h4 id="totalVehiclesclassA">0</h4>
                 <h4 id="ALRVehiclesclassA">0</h4>
@@ -206,11 +201,8 @@
                 <h4 id="groundedVehiclesclassA">0</h4>
             </div>
         </div>
-        <div class="card">
-            <div class="card-icon">
-                <i data-lucide="truck"></i>
+        <div class="card nohover" >
                 <h4>Class B</h4>
-            </div>
             <div class="card-info mt">
                 <h4 id="totalVehiclesclassB">0</h4>
                 <h4 id="ALRVehiclesclassB">0</h4>
@@ -219,11 +211,8 @@
                 <h4 id="groundedVehiclesclassB">0</h4>
             </div>
         </div>
-        <div class="card">
-            <div class="card-icon">
-                <i data-lucide="forklift"></i>
+        <div class="card nohover">
                 <h4>Spl Veh</h4>
-            </div>
             <div class="card-info mt">
                 <h4 id="totalVehiclesspl">0</h4>
                 <h4 id="ALRVehiclesspl">0</h4>
@@ -232,11 +221,8 @@
                 <h4 id="groundedVehiclesspl">0</h4>
             </div>
         </div>
-        <div class="card">
-            <div class="card-icon">
-                <i data-lucide="forklift"></i>
-                <h4>Sp Veh</h4>
-            </div>
+        <div class="card nohover">
+            <h4>Sp Veh</h4>
             <div class="card-info mt">
                 <h4 id="totalVehiclessp">0</h4>
                 <h4 id="ALRVehiclessp">0</h4>
@@ -246,11 +232,8 @@
             </div>
         </div>
         
-        <div class="card">
-            <div class="card-icon">
-                <i data-lucide="forklift"></i>
-                <h4>Water Trailer</h4>
-            </div>
+        <div class="card nohover">
+            <h4>Water Trailer</h4>
             <div class="card-info mt">
                 <h4 id="totalVehicleswatertrailer">0</h4>
                 <h4 id="ALRVehicleswatertrailer">0</h4>
@@ -259,11 +242,8 @@
                 <h4 id="groundedVehicleswatertrailer">0</h4>
             </div>
         </div>
-        <div class="card">
-            <div class="card-icon">
-                <i data-lucide="forklift"></i>
-                <h4>Low Bed/ Fuel/ Water/ Trailer</h4>
-            </div>
+        <div class="card nohover">
+            <h4>Low Bed/ Fuel/ Water/ Trailer</h4>
             <div class="card-info mt">
                 <h4 id="totalVehicleslowbed">0</h4>
                 <h4 id="ALRVehicleslowbed">0</h4>
@@ -273,9 +253,7 @@
             </div>
         </div>
     </div>
-
-    <h2>Campwise overview</h2>
-    <div class="dashboard-card">
+    <div class="dashboard-card" style="display: none;">
         <div class="card mt">
             <div class="card-icon">
                 <i data-lucide="car"></i>
@@ -329,6 +307,11 @@
             </div>
         </div>
     </div>
+
+
+</div>
+    <div>
+        
     <div class="search-container">
         <div class="library-search-container">
             <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -338,7 +321,7 @@
         </div>
     </div>
 
-    <div class="search-container">
+    <div class="search-container" style="display: none;">
         <h2>Filter:</h2>
         <select id="conditionFilter" class="filter-select">
             <option value="">All Vehicles</option>
@@ -383,6 +366,7 @@
             <!-- vehicles items will be dynamically inserted here -->
         </tbody>
     </table>
+    </div>
 
 
     </div>

@@ -106,10 +106,18 @@ function handlelogin() {
                         }
                         else {
                             console.log("Redirecting to officer dashboard");
-                            window.location.href = 'officer_so_dashboard.html';
+                            window.location.href = './signal/officer_so_dashboard.html';
                         }
                     } 
                     else if (role_type === 'bqms'){
+                        if(role ==='ammonco'){
+                            window.location.href ='ammodashboard.html';
+                            return;
+                        }
+                        if(role === 'signco'){
+                            window.location.href ='signal/storemane_sig_dashboard.html';
+                            return;
+                        }
                         window.location.href ='engrnco.html';
                     
                     } 

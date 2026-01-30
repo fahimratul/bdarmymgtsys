@@ -149,46 +149,124 @@ logoutButton?.addEventListener('click', () => {
 });
 
 
-function approveNewItem(key, data) {
-    let dbremoveRef;
-    if(role === 'eo') {
-        set(ref(db, 'cloapproval/new/engrinventory/' + key),{
-            name: data.name,
-            authorized: data.authorized,
-            total: data.total,
-            servicable: data.servicable,
-            unservicable: data.unservicable,
-            issue: data.issue,
-            instore: data.instore
+window.addEventListener('DOMContentLoaded', () => {
+    if(role=== 'clo'){
+        get(ref(db, 'clonotification')).then((snapshot) => {
+            if (snapshot.exists()) {
+                document.getElementById('notificationCount').style.display='block';
+            }
+        }).catch((error) => {
+            console.error(error);
         });
-        dbremoveRef = ref(db, 'officerapproval/new/engrinventory/' + key);
-        showNotification("Item approved successfully! Waiting For Cheif Logistic Officer's Approval", "success", "Success");
-    }
-    else if(role === 'so') {
-        set(ref(db, 'cloapproval/new/siginventory/' + key),{
-            name: data.name,
-            authorized: data.authorized,
-            total: data.total,
-            servicable: data.servicable,
-            unservicable: data.unservicable,
-            issue: data.issue,
-            instore: data.instore
+    }  
+});
+
+document.getElementById('notification_menu').addEventListener('click', () => {
+    if(role=== 'clo'){
+        remove(ref(db, 'clonotification')).then(() => {
+            document.getElementById('notificationCount').style.display='none';
+            console.log("Notification count reset");
+        }).catch((error) => {
+            console.error(error);
         });
-        dbremoveRef = ref(db, 'officerapproval/new/siginventory/' + key);
-        showNotification("Item approved successfully! Waiting For Cheif Logistic Officer's Approval", "success", "Success");
     }
-    else {
-        console.error('Invalid role:', role);
-        showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
-        window.location.href = 'login.html';
+});
+
+
+
+function loadvehicledata() {
+    let vehicleinfo = {
+         total: 0, alr: 0, asr: 0, inmaintenance: 0, grounded: 0 
+    };
+
+    const dbRef = ref(db, `vehiclelist/`);
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    get(dbRef).then((snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            for (const key in data) {
+                vehicleinfo.total += 1;
+                const vehicle = data[key];
+                switch (vehicle.condition) {
+                    case 'alr':
+                        vehicleinfo.alr += 1;
+                        break;
+                    case 'asr':
+                        vehicleinfo.asr += 1;
+                        break;
+                    case 'inmaintenance':
+                        vehicleinfo.inmaintenance += 1;
+                        break;
+                    case 'grounded':
+                        vehicleinfo.grounded += 1;
+                        break;
+                }
+            }
+        }
+        document.getElementById('totalVehicles').textContent = vehicleinfo.total;
+        document.getElementById('ALRVehicles').textContent = vehicleinfo.alr;
+        document.getElementById('ASRVehicles').textContent = vehicleinfo.asr;
+        document.getElementById('inMaintenanceVehicles').textContent = vehicleinfo.inmaintenance;
+        document.getElementById('groundedVehicles').textContent = vehicleinfo.grounded;
+        // Hide loading overlay after data is loaded
+        if (loadingOverlay) {
+            setTimeout(() => {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+            }, 50);
+        }
+    }).catch((error) => {
+        console.error('Error loading data:', error);
+        if (loadingOverlay) {
+            setTimeout(() => {
+
+            document.getElementById('loadingOverlay').classList.add('hidden');
+            }, 50);
+        }
+    });
+}
+
+loadvehicledata();
+
+document.getElementById('passwordChangeSubmitBtn').addEventListener('click', () => {
+    const newBaNumber = document.getElementById('banumber').value.trim();
+    const newRank = document.getElementById('rank').value.trim();
+    const baNumber = sessionStorage.getItem('baNumber');
+    const name = document.getElementById('name').textContent;
+    if (!newBaNumber || !newRank) {
+        showNotification("BA Number and Rank cannot be empty.", "warning", "Input Error");
         return;
     }
-    remove(dbremoveRef)
-    .then(() => {
-        console.log('Pending new item removed successfully after approval');
-    })
-    .catch((error) => {
-        console.error('Error removing pending new item:', error);
-    });
-    loadnewitemdata();
-}
+    const password = document.getElementById('new-password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+    if (password !== confirmPassword) {
+        showNotification("Passwords do not match.", "error", "Input Error");
+        return;
+    }
+    remove(ref(db, `officers/${baNumber}`)).then(() => {
+        const newOfficerData = {
+            name: name,
+            rank: newRank,
+            baNumber: newBaNumber,
+            role_type: 'clo',
+            password: password
+        };
+        set(ref(db, `users/${newBaNumber}`), newOfficerData).then(() => {
+            sessionStorage.setItem('baNumber', newBaNumber);
+            sessionStorage.setItem('rank', newRank);
+            showNotification("Information updated successfully. Please log in again.", "success", "Update Successful");
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            },1000);
+        }).catch((error) => {
+            console.error('Error updating information:', error);
+            showNotification("Failed to update information. Please try again.", "error", "Update Failed");
+        });
+    }).catch((error) => {
+        console.error('Error removing old information:', error);
+        showNotification("Failed to update information. Please try again.", "error", "Update Failed");
+    }
+    );
+});
+
+
+
