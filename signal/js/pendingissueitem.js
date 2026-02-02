@@ -222,7 +222,7 @@ function processIssueRequest(key) {
                 return;
             }
             console.log(`Issuing ${quantity} of item ${itemData.name}`);
-            msg+= `${quantity} X ${itemData.name} ,; `;
+            msg= msg + quantity+ 'X' + itemData.name + ', ';
             set(ref(db, `siginventory/${itemkey}/history/${voucherNumber}`), {
                 date: issueDate,
                 location: recipientLocation,
@@ -245,7 +245,7 @@ function processIssueRequest(key) {
     set(issueRef, {
         msg: msg,
         from: 'Signal Inventory',
-        time: formatDate(new Date())   
+        time: new Date().toLocaleString()   
     }).then(() => {
         showNotification('Items issued successfully! Opening print dialog...', 'success', 'Request Submitted');
         const pendingitemsContainer = document.getElementById(key);

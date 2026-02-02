@@ -251,7 +251,7 @@ function processIssueRequest() {
     // Save issue request to database
     set(ref(db, 'clo_cc_notification/'+ Date.now()), {
         msg: `New unservicable request processed with Voucher No: ${voucherNumber}`,
-        date: new Date().toISOString(),
+        date: new Date().toLocaleString(),
         from: "Signal Inventory"
     }).then(() => {
         showNotification(`Unservicable request processed successfully with Voucher No: ${voucherNumber}`, 'success', 'Request Processed');

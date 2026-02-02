@@ -102,7 +102,10 @@ function addItemRow() {
                 <select id="itemSelect-${itemCounter}" name="itemSelect" required onchange="updateAvailableQuantity('${itemCounter}')">
                     <option value="">Choose an item...</option>
                 </select>
-                <div class="available-qty" id="availableQty-${itemCounter}">Available: 0</div>
+            </div>
+            <div class="form-group">
+                <label for="availableQty-${itemCounter}">Instore & Servicable</label>
+                <input type="text" id="availableQty-${itemCounter}" name="availableQty" disabled>
             </div>
             <div class="form-group">
                 <label for="quantity-${itemCounter}">Quantity</label>
@@ -250,8 +253,9 @@ function processIssueRequest() {
     
     // Save issue request to database
     const issueRef = push(ref(db, 'clo_cc_notification/'));
+    const msg= itemsToIssue.map(item => `${item.quantity} x ${item.itemName}`).join(', ');
     set(issueRef, {
-        msg: `Issue request: ${itemsToIssue.map(item => `${item.quantity} x ${item.itemName}`).join(', ')} to ${recipientLocation}`,
+        msg: `Issue request: ${msg} to ${recipientLocation}`,
         from: 'SIGNAL INVENTORY',
         date: new Date().toLocaleString()
     }).then(() => {
