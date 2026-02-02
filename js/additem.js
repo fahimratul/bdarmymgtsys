@@ -35,7 +35,6 @@ window.addEventListener('DOMContentLoaded', () => {
         return;
     }
     console.log('Logged in as BA Number:', baNumber);
-
 });
 
 const role = sessionStorage.getItem('role');
@@ -44,48 +43,33 @@ const loAddItemRole = sessionStorage.getItem('lo_add_item_role');
 
 const form = document.getElementById('addItemForm');
 const total = document.getElementById('total');
-const servicable = document.getElementById('servicable');
-const unservicable = document.getElementById('unservicable');
+const authorized = document.getElementById('authorized');
+const unit = document.getElementById('unit');
 
 function toNumber(value) {
     const parsed = parseFloat(value);
     return Number.isFinite(parsed) ? parsed : 0;
 }
 
-function recalc() {
-    if(toNumber(servicable.value) > toNumber(total.value)) {
-        showNotification('Servicable quantity cannot exceed Total quantity. Adjusting Servicable to match Total.', 'warning', 'Input Adjusted');
-        servicable.value = total.value;
-    }
-    const unservicableValue = toNumber(total.value)-toNumber(servicable.value);
-    unservicable.value = Math.max(unservicableValue, 0);
-}
-
-[total, servicable].forEach(input => {
-    input.addEventListener('input', recalc);
-});
-
-recalc();
-
 form.addEventListener('submit', (event) => {
     event.preventDefault();
-    recalc();
-
+    let totalValue = toNumber(form.total.value);
     const payload = {
         name: form.name.value.trim(),
-        authorized: form.authorized.value.trim(),
-        total: toNumber(form.total.value),
-        servicable: toNumber(form.servicable.value),
-        unservicable: toNumber(form.unservicable.value),
+        authorized: toNumber(form.authorized.value),
+        unit: form.unit.value,
+        total: totalValue,
+        servicable: totalValue,
+        unservicable: 0,
         issue: 0,
-        instore: toNumber(form.total.value)
+        instore: totalValue
     };
     console.table(payload);
     writeInventoryItem(payload.name, payload);
     form.reset();
     total.value = 0;
-    servicable.value = 0;
-    recalc();
+    authorized.value = 0;
+    unit.value = "";
 });
 
 function checkInventoryItem(name) {
@@ -95,7 +79,7 @@ function checkInventoryItem(name) {
         dbRef = ref(db, 'engrinventory/' + newname);
     }
     else if(role === 'signco' || role === 'so') {
-        dbRef = ref(db, 'siginventory/' + newname);
+        dbRef = ref(db, 'siginventory/main/' + newname);
     }
     else if(role === 'mtnco' || role === 'mtjco' || role === 'mto') {
         dbRef = ref(db, 'mtinventory/' + newname);
@@ -148,6 +132,7 @@ function writeInventoryItem(name, data) {
             if(role === 'engrnco') {
                 set(ref(db, 'officerapproval/new/engrinventory/' + newname),{
                 name: name,
+                unit: data.unit,
                 authorized: data.authorized,
                 total: data.total,
                 servicable: data.servicable,
@@ -159,6 +144,7 @@ function writeInventoryItem(name, data) {
             else if(role === 'signco') {
                 set(ref(db, 'officerapproval/new/siginventory/' + newname),{
                 name: name,
+                unit: data.unit,
                 authorized: data.authorized,
                 total: data.total,
                 servicable: data.servicable,
@@ -170,7 +156,7 @@ function writeInventoryItem(name, data) {
             else if(role === 'mtnco' || role === 'mtjco') {
                 set(ref(db, 'officerapproval/new/mtinventory/' + newname),{
                 name: name,
-                authorized: data.authorized,
+                unit: data.unit,
                 total: data.total,
                 servicable: data.servicable,
                 unservicable: data.unservicable,
@@ -216,9 +202,10 @@ function writeInventoryItem(name, data) {
                 });
             }
             else if(role === 'so') {
-                set(ref(db, 'siginventory/' + newname),{
+                set(ref(db, 'siginventory/main/' + newname),{
                     name: name,
                     authorized: data.authorized,
+                    unit: data.unit,
                     total: data.total,
                     servicable: data.servicable,
                     unservicable: data.unservicable,
@@ -233,6 +220,7 @@ function writeInventoryItem(name, data) {
                 set(ref(db, 'mtinventory/' + newname),{
                     name: name,
                     authorized: data.authorized,
+                    unit: data.unit,
                     total: data.total,
                     servicable: data.servicable,
                     unservicable: data.unservicable,

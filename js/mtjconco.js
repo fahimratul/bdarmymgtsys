@@ -780,6 +780,13 @@ function filterVehiclesbyclick(classFilter, conditionFilter, campFilter) {
 
         row.style.display = (matchClass && matchCondition && matchCamp) ? '' : 'none';
     });
+
+    const targetElement = document.getElementById('VehicleTableBody');
+    if (targetElement) {
+        targetElement.scrollIntoView({
+        behavior: 'smooth' // Makes the scroll transition smooth
+    });
+    }
 }
 
 

@@ -26,6 +26,8 @@
     <nav id="notforclo">
         <ul>
             <li><a href="officer_so_dashboard.html" class="active">Inventory</a></li>
+            <li><a href="pendingIssue.html">Pending Issues Items Request</a></li>
+            <li><a href="pendingUnserviceable.html">Pending Unsvc Items Request</a></li>
             <li><a href="../user_management.html">User Management</a></li>
             <li ><a href="#" onclick="popupmenu()"> User ▼ </a> </li>
         </ul>
@@ -167,6 +169,15 @@
                     <p></p>
                 </div>
             </div>
+            <div class="card" onclick="window.location.href='unservicable.html'" style="cursor: pointer;">
+                <div class="card-icon">
+                    <i data-lucide="x-circle"></i>
+                </div>
+                <div class="card-info">
+                    <h2 id="addItems">Unservicable Items</h2>
+                    <p></p>
+                </div>
+            </div>
     </div>
 
     <!-- Search and Add Item -->
@@ -201,7 +212,8 @@
                  <th>serial</th>
                </th>
                 <th>Nomenclature/Name</th>
-                <th>Authorized Unit</th>
+                <th>Measurement Unit</th>
+                <th>Authorized</th>
                 <th>Held</th>
                 <th>Issued</th>
                 <th>In store</th>
@@ -233,12 +245,12 @@
                         <input type="text" id="editName" name="name" required>
                     </div>
                     <div class="field">
-                        <label for="editAuthorized">Authorized Unit</label>
-                        <input type="text" id="editAuthorized" name="authorized" required>
+                        <label for="editAuthorized">Measurement Unit</label>
+                        <input type="text" id="editUnit" name="unit" required>
                     </div>
                     <div class="field">
-                        <label for="edittotal">Total</label>
-                        <input type="number" id="edittotal" name="total" min="0" step="1" required>
+                        <label for="editMeasurementUnit">Authorized</label>
+                        <input type="text" id="editAuthorized" name="authorized" required>
                     </div>
                     <div class="field">
                         <label for="deleteitem">To Delete this Item write 'CONFIRM'</label>
@@ -347,7 +359,7 @@
         });
     </script>
 
-    <script type="module" src="officer.js" defer></script>
+    <script type="module" src="js/officer.js" defer></script>
 
 </body> 
 

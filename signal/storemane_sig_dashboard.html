@@ -116,6 +116,16 @@
                     <p></p>
                 </div>
             </div>
+            
+            <div class="card" onclick="window.location.href='unservicable_storeman.html'" style="cursor: pointer;">
+                <div class="card-icon">
+                    <i data-lucide="x-circle"></i>
+                </div>
+                <div class="card-info">
+                    <h2 id="addItems"> Add Unservicable Items</h2>
+                    <p></p>
+                </div>
+            </div>
     </div>
 
     <!-- Search and Add Item -->
@@ -149,9 +159,9 @@
                 <th class="select-column" id="selectColumnHeader" style="display: none;">
                     <input type="checkbox" id="selectAll" title="Select all rows">
                 </th>
-                <th>serial</th>
                 <th>Nomenclature/Name</th>
-                <th>Authorized Unit</th>
+                <th>Measurement Unit</th>
+                <th>Authorized</th>
                 <th>Held</th>
                 <th>Issued</th>
                 <th>In store</th>
@@ -179,8 +189,12 @@
                         <input type="text" id="editName" name="name" required>
                     </div>
                     <div class="field">
-                        <label for="editAuthorized">Authorized Unit</label>
-                        <input type="text" id="editAuthorized" name="authorized" required>
+                        <label for="editAuthorized">Measurement Unit</label>
+                        <input type="text" id="editAuthorized" name="unit" required>
+                    </div>
+                    <div class="field">
+                        <label for="editMeasurementUnit">Authorized</label>
+                        <input type="text" id="editMeasurementUnit" name="authorized" required>
                     </div>
                     <div class="field">
                         <label for="edittotal">Total</label>
@@ -277,7 +291,7 @@
         }
     </script>
 
-    <script type="module" src="storeman.js" defer></script>
+    <script type="module" src="js/storeman.js" defer></script>
 
 </body> 
 

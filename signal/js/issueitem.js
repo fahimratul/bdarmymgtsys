@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import { getDatabase, get, ref, set, push, update } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
-import { showNotification } from '../js/notification.js';
+import { showNotification } from '../../js/notification.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyCIX-3-GunSudlllY-dFRo943ysFXtBiOk",
@@ -41,7 +41,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function loadInventoryData() {
     const loadingOverlay = document.getElementById('loadingOverlay');
-    const dbRef = ref(db, 'siginventory/');
+    const dbRef = ref(db, 'siginventory/main/');
     
     get(dbRef).then((snapshot) => {
         inventoryData = snapshot.val() || {};
@@ -237,7 +237,7 @@ function processIssueRequest() {
             quantity: quantity,
             location: recipientLocation
         });
-        update(ref(db, `siginventory/${itemKey}`), {
+        update(ref(db, `siginventory/main/${itemKey}`), {
             issue: (item.issue || 0) + quantity,
             instore: (item.instore || 0) - quantity
         });
@@ -252,6 +252,8 @@ function processIssueRequest() {
     const issueRef = push(ref(db, 'clo_cc_notification/'));
     set(issueRef, {
         msg: `Issue request: ${itemsToIssue.map(item => `${item.quantity} x ${item.itemName}`).join(', ')} to ${recipientLocation}`,
+        from: 'SIGNAL INVENTORY',
+        date: new Date().toLocaleString()
     }).then(() => {
         showNotification('Items issued successfully! Opening print dialog...', 'success', 'Request Submitted');
         // Clear form after a brief delay to allow print dialog to open

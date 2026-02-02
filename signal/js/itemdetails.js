@@ -34,7 +34,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 });
  
-import {showNotification} from './../js/notification.js';
+import {showNotification} from '../../js/notification.js';
 
 let dataCache = {};
 
@@ -45,7 +45,7 @@ function loaditemsdetails() {
     typeKey = urlparams.get('type');
     console.log('Item Key:', itemKey);
     console.log('Type Key:', typeKey);
-    let dbRef = ref(db, `siginventory/`+ itemKey);
+    let dbRef = ref(db, `siginventory/main/`+ itemKey);
     const loadingOverlay = document.getElementById('loadingOverlay');
     get(dbRef).then((snapshot) => {
         dataCache = snapshot.val();
@@ -53,7 +53,8 @@ function loaditemsdetails() {
         if (dataCache) {
             console.log('Vehicle Data:', dataCache);
             document.getElementById('typeofitem').textContent = dataCache.name || 'N/A';
-            document.getElementById('authorized').textContent = dataCache.authorized || 'N/A';
+            document.getElementById('unit').textContent = dataCache.unit || 'N/A';
+            document.getElementById('authorized').textContent = dataCache.authorized;
             document.getElementById('held').textContent = dataCache.total;
             document.getElementById('issued').textContent = dataCache.issue;
             document.getElementById('instore').textContent = dataCache.instore;
@@ -266,7 +267,7 @@ issueForm.addEventListener('submit', (e) => {
     const newInstore = (dataCache.instore || 0) - quantity;
     let dbRef ;
     let path;
-    path = `siginventory/`+ itemKey;
+    path = `siginventory/main/`+ itemKey;
     const updates = {};
     updates['issue'] = newissue;
     updates['instore'] = newInstore;
@@ -336,7 +337,7 @@ function returnItemToStore(recordKey) {
     const newissue = (dataCache.issue || 0) - quantity;
     const newInstore = (dataCache.instore || 0) + quantity;
     let path;
-    path = `siginventory/`+ itemKey;  
+    path = `siginventory/main/`+ itemKey;  
     const updates = {};
     updates['issue'] = newissue;
     updates['instore'] = newInstore;
@@ -347,7 +348,7 @@ function returnItemToStore(recordKey) {
         console.error('Error returning item to store:', error);
         showNotification('Error returning item to store. Please try again.', 'error');
     });
-    path = `${path}/history/${recordKey}`;
+    path = `siginventory/${itemKey}/history/${recordKey}`;
     update(ref(db, path), { returned: true }).then(() => {
         console.log('History record updated successfully');
         showNotification('History record updated successfully', 'success');
@@ -409,7 +410,7 @@ unsvcForm.addEventListener('submit', (e) => {
 
     if(role_type === 'officer' || role_type === 'cc' || role_type === 'clo'){
         let path;
-        path = `siginventory/`+ itemKey;
+        path = `siginventory/main/`+ itemKey;
         update(ref(db, path), updates).then(() => {
             showNotification('Item marked as unservicable successfully', 'success');
             loaditemhistory();
@@ -460,7 +461,7 @@ function markAsServicable(recordKey) {
     const quantity = parseInt(record.quantity, 10);
     const newUnservicable = (dataCache.unservicable || 0) - quantity;
     const newServicable = (dataCache.servicable || 0) + quantity;
-    let dbRef = ref(db, `siginventory/`+ itemKey);
+    let dbRef = ref(db, `siginventory/main/`+ itemKey);
     const updates = {};
     updates['unservicable'] = newUnservicable;
     updates['servicable'] = newServicable;
@@ -471,7 +472,7 @@ function markAsServicable(recordKey) {
         console.error('Error marking item as servicable:', error);
         showNotification('Error marking item as servicable. Please try again.', 'error');
     });
-    const path = `${dbRef._path}/unsvc/${recordKey}`;
+    const path = `siginventory/${itemKey}/unsvc/${recordKey}`;
     update(ref(db, path), { markedsvc: true }).then(() => {
         console.log('Unservicable history record updated successfully');
     })
@@ -498,6 +499,7 @@ function printItemDetails() {
     
     // Get item data
     const itemName = document.getElementById('typeofitem').textContent || 'N/A';
+    const unit = document.getElementById('unit').textContent || 'N/A';
     const authorized = document.getElementById('authorized').textContent || 'N/A';
     const held = document.getElementById('held').textContent || 'N/A';
     const issued = document.getElementById('issued').textContent || 'N/A';
@@ -510,13 +512,18 @@ function printItemDetails() {
     let issueHistoryHTML = '';
     if (issueHistoryRows.length > 0) {
         issueHistoryHTML = '<table style="width: 100%; border-collapse: collapse; margin-top: 10px;">';
-        issueHistoryHTML += '<thead><tr style="background-color: #f8f9fa;"><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left;">Voucher No</th><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left;">Date</th><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left;">Person/Unit</th><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left;">Location</th><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left;">Quantity</th><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left;">Status</th></tr></thead><tbody>';
+        issueHistoryHTML += '<thead><tr style="background-color: #f8f9fa;"><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left;">Voucher No</th><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left;">Date</th><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left;">Person/Location</th><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left;">Quantity</th><th style="border: 1px solid #dee2e6; padding: 8px; text-align: left;">Status</th></tr></thead><tbody>';
         
         issueHistoryRows.forEach(row => {
             const cells = row.querySelectorAll('td');
             issueHistoryHTML += '<tr>';
             cells.forEach(cell => {
-                issueHistoryHTML += `<td style="border: 1px solid #dee2e6; padding: 8px;">${cell.textContent}</td>`;
+                if(cell.textContent === 'Return to Store'){
+                    issueHistoryHTML += `<td style="border: 1px solid #dee2e6; padding: 8px;">Not Returned</td>`;
+                }
+                else{
+                    issueHistoryHTML += `<td style="border: 1px solid #dee2e6; padding: 8px;">${cell.textContent}</td>`;
+                }
             });
             issueHistoryHTML += '</tr>';
         });
@@ -536,7 +543,12 @@ function printItemDetails() {
             const cells = row.querySelectorAll('td');
             unsvcHistoryHTML += '<tr>';
             cells.forEach(cell => {
-                unsvcHistoryHTML += `<td style="border: 1px solid #dee2e6; padding: 8px;">${cell.textContent}</td>`;
+                if(cell.textContent === 'Mark as Servicable'){
+                    unsvcHistoryHTML += `<td style="border: 1px solid #dee2e6; padding: 8px;">Not Servicable</td>`;
+                }
+                else{
+                    unsvcHistoryHTML += `<td style="border: 1px solid #dee2e6; padding: 8px;">${cell.textContent}</td>`;
+                }
             });
             unsvcHistoryHTML += '</tr>';
         });
@@ -682,10 +694,12 @@ function printItemDetails() {
                         <span class="summary-label">Authorized Unit:</span>
                         <span class="summary-value">${authorized}</span>
                     </div>
+                    
                     <div class="summary-item">
-                        <span class="summary-label">Total Held:</span>
-                        <span class="summary-value">${held}</span>
+                        <span class="summary-label">Measurement Unit:</span>
+                        <span class="summary-value">${unit}</span>
                     </div>
+                    
                     <div class="summary-item">
                         <span class="summary-label">Total Issued:</span>
                         <span class="summary-value">${issued}</span>

@@ -74,7 +74,7 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 
-import {showNotification} from '../js/notification.js';
+import {showNotification} from '../../js/notification.js';
 
 console.log("Officer Script Loaded");
 
@@ -84,7 +84,6 @@ let currentEditKey = null;
 const modal = document.getElementById('editModal');
 const modalCloseBtn = document.getElementById('modalCloseBtn');
 const cancelEditBtn = document.getElementById('cancelEditBtn');
-const deleteItemBtn = document.getElementById('deleteItemBtn');
 const editForm = document.getElementById('editForm');
 const inputs = {
     name: document.getElementById('editName'),
@@ -100,7 +99,7 @@ function loaditemdata() {
         issue:0,
         instore:0
     };
-    let dbRef =ref(db, 'siginventory/');
+    let dbRef =ref(db, 'siginventory/main/');
 
     const loadingOverlay = document.getElementById('loadingOverlay');
 

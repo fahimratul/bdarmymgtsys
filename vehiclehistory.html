@@ -54,7 +54,12 @@
                         </div>
                         <div class="info-group">
                             <span class="info-label">Camp</span>
-                            <input class="info-value" id="camp" value="Camp Alpha">
+                            <select id="campSelect" class="info-value">
+                                <option value="bayoo">BAYOO</option>
+                                <option value="drodro">DRODRO</option>
+                                <option value="rhoo">RHOO</option>
+                                <option value="ndromo">NDROMO</option>
+                            </select>
                         </div>
                         <div class="info-group">
                             <span class="info-label">Condition:</span>
@@ -68,7 +73,7 @@
                         <button id="markasasr" class="maintainance-button">Mark as A SR</button>
                     </div>
                     <div class="history-section">
-                        <div class="history-header">
+                        <div class="history-header" style="display: none;">
                             <h2>Vehicle History</h2>
                             <button id="printHistoryBtn" class="print-button">🖨️ Print History</button>
                         </div>

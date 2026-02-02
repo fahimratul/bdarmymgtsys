@@ -1,11 +1,8 @@
 #transportTableContainer{
     height: 100vh;
     width: 100vw;
-    overflow: hidden;
     display: flex;
-    flex-direction: row;
-    align-items: baseline;
-    justify-content: center;
+    flex-direction: column;
     margin: 0;
 }
 #transportTableContainer  h2{
@@ -17,29 +14,12 @@
     max-width: 100vw;
 }
 
-#transportTableContainer>div:first-child{
-    width: 40%;
-    margin: auto;
-    max-height: 100vh;
-    overflow-y: auto;
-    flex-direction: column;
-    justify-content: flex-start;
-}
 
-#transportTableContainer>div:last-child{
-    display: flex;
-    width: 60%;
-    max-height: 100vh;
-    overflow-y: auto;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-
-}
 #transportTableContainer table{
     width: 95%;
     margin: auto;
     border-collapse: collapse;
+    min-height: 100vh;
 }
 
 
@@ -128,10 +108,9 @@
 }
 .card-info h4:hover{
     cursor: pointer;
-    text-decoration: underline;
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-    background: #2b3d8f;
+    background: #6880ea;
     color: #ffffff;
     transition: all 0.3s ease;
 }
@@ -177,15 +156,7 @@
     #transportTableContainer{
         flex-direction: column;
     }
-    #transportTableContainer>div:first-child,
-    #transportTableContainer>div:last-child{
-        width: 100%;
-        max-height: 50vh;
-    }
-    #transportTableContainer >div:first-child{
-        border-bottom: 1px solid #ccc;
-        overflow: hidden;
-    }
+
 
     .dashboard-card{
         flex-wrap: nowrap;

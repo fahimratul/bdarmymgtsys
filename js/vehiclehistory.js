@@ -87,9 +87,10 @@ function loadvehicledata() {
             document.getElementById('typeofvehicle').textContent = dataCache.typeofvehicle || '';
             document.getElementById('unnumber').textContent = dataCache.unnumber || '';
             document.getElementById('classtype').textContent = classlist[dataCache.classtype] || dataCache.classtype || '';
-            document.getElementById('camp').value = camplist[dataCache.camp] || dataCache.camp || '';
             document.getElementById('condition').textContent = conditionlist[dataCache.condition] || dataCache.condition || '';
             // Disable buttons based on condition
+            document.getElementById('campSelect').value = dataCache.camp || '';
+            
             document.getElementById('sendformaintainace').disabled = false;
             document.getElementById('markasgrounded').disabled = false;
             document.getElementById('markasalr').disabled = false;
@@ -126,10 +127,10 @@ function loadvehicledata() {
 }
 
 if(role !== 'mto' && role !== 'cc' && role !== 'clo'){
-    document.getElementById('camp').disabled = true;
+    document.getElementById('campSelect').disabled = true;
 }
 
-document.getElementById('camp').addEventListener('change', (e) => {
+document.getElementById('campSelect').addEventListener('change', (e) => {
     
     const newCamp = e.target.value;
     const dbRef = ref(db, `vehiclelist/` + vehicleKey);
@@ -310,7 +311,7 @@ function updaterecord(event, details, date, msg) {
             console.error('Error updating vehicle condition:', error);
         });
     }
-    printVehicleReciept(date, event, details, voucherNo);
+   // printVehicleReciept(date, event, details, voucherNo);
 }
 
 

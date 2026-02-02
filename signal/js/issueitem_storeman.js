@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import { getDatabase, get, ref, set, push } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
-import { showNotification } from '../js/notification.js';
+import { showNotification } from '../../js/notification.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyCIX-3-GunSudlllY-dFRo943ysFXtBiOk",
@@ -41,7 +41,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function loadInventoryData() {
     const loadingOverlay = document.getElementById('loadingOverlay');
-    const dbRef = ref(db, 'siginventory/');
+    const dbRef = ref(db, 'siginventory/main/');
     
     get(dbRef).then((snapshot) => {
         inventoryData = snapshot.val() || {};
@@ -102,7 +102,10 @@ function addItemRow() {
                 <select id="itemSelect-${itemCounter}" name="itemSelect" required onchange="updateAvailableQuantity('${itemCounter}')">
                     <option value="">Choose an item...</option>
                 </select>
-                <div class="available-qty" id="availableQty-${itemCounter}">Available: 0</div>
+            </div>
+            <div class="form-group">
+                <label for="availableQty-${itemCounter}">Instore & Servicable</label>
+                <input type="text" id="availableQty-${itemCounter}" name="availableDisplay" readonly>
             </div>
             <div class="form-group">
                 <label for="quantity-${itemCounter}">Quantity</label>
@@ -137,7 +140,7 @@ function populateItemSelect(rowId) {
         if (availableQty > 0) {
             const option = document.createElement('option');
             option.value = key;
-            option.textContent = `${item.name || 'Unnamed Item'} (Available: ${availableQty})`;
+            option.textContent = `${item.name || 'Unnamed Item'}`;
             select.appendChild(option);
         }
     }
@@ -159,11 +162,11 @@ function updateAvailableQuantity(rowId) {
     if (select.value && inventoryData[select.value]) {
         const item = inventoryData[select.value];
         const availableQty = (item.servicable || 0) - (item.issue || 0);
-        availableQtyDiv.textContent = `Available: ${availableQty}`;
+        availableQtyDiv.value = availableQty;
         quantityInput.max = availableQty;
         quantityInput.value = '';
     } else {
-        availableQtyDiv.textContent = 'Available: 0';
+        availableQtyDiv.value = 0;
         quantityInput.max = 0;
         quantityInput.value = '';
     }
@@ -233,12 +236,10 @@ function processIssueRequest() {
         }
         
         itemsToIssue.push({
-            voucherNumber,
             key: itemKey,
             itemName: item.name,
             quantity,
-            location: recipientLocation,
-            date: issueDate
+            availableQty
         });
     }
     
@@ -249,15 +250,15 @@ function processIssueRequest() {
     
     // Create issue request
     const issueRequest = {
-        items: itemsToIssue
+        items: itemsToIssue,
+        location: recipientLocation,
+        voucherNumber,
+        date: issueDate
     };
     
     // Save issue request to database
-    const issueRef = push(ref(db, 'issuepending/so'));
-    set(issueRef, {
-        msg: `Issue request: ${itemsToIssue.map(item => `${item.quantity} x ${item.itemName}`).join(', ')} to ${recipientLocation}`,
-        ...issueRequest
-    }).then(() => {
+    const issueRef = ref(db, 'issuepending/so/'+voucherNumber);
+    set(issueRef, issueRequest).then(() => {
         showNotification('Issue request submitted successfully! Opening print dialog...', 'success', 'Request Submitted');
         
         // Generate print document after successful submission

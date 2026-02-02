@@ -76,8 +76,12 @@ function loadnotifactions() {
             for (const key in notificationDataCache) {
                 const notification = notificationDataCache[key];
                 const message = notification.msg || '';
+                const from= notification.from || '';
+                const date = notification.date || '';
                 html += `<div class="msg">
+                        <h2>${from}</h2>
                         <p class="content">${message}<br><br> </p>
+                        <p class="date">${date}</p>
                     </div>`;
             }
             notificationbody.innerHTML = html;

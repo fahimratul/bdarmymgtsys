@@ -80,12 +80,11 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 
-import {showNotification} from '../js/notification.js';
+import {showNotification} from '../../js/notification.js';
 
 console.log("Officer Script Loaded");
 
 let dataCache = {};
-let pendingissueCache = {};
 let newitemCache = {};
 
 let currentEditKey = null;
@@ -109,7 +108,7 @@ function loaditemdata() {
         issue:0,
         instore:0
     };
-    let dbRef =ref(db, 'siginventory/');
+    let dbRef =ref(db, 'siginventory/main/');
 
     const loadingOverlay = document.getElementById('loadingOverlay');
 
@@ -132,6 +131,7 @@ function loaditemdata() {
             for (const key in data) {
                 const item = data[key];
                 const name = item.name || '';
+                const unit = item.unit || '';
                 const authorized = item.authorized ?? '';
                 const total = item.total ?? 0;
                 const servicable = item.servicable ?? 0;
@@ -145,6 +145,7 @@ function loaditemdata() {
                             </td>
                             <td>${serial}</td>
                             <td>${name}</td>
+                            <td>${unit}</td>
                             <td>${authorized}</td>
                             <td>${total}</td>
                             <td>${issue}</td>
@@ -431,49 +432,7 @@ function rejectNewItem(key) {
 }
 
 
-let isssuenotificationDataCache = {};
 
-const issuenotificationbody = document.getElementById('officer_notification_issue');
-function loadissuenotifactions() {
-    const dbRef = ref(db, 'issuepending/so');
-    get(dbRef).then((snapshot) => {
-        isssuenotificationDataCache = snapshot.val();
-        let html = '';
-        issuenotificationbody.style.display='flex';
-        if (isssuenotificationDataCache) {
-            for (const key in isssuenotificationDataCache) {
-                const notification = isssuenotificationDataCache[key];
-                const message = notification.msg || '';
-                html += `<div class="msg">
-                        <p class="content">${message}<br><br> </p>
-                        <button class="accept-btn" data-key="${key}">Accept</button>
-                        <button class="reject-btn" data-key="${key}">Reject</button> 
-                    </div>`;
-            }
-            issuenotificationbody.innerHTML = html;
-            issuenotificationbody.style.minHeight='max-content';
-            console.log("Notifications Loaded");
-            console.log(isssuenotificationDataCache);
-            // Attach accept/reject handlers
-            issuenotificationbody.querySelectorAll('.accept-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const key = btn.dataset.key;
-                    acceptissue(key);
-                    console.log('Accepted notification with key:', key);
-                });
-            });
-            issuenotificationbody.querySelectorAll('.reject-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const key = btn.dataset.key;
-                    rejectissue(key);
-                    console.log('Rejected notification with key:', key);
-                });
-            });
-        }
-    }).catch((error) => {
-        console.error('Error loading notifications:', error);
-    });
-}
 
 
 let unsvcnotificationDataCache = {};
@@ -522,7 +481,6 @@ function loadunsvcnotifactions() {
 
 
 if(role==='so'){
-    loadissuenotifactions();
     loadunsvcnotifactions();
     pendingnewitemdata();
     setTimeout(() => {
@@ -644,81 +602,8 @@ logoutButton?.addEventListener('click', () => {
 
 const issueModal = document.getElementById('issuelistModal');
 
-function addIssued(key) {
-    const item = dataCache?.[key];
-    if (!item) return;
-    currentEditKey = key;
-    issueModal.classList.remove('hidden');
-}
 
 
-function acceptissue(key){
-    const issueitem = isssuenotificationDataCache[key].items;
-    for(const itemkey in issueitem){
-        const issueitemdata = issueitem[itemkey];
-        const mainkey = issueitemdata.key;
-        const mainitem = dataCache[mainkey];
-        console.log(mainitem, issueitemdata);
-        if(!mainitem) continue;
-        const quantity = issueitemdata.quantity || 0;
-        const newissue = (mainitem.issue || 0) + quantity;
-        const newinstore = (mainitem.instore || 0) - quantity;
-        if(newinstore < 0){
-            showNotification(`Insufficient instore quantity for item ${mainitem.name}. Cannot accept issue request.`, 'error', 'Issue Failed');
-            continue;
-        }
-        update(ref(db, 'siginventory/' + mainkey), {
-            issue: newissue,
-            instore: newinstore
-        }).then(() => {
-            console.log('Issue accepted and inventory updated for item:', mainitem.name);
-        }).catch((error) => {
-            console.error('Error updating inventory for issue acceptance:', error);
-        });
-        set(ref(db, 'siginventory/' + mainkey + '/history/'+ issueitemdata.voucherNumber), {
-            date: issueitemdata.date || '',
-            quantity: issueitemdata.quantity || 0,
-            location: issueitemdata.location || ''
-        }).then(() => {
-            console.log('Issue history recorded successfully for item:', mainitem.name);
-        }).catch((error) => {
-            console.error('Error recording issue history:', error);
-        });
-    }
-    showNotification('Issue request accepted and inventory updated.', 'success', 'Issue Accepted');
-    set(ref(db, 'clo_cc_notification/' + Date.now()), {
-        msg: isssuenotificationDataCache[key].msg || ''
-    }).then(() => {
-        console.log('CLO/CC notified successfully about accepted issue.');
-    }).catch((error) => {
-        console.error('Error notifying CLO/CC about accepted issue:', error);
-    });
-    remove(ref(db, 'issuepending/so/' + key)).then(() => {
-        console.log('Issue notification removed successfully');
-    }).catch((error) => {
-        console.error('Error removing issue notification:', error);
-    });
-    
-    set(ref(db, 'clonotification'), true);
-    setTimeout(() => {
-        window.location.reload();
-    }, 1000);
-
-}
-
-
-function rejectissue(key){
-    issuenotificationbody.innerHTML = '';
-    remove(ref(db, 'issuepending/so/' + key)).then(() => {
-        console.log('Issue notification removed successfully');
-    }).catch((error) => {
-        console.error('Error removing issue notification:', error);
-    });
-    setTimeout(() => {
-        showNotification('Issue request rejected.', 'info', 'Issue Rejected');
-        loadissuenotifactions();
-    }, 500);
-}
 
 function acceptunsvc(key){
     unsvcnotificationbody.innerHTML = '';
@@ -769,7 +654,6 @@ function acceptunsvc(key){
     
     set(ref(db, 'clonotification'), true);
     loaditemdata();
-    loadissuenotifactions();
 }
 function rejectunsvc(key){
     unsvcnotificationbody.innerHTML = '';
@@ -782,7 +666,6 @@ function rejectunsvc(key){
         showNotification('Unservicable request rejected.', 'info', 'Unservicable Rejected');
         loadunsvcnotifactions();
     }, 700);
-    loadissuenotifactions();
     loadunsvcnotifactions();
 }
 

@@ -23,5 +23,13 @@ send for maintaince e button a click korle auto print out ber hoye jabe,
 ammo update -> notification
 
 
+authorized unit -> drop down
+authorized:
+total - 
+instore, 
+
+location, 
+total item:                                                                         
+
 
 
