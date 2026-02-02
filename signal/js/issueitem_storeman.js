@@ -293,7 +293,7 @@ window.updateAvailableQuantity = updateAvailableQuantity;
 window.validateQuantity = validateQuantity;
 
 // Print Issue Request Function
-function printIssueRequest(issueRequest, itemsToIssue, voucherNo, issueDate) {
+function printIssueRequest(issueRequest, itemsToIssue, voucherNo, issueDate, location) {
     const currentDate = new Date().toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
@@ -535,7 +535,7 @@ function printIssueRequest(issueRequest, itemsToIssue, voucherNo, issueDate) {
                 <div class="info-grid">
                     <div class="info-item">
                         <span class="info-label">Location:</span>
-                        <span class="info-value">${issueRequest.recipientLocation}</span>
+                        <span class="info-value">${issueRequest.location}</span>
                     </div>
                 </div>
             </div>
