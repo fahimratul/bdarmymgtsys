@@ -31,5 +31,9 @@ instore,
 location, 
 total item:                                                                         
 
-
-
+wk
+G/bi= held
+auth-
+instore- 
+issue-
+part 

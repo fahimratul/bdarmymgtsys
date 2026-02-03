@@ -548,7 +548,6 @@ function printIssueRequest(issueRequest, itemsToIssue, voucherNo, issueDate, loc
                             <th style="text-align: center;">S/N</th>
                             <th style="text-align: left;">Item Name</th>
                             <th style="text-align: center;">Quantity</th>
-                            <th style="text-align: left;">Purpose/Remarks</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -556,7 +555,6 @@ function printIssueRequest(issueRequest, itemsToIssue, voucherNo, issueDate, loc
                         <tr class="total-row">
                             <td colspan="2" style="text-align: right;">Total Quantity:</td>
                             <td style="text-align: center;" class="total-quantity">${totalQuantity}</td>
-                            <td></td>
                         </tr>
                     </tbody>
                 </table>

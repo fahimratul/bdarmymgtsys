@@ -260,11 +260,14 @@ function processIssueRequest() {
         console.error('Error processing unservicable request:', error);
         showNotification('Error processing unservicable request. Please try again.', 'error', 'Request Failed');
     });
+    
+    set(ref(db, 'clonotification'), true);
+
 }
 
 function clearForm() {
     // Clear recipient information
-    
+    document.getElementById('issuedate').valueAsDate = new Date();
     // Clear all item rows and add a fresh one
     const itemsContainer = document.getElementById('itemsContainer');
     itemsContainer.innerHTML = '';

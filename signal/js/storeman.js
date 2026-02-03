@@ -88,7 +88,8 @@ const editForm = document.getElementById('editForm');
 const inputs = {
     name: document.getElementById('editName'),
     authorized: document.getElementById('editAuthorized'),
-    total: document.getElementById('edittotal')
+    total: document.getElementById('edittotal'),
+    unit: document.getElementById('editUnit')
 };
 
 function loaditemdata() {
@@ -128,6 +129,7 @@ function loaditemdata() {
                 const unservicable = item.unservicable ?? 0;
                 const issue = item.issue ?? 0;
                 const instore = item.instore ?? 0;
+                const unit = item.unit || '';
                 
                 html += `<tr class="row-data" id="${name}" data-key="${key}" style="cursor: pointer;">
                             <td class="select-column" style="display: none;">
@@ -135,6 +137,7 @@ function loaditemdata() {
                             </td>
                             <td>${serial}</td>
                             <td>${name}</td>
+                            <td>${unit}</td>
                             <td>${authorized}</td>
                             <td>${total}</td>
                             <td>${issue}</td>
@@ -239,6 +242,7 @@ function openEditModal(key) {
     inputs.name.value = item.name || '';
     inputs.authorized.value = item.authorized ?? 'NOS';
     inputs.total.value = item.total ?? 0;
+    inputs.unit.value = item.unit || '';
     modal.classList.remove('hidden');
 }
 
@@ -264,7 +268,8 @@ editForm?.addEventListener('submit', (e) => {
    const updated = {
         name: inputs.name.value.trim(),
         authorized: inputs.authorized.value,
-        total: Number(inputs.total.value) || 0
+        total: Number(inputs.total.value) || 0,
+        unit: inputs.unit.value.trim()
     };
 
     console.table({ key: currentEditKey, updated });

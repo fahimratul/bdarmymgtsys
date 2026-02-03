@@ -1,0 +1,731 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
+
+import { getDatabase, get, ref,set, update, remove } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+
+
+const firebaseConfig = {
+apiKey: "AIzaSyCIX-3-GunSudlllY-dFRo943ysFXtBiOk",
+authDomain: "bdarmystoremgt.firebaseapp.com",
+databaseURL: "https://bdarmystoremgt-default-rtdb.firebaseio.com",
+projectId: "bdarmystoremgt",
+storageBucket: "bdarmystoremgt.firebasestorage.app",
+messagingSenderId: "960978586847",
+appId: "1:960978586847:web:afcee2217a1c3c876ead6a",
+measurementId: "G-H27M1SNMPX"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+getAnalytics(app);
+const db = getDatabase(app);
+console.log(db);
+console.log("Firebase Initialized");
+
+window.addEventListener('DOMContentLoaded', () => {
+    let baNumber = sessionStorage.getItem('baNumber');
+    let role_type = sessionStorage.getItem('role_type');
+    if (!role_type) { 
+        console.error('Role type not found in session storage.');
+        alert('Session expired or unauthorized access. Please log in again.');
+        window.location.href = 'login.html';
+        return;
+    }
+    if (!baNumber) {
+        console.error('BA Number not found in local storage.');
+        alert('Session expired. Please log in again.');
+        window.location.href = 'login.html';
+        return;
+    }
+    console.log('Logged in as BA Number:', baNumber);    
+    initializePDFButtons();
+    initializeIssueButton();
+});
+
+let ranklist ={
+    snk:"Sainik",
+    lcpl:"Lance Corporal",
+    cpl:"Corporal",
+    sgt:"Sergeant",
+    wo:"Warrant Officer",
+    swo:"Senior Warrant Officer",
+    mwo:"Master Warrant Officer",
+    lt:"Lieutenant",
+    capt:"Captain",
+    major:"Major",
+    ltcol:"Lieutenant Colonel",
+    col:"Colonel",
+    brig:"Brigadier",
+    majorgen:"Major General",
+    ltgen:"Lieutenant General",
+    gen:"General"
+};
+
+const role = sessionStorage.getItem('role');
+
+
+window.addEventListener('DOMContentLoaded', () => {
+    const username=sessionStorage.getItem('username');
+    const rank=sessionStorage.getItem('rank');
+    const banumber=sessionStorage.getItem('baNumber');
+    document.getElementById('username').textContent='Name: ' + username;
+    document.getElementById('rank').textContent=ranklist[rank] ? 'Rank: ' + ranklist[rank] : 'Rank: ' + rank;
+    document.getElementById('banumber').textContent='BA Number: ' + banumber;
+});
+
+
+import {showNotification} from '../../js/notification.js';
+
+console.log("Officer Script Loaded");
+
+let dataCache = {};
+
+let currentEditKey = null;
+const modal = document.getElementById('editModal');
+const modalCloseBtn = document.getElementById('modalCloseBtn');
+const cancelEditBtn = document.getElementById('cancelEditBtn');
+const editForm = document.getElementById('editForm');
+const inputs = {
+    name: document.getElementById('editName'),
+    authorized: document.getElementById('editAuthorized'),
+    total: document.getElementById('edittotal'),
+    unit: document.getElementById('editUnit')
+};
+
+function loaditemdata() {
+    let datainfo={
+        total:0,
+        servicable:0,
+        unservicable:0,
+        issue:0,
+        instore:0
+    };
+    let dbRef =ref(db, 'bkncoinventory/main/');
+
+    const loadingOverlay = document.getElementById('loadingOverlay');
+
+    get(dbRef).then((snapshot) => {
+        const data = snapshot.val();
+        dataCache = data || {};
+        let serial = 1;
+        const tableBody = document.getElementById('itemTableBody');
+        
+        if (!tableBody) {
+            console.error('itemTableBody element not found');
+            if (loadingOverlay) loadingOverlay.classList.add('hidden');
+            return;
+        }
+        
+        let html = '';
+        
+        // Build table rows
+        if (data) {
+            for (const key in data) {
+                const item = data[key];
+                const name = item.name || '';
+                const authorized = item.authorized ?? '';
+                const total = item.total ?? 0;
+                const servicable = item.servicable ?? 0;
+                const unservicable = item.unservicable ?? 0;
+                const issue = item.issue ?? 0;
+                const instore = item.instore ?? 0;
+                const unit = item.unit || '';
+                
+                html += `<tr class="row-data" id="${name}" data-key="${key}" style="cursor: pointer;">
+                            <td class="select-column" style="display: none;">
+                                <input type="checkbox" class="row-select" data-key="${key}">
+                            </td>
+                            <td>${serial}</td>
+                            <td>${name}</td>
+                            <td>${unit}</td>
+                            <td>${authorized}</td>
+                            <td>${total}</td>
+                            <td>${issue}</td>
+                            <td>${instore}</td>
+                            <td>${servicable}</td>
+                            <td>${unservicable}</td>
+                            <td>
+                            <button class="edit-btn" data-key='${key}'>Edit</button>
+                            </td>
+
+                        </tr>`;
+                serial += 1;
+                datainfo.total+=total;
+                datainfo.servicable+=servicable;
+                datainfo.unservicable+=unservicable;
+                datainfo.issue+=issue;
+                datainfo.instore+=instore;
+            }
+        } else {
+            html = '<tr><td colspan="9" style="text-align: center; padding: 2rem; color: #666;">No inventory data available</td></tr>';
+        }
+        
+        tableBody.innerHTML = html;
+        document.getElementById('serial').textContent = serial-1;
+        document.getElementById('totalItems').textContent = datainfo.total;
+        document.getElementById('servicableItems').textContent = datainfo.servicable;
+        document.getElementById('unservicableItems').textContent = datainfo.unservicable;
+        document.getElementById('issuedItems').textContent = datainfo.issue;
+        document.getElementById('inStoreItems').textContent = datainfo.instore;
+            
+        // Attach edit handlers
+        tableBody.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.dataset.key;
+                console.log("Edit button clicked for key:", key);
+                openEditModal(key);
+            });
+        });
+
+        tableBody.querySelectorAll('.row-data').forEach(row => {
+            row.addEventListener('click', (e) => {
+               if (e.target.classList.contains('edit-btn')) {
+                    openEditModal(key);
+                }
+                if (e.target.classList.contains('row-select') || e.target.classList.contains('select-column')){
+                    return;
+                }
+                const key = row.dataset.key;
+                console.log("Row clicked for key:", key);
+                window.location.href = `itemdetails.html?key=${key}&type=engr`;
+            });
+        });
+
+
+        // Hide loading overlay after data is loaded
+        if (loadingOverlay) {
+            setTimeout(() => {
+                loadingOverlay.classList.add('hidden');
+            }, 100);
+        }
+    }).catch((error) => {
+        console.error('Error loading data:', error);
+        const tableBody = document.getElementById('itemTableBody');
+        if (tableBody) {
+            tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem; color: #e53e3e;">Error loading data. Please refresh the page.</td></tr>';
+        }
+        // Hide loading overlay even on error
+        if (loadingOverlay) {
+            setTimeout(() => {
+                loadingOverlay.classList.add('hidden');
+            }, 100);
+        }
+    });
+}
+
+loaditemdata();
+
+
+
+function searchItems() {
+    const searchInput = document.getElementById('searchInput');
+    const tableBody = document.getElementById('itemTableBody');
+    const rows = tableBody.getElementsByTagName('tr');
+    const searchTerm = searchInput.value.toLowerCase();
+
+    Array.from(rows).forEach(row => {
+        const itemName = row.getAttribute('id');
+        if (itemName && itemName.toLowerCase().includes(searchTerm)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        } 
+    });
+}
+
+document.getElementById('searchInput')?.addEventListener('keyup', searchItems);
+
+function openEditModal(key) {
+    const item = dataCache?.[key];
+    if (!item) return;
+    currentEditKey = key;
+    inputs.name.value = item.name || '';
+    inputs.authorized.value = item.authorized ?? 'NOS';
+    inputs.total.value = item.total ?? 0;
+    inputs.unit.value = item.unit || '';
+    modal.classList.remove('hidden');
+}
+
+function closeEditModal() {
+    modal.classList.add('hidden');
+    currentEditKey = null;
+    editForm.reset();
+    inputs.total.value = '';
+}
+
+
+
+modalCloseBtn?.addEventListener('click', closeEditModal);
+cancelEditBtn?.addEventListener('click', closeEditModal);
+modal?.addEventListener('click', (e) => {
+    if (e.target === modal) closeEditModal();
+});
+
+editForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!currentEditKey) return;
+
+   const updated = {
+        name: inputs.name.value.trim(),
+        authorized: inputs.authorized.value,
+        total: Number(inputs.total.value) || 0,
+        unit: inputs.unit.value.trim()
+    };
+
+    console.table({ key: currentEditKey, updated });
+    const dbRef = ref(db, 'officerapproval/newtotal/bkncoinventory/' + currentEditKey);
+    set(dbRef, updated).then(() => {
+        showNotification('Item update request submitted for approval.', 'info', 'Update Requested');
+        loaditemdata();
+    }).catch((error) => {
+        console.error('Error submitting update request:', error);
+        showNotification('Error submitting update request. Please try again.', 'error', 'Update Failed');   
+    });
+    closeEditModal();
+});
+
+
+
+
+const logoutButton = document.getElementById('logoutButton');
+
+
+
+logoutButton?.addEventListener('click', () => {
+    sessionStorage.removeItem('baNumber');
+    sessionStorage.removeItem('role_type');
+    sessionStorage.removeItem('username');
+    sessionStorage.removeItem('rank');
+    window.location.href = './../index.html';
+});
+
+
+// PDF Functionality
+let isSelectionMode = false;
+
+function initializePDFButtons() {
+    const printAllBtn = document.getElementById('printAllTable');
+    const printSelectedBtn = document.getElementById('printSelectedRows');
+    const toggleSelectBtn = document.getElementById('toggleSelectMode');
+    const selectAllCheckbox = document.getElementById('selectAll');
+
+    if (printAllBtn) {
+        printAllBtn.addEventListener('click', printAllTable);
+    }
+    
+    if (printSelectedBtn) {
+        printSelectedBtn.addEventListener('click', printSelectedRows);
+    }
+    
+    if (toggleSelectBtn) {
+        toggleSelectBtn.addEventListener('click', toggleSelectionMode);
+    }
+    
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.row-select');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+                updateRowSelection(checkbox);
+            });
+            updatePrintButtonStates();
+        });
+    }
+}
+
+function toggleSelectionMode() {
+    isSelectionMode = !isSelectionMode;
+    const selectColumns = document.querySelectorAll('.select-column');
+    const selectColumnHeader = document.getElementById('selectColumnHeader');
+    const toggleBtn = document.getElementById('toggleSelectMode');
+    const printSelectedBtn = document.getElementById('printSelectedRows');
+    
+    if (isSelectionMode) {
+        selectColumns.forEach(col => col.style.display = 'table-cell');
+        if (selectColumnHeader) selectColumnHeader.style.display = 'table-cell';
+        toggleBtn.innerHTML = '<i data-lucide="x-square"></i> Cancel Select';
+        printSelectedBtn.style.display = 'flex';
+        
+        // Add event listeners to checkboxes
+        document.querySelectorAll('.row-select').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                updateRowSelection(this);
+                updatePrintButtonStates();
+            });
+        });
+    } else {
+        selectColumns.forEach(col => col.style.display = 'none');
+        if (selectColumnHeader) selectColumnHeader.style.display = 'none';
+        toggleBtn.innerHTML = '<i data-lucide="check-square"></i> Select Rows';
+        printSelectedBtn.style.display = 'none';
+        
+        // Clear all selections
+        document.querySelectorAll('.row-select').forEach(checkbox => {
+            checkbox.checked = false;
+            updateRowSelection(checkbox);
+        });
+        document.getElementById('selectAll').checked = false;
+    }
+    
+    // Re-initialize lucide icons
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+    
+    updatePrintButtonStates();
+}
+
+function updateRowSelection(checkbox) {
+    const row = checkbox.closest('tr');
+    if (checkbox.checked) {
+        row.classList.add('row-selected');
+    } else {
+        row.classList.remove('row-selected');
+    }
+}
+
+function updatePrintButtonStates() {
+    const selectedCheckboxes = document.querySelectorAll('.row-select:checked');
+    const printSelectedBtn = document.getElementById('printSelectedRows');
+    
+    if (printSelectedBtn) {
+        printSelectedBtn.disabled = selectedCheckboxes.length === 0;
+    }
+}
+
+function printAllTable() {
+    const baNumber = sessionStorage.getItem('baNumber');
+    const tableBody = document.getElementById('itemTableBody');
+    
+    if (!tableBody || tableBody.rows.length === 0) {
+        alert('No data available to print.');
+        return;
+    }
+    
+    // Get summary data
+    const serial = document.getElementById('serial').textContent || '0';
+    const totalItems = document.getElementById('totalItems').textContent || '0';
+    const servicableItems = document.getElementById('servicableItems').textContent || '0';
+    const unservicableItems = document.getElementById('unservicableItems').textContent || '0';
+    const issuedItems = document.getElementById('issuedItems').textContent || '0';
+    const inStoreItems = document.getElementById('inStoreItems').textContent || '0';
+    
+    // Build table rows
+    let tableRows = '';
+    for (let i = 0; i < tableBody.rows.length; i++) {
+        const row = tableBody.rows[i];
+        const cells = row.cells;
+        
+        // Skip the checkbox column (first column) if it exists
+        const startIndex = cells[0].classList.contains('select-column') ? 1 : 0;
+        
+        tableRows += `
+            <tr>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 1].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 2].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 3].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 4].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 5].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 6].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 7].textContent}</td>
+            </tr>
+        `;
+    }
+    
+    printReport(tableRows, 'All Inventory Items', {
+        serial,
+        totalItems,
+        servicableItems,
+        unservicableItems,
+        issuedItems,
+        inStoreItems
+    });
+}
+
+function printSelectedRows() {
+    const baNumber = sessionStorage.getItem('baNumber');
+    const selectedCheckboxes = document.querySelectorAll('.row-select:checked');
+    
+    if (selectedCheckboxes.length === 0) {
+        alert('Please select at least one row to print.');
+        return;
+    }
+    
+    let tableRows = '';
+    let totals = {
+        serial: 1,
+        total: 0,
+        servicable: 0,
+        unservicable: 0,
+        issued: 0,
+        inStore: 0
+    };
+    
+    selectedCheckboxes.forEach(checkbox => {
+        const row = checkbox.closest('tr');
+        const cells = row.cells;
+        
+        // Skip the checkbox column (first column)
+        const startIndex = 1;
+        
+        // Add to totals
+        totals.serial += 1;
+        totals.total += parseInt(cells[startIndex + 3].textContent) || 0;
+        totals.issued += parseInt(cells[startIndex + 4].textContent) || 0;
+        totals.inStore += parseInt(cells[startIndex + 5].textContent) || 0;
+        totals.servicable += parseInt(cells[startIndex + 6].textContent) || 0;
+        totals.unservicable += parseInt(cells[startIndex + 7].textContent) || 0;
+        
+        tableRows += `
+            <tr>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 1].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 2].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 3].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 4].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 5].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 6].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 7].textContent}</td>
+            </tr>
+        `;
+    });
+    
+    printReport(tableRows, `Selected Inventory Items (${selectedCheckboxes.length} items)`, {
+        serial: totals.serial,
+        totalItems: totals.total,
+        servicableItems: totals.servicable,
+        unservicableItems: totals.unservicable,
+        issuedItems: totals.issued,
+        inStoreItems: totals.inStore
+    });
+}
+
+function printReport(tableRows, title, summaryData) {
+    const currentDate = new Date().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    
+    const printContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Inventory Report - ${title}</title>
+            <style>
+                @media print {
+                    @page {
+                        margin: 0.5in;
+                        size: landscape;
+                    }
+                    body {
+                        font-family: 'Arial', sans-serif;
+                        color: #333;
+                        line-height: 1.6;
+                        margin: 0;
+                        padding: 0;
+                    }
+                }
+                
+                body {
+                    font-family: 'Arial', sans-serif;
+                    color: #333;
+                    line-height: 1.6;
+                    padding: 20px;
+                }
+                
+                .header {
+                    text-align: center;
+                    border-bottom: 2px solid #007bff;
+                    padding-bottom: 20px;
+                    margin-bottom: 30px;
+                }
+                
+                .header h1 {
+                    margin: 0;
+                    color: #007bff;
+                    font-size: 24px;
+                }
+                
+                .header h2 {
+                    margin: 10px 0;
+                    color: #333;
+                    font-size: 20px;
+                }
+                
+                .header p {
+                    margin: 10px 0;
+                    color: #666;
+                    font-size: 14px;
+                }
+                
+                .summary {
+                    display: grid;
+                    grid-template-columns: repeat(6, 1fr);
+                    gap: 15px;
+                    margin-bottom: 30px;
+                    padding: 20px;
+                    background-color: #f8f9fa;
+                    border-radius: 8px;
+                }
+                
+                .summary-item {
+                    text-align: center;
+                    padding: 10px;
+                    background-color: white;
+                    border-radius: 5px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                }
+                
+                .summary-value {
+                    font-weight: bold;
+                    font-size: 18px;
+                }
+                
+                .summary-label {
+                    font-size: 12px;
+                    color: #666;
+                }
+                
+                .total { color: #007bff; }
+                .servicable { color: #28a745; }
+                .unservicable { color: #dc3545; }
+                .issued { color: #ffc107; }
+                .instore { color: #17a2b8; }
+                
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-bottom: 20px;
+                    font-size: 12px;
+                }
+                
+                th {
+                    padding: 10px;
+                    text-align: left;
+                    border: 1px solid #ddd;
+                    background-color: #007bff;
+                    color: white;
+                    font-weight: 600;
+                }
+                
+                td {
+                    padding: 8px;
+                    border: 1px solid #ddd;
+                }
+                
+                tr:nth-child(even) {
+                    background-color: #f8f9fa;
+                }
+                
+                .footer {
+                    text-align: center;
+                    margin-top: 30px;
+                    padding-top: 20px;
+                    border-top: 1px solid #ddd;
+                    font-size: 12px;
+                    color: #666;
+                }
+                
+                @media print {
+                    .no-print { display: none !important; }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>BANRDB Store Management System</h1>
+                <h2>${title}</h2>
+                <p>Generated on ${currentDate}</p>
+            </div>
+            
+            <div class="summary">
+                <div class="summary-item">
+                    <div class="summary-value total">${summaryData.serial}</div>
+                    <div class="summary-label">Total Type of Items</div>
+                </div>
+
+                <div class="summary-item">
+                    <div class="summary-value total">${summaryData.totalItems}</div>
+                    <div class="summary-label">Total Items</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value servicable">${summaryData.servicableItems}</div>
+                    <div class="summary-label">Servicable</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value unservicable">${summaryData.unservicableItems}</div>
+                    <div class="summary-label">Unservicable</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value issued">${summaryData.issuedItems}</div>
+                    <div class="summary-label">Issued</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value instore">${summaryData.inStoreItems}</div>
+                    <div class="summary-label">In Store</div>
+                </div>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Serial</th>
+                        <th>Nomenclature/Name</th>
+                        <th>Authorized Unit</th>
+                        <th>Held</th>
+                        <th>Issued</th>
+                        <th>In Store</th>
+                        <th>Servicable</th>
+                        <th>Unservicable</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${tableRows}
+                </tbody>
+            </table>
+            
+            <div class="footer">
+                <p>BANRDB Store Management System - Signal Inventory Report</p>
+                <p>This report was generated automatically on ${currentDate}</p>
+            </div>
+            
+            <script>
+                // Auto-print when page loads
+                window.onload = function() {
+                    window.print();
+                    // Close window after printing (optional)
+                    window.onafterprint = function() {
+                        window.close();
+                    };
+                };
+            </script>
+        </body>
+        </html>
+    `;
+    
+    // Open print window
+    const printWindow = window.open('', '_blank', 'width=1200,height=800');
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    
+    // Show success notification
+    if (typeof showNotification === 'function') {
+        showNotification('Print dialog opened successfully!', 'success', 'Print Ready');
+    }
+}
+
+// Issue Item functionality
+function initializeIssueButton() {
+    const issueItemBtn = document.getElementById('issueItemBtn');
+    
+    if (issueItemBtn) {
+        issueItemBtn.addEventListener('click', function() {
+            console.log('Issue Item button clicked');
+            window.location.href = 'issueitem_storeman.html';
+        });
+    }
+}

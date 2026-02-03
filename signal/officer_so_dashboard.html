@@ -41,10 +41,8 @@
         </ul>
     </nav>
     <h1 id="title">Signal Officer Inventory Management</h1>
-    
-    <div id="officer_notification_issue" class="officernotification"></div>
 
-    <div id="officer_notification_unsvc" class="officernotification"></div>
+
     <div class="topdown-container" id="userInfoContainer" style="display: none;">
         <h3 id ="username"></h3>
         <h4 id ="rank"></h4>
@@ -54,16 +52,16 @@
     </div>
 
     <div class="pendingitem" id="newpendingtotalitem">
-        <h2>Pending New Items</h2>
+        <h2>Pending New Held of Items</h2>
         <table class="pendingitemTable">
         <thead>
             <tr>
                 <th>serial</th>
                 <th>Nomenclature/Name</th>
-                <th>Authorized Unit</th>
+                <th>Measurement Unit</th>
+                <th>Authorized</th>
                 <th>Previous Held</th>
                 <th>Upcoming</th>
-                <th>New Held</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -80,7 +78,8 @@
             <tr>
                 <th>serial</th>
                 <th>Nomenclature/Name</th>
-                <th>Authorized Unit</th>
+                <th>Authorized</th>
+                <th>Measurement Unit</th>
                 <th>Held</th>
                 <th>Issued</th>
                 <th>In store</th>
@@ -251,6 +250,10 @@
                     <div class="field">
                         <label for="editMeasurementUnit">Authorized</label>
                         <input type="text" id="editAuthorized" name="authorized" required>
+                    </div>
+                    <div class="field">
+                        <label for="editTotal">Held</label>
+                        <input type="number" id="editTotal" name="total" min="0" required>
                     </div>
                     <div class="field">
                         <label for="deleteitem">To Delete this Item write 'CONFIRM'</label>

@@ -95,14 +95,14 @@ function handlelogin() {
                     if (role_type === 'officer'){
                         if (role === 'lo'){
                             console.log("Redirecting to LO dashboard");
-                            window.location.href = 'officer_lo_dashboard.html';
+                            window.location.href = './bqms/officer_dashboard.html';
                         }
                         else if(role === 'mto'){
                             window.location.href ='mt_dashboard.html';
                         }
                         else if(role === 'eo'){
                             console.log("Redirecting to engineer dashboard");
-                            window.location.href = 'officer_engr_dashboard.html?key=engr';
+                            window.location.href = './engr/officer_dashboard.html';
                         }
                         else {
                             console.log("Redirecting to officer dashboard");
@@ -116,6 +116,18 @@ function handlelogin() {
                         }
                         if(role === 'signco'){
                             window.location.href ='signal/storemane_sig_dashboard.html';
+                            return;
+                        }
+                        else if(role === 'engrnco'){
+                            window.location.href ='./engr/storeman_dashboard.html';
+                            return;
+                        }
+                        else if (role === 'bknco'){
+                            window.location.href ='./bknco/storeman_dashboard.html';
+                            return;
+                        }
+                        else if (role === 'bqms'){
+                            window.location.href ='./bqms/storeman_dashboard.html';
                             return;
                         }
                         window.location.href ='engrnco.html';

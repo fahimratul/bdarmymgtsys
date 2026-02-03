@@ -202,6 +202,7 @@ function removeItemRow(rowId) {
 }
 
 function processIssueRequest() {
+    
     const voucherNumber = Date.now(); // Using timestamp as a simple voucher number
     // Validate recipient information
     const recipientLocation = document.getElementById('recipientLocation').value.trim();
@@ -268,6 +269,8 @@ function processIssueRequest() {
         console.error('Error submitting issue request:', error);
         showNotification('Error submitting issue request. Please try again.', 'error', 'Submission Failed');
     });
+    
+    set(ref(db, 'clonotification'), true);
 }
 
 function clearForm() {

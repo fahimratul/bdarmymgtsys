@@ -3,30 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <link rel="stylesheet" href="css/adduser.css">
-    <link rel="stylesheet" href="css/engrnco.css">
-    <link rel="stylesheet" href="css/card.css">
-    <link rel="stylesheet" href="css/notification.css">
+    <link rel="stylesheet" href="../css/offr.css">
+    <link rel="stylesheet" href="../css/card.css">
+    <link rel="stylesheet" href="../css/pendingitem.css">
+    <link rel="stylesheet" href="../css/notification.css">
+    <link rel="stylesheet" href="../css/adduser.css">
+    <link rel="stylesheet" href="../css/piechart.css">
     <script src ="https://unpkg.com/lucide@latest" ></script>
-    <link rel='icon' href='static/logo_small.png' type='image/x-icon' />
-    <title>Inventory</title>
+
+    <link rel='icon' href='../static/logo_small.png' type='image/x-icon' />
+    <title>Storeman Inventory</title>
 </head>
 <body>
-    <div id="notification-toast" class="notification-toast"></div>
+    <div id="notification-toast" class="notification-toast"></div>   
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay">
         <div class="spinner"></div>
         <div class="loading-text">Loading Inventory Data</div>
         <div class="loading-subtext">Please wait...</div>
     </div>
-    <h1 id ="title"></h1>
-    <div class="topdown-menu" onclick="popupmenu()">
-        <div class="userIcon">
-            <i data-lucide="user"></i>
-        </div>
-        <p>User ▼</p>
-    </div>
+    
+    <nav>
+        <ul>
+            <li><a href="storeman_dashboard.html" class="active">Inventory</a></li>
+            <li ><a href="#" onclick="popupmenu()"> User ▼ </a> </li>
+        </ul>
+    </nav>
+    <h1 id="title">BKNCO Inventory Management</h1>
+    
+    
     <div class="topdown-container" id="userInfoContainer" style="display: none;">
         <h3 id ="username"></h3>
         <h4 id ="rank"></h4>
@@ -34,7 +39,18 @@
         <button class="btn primary" id="changePasswordBtn" onclick="passwordChangeModal()">Change Password</button>
         <button class="btn secondary" id="logoutButton" onclick="logout()">Logout</button>        
     </div>
+
+    <!--Dashboard Card-->
     <div class="dashboard-card">
+        <div class="card">
+            <div class="card-icon">
+                <i data-lucide="box"></i>
+            </div>
+            <div class="card-info">
+                <h2 id="serial">0</h2>
+                <p>Total Type of Item</p>
+            </div>
+        </div>
         <div class="card">
             <div class="card-icon">
                 <i data-lucide="box"></i>
@@ -80,31 +96,71 @@
                 <p>In Store Items</p>
             </div>
         </div>
-        <div class="card" onclick="window.location.href='additem.html'" style="cursor: pointer;">
-            <div class="card-icon">
-                <i data-lucide="plus-circle"></i>
+            <div class="card" onclick="window.location.href='../additem.html'" style="cursor: pointer;">
+                <div class="card-icon">
+                    <i data-lucide="plus-circle"></i>
+                </div>
+                <div class="card-info">
+                    <h2 id="addItems">Add Items</h2>
+                    <p></p>
+                </div>
             </div>
-            <div class="card-info">
-                <h2 id="addItems">Add Items</h2>
-                <p></p>
+            <div class="card" id="issueItemBtn" style="cursor: pointer;">
+                <div class="card-icon">
+                    <i data-lucide="send"></i>
+                </div>
+                <div class="card-info">
+                    <h2 id="addItems">Issue Items</h2>
+                    <p></p>
+                </div>
             </div>
-        </div>
+            
+            <div class="card" onclick="window.location.href='unservicable_storeman.html'" style="cursor: pointer;">
+                <div class="card-icon">
+                    <i data-lucide="x-circle"></i>
+                </div>
+                <div class="card-info">
+                    <h2 id="addItems"> Add Unservicable Items</h2>
+                    <p></p>
+                </div>
+            </div>
     </div>
+
+    <!-- Search and Add Item -->
+
     <div class="search-container">
         <div class="library-search-container">
             <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
             <input type="text" id="searchInput" class="library-search-input" placeholder="Search Item...">
-        </div>   
+        </div>
+        <div class="pdf-buttons-container">
+            <button class="pdf-btn" id="printAllTable" title="Print entire table">
+                <i data-lucide="printer"></i> Print All
+            </button>
+            <button class="pdf-btn" id="printSelectedRows" title="Print selected rows" style="display: none;">
+                <i data-lucide="file-check"></i> Print Selected
+            </button>
+            <button class="pdf-btn" id="toggleSelectMode" title="Toggle row selection mode">
+                <i data-lucide="check-square"></i> Select Rows
+            </button>
+        </div>
     </div>
 
+
+
+    <!-- Inventory Table -->
     <table>
         <thead>
             <tr>
-                <th>serial</th>
+                <th class="select-column" id="selectColumnHeader" style="display: none;">
+                    <input type="checkbox" id="selectAll" title="Select all rows">
+                </th>
+                <th>Serial No</th>
                 <th>Nomenclature/Name</th>
-                <th>Authorized Unit</th>
+                <th>Measurement Unit</th>
+                <th>Authorized</th>
                 <th>Held</th>
                 <th>Issued</th>
                 <th>In store</th>
@@ -132,30 +188,16 @@
                         <input type="text" id="editName" name="name" required>
                     </div>
                     <div class="field">
-                        <label for="editAuthorized">Authorized Unit</label>
+                        <label for="editAuthorized">Measurement Unit</label>
+                        <input type="text" id="editUnit" name="unit" required>
+                    </div>
+                    <div class="field">
+                        <label for="editAuthorized">Authorized</label>
                         <input type="text" id="editAuthorized" name="authorized" required>
                     </div>
                     <div class="field">
                         <label for="edittotal">Total</label>
                         <input type="number" id="edittotal" name="total" min="0" step="1" required>
-                    </div>
-                    <div class="field">
-                        <label for="editservicable">Servicable</label>
-                        <input type="number" id="editServicable" name="servicable" min="0" step="1" required>
-                    </div>
-                    <div class="field">
-                        <label for="editIssue">Issued</label>
-                        <input type="number" id="editIssue" name="issue" min="0" step="1" required>
-                    </div>
-                    <div class="field">
-                        <label for="editunservicable">Unservicable</label>
-                        <input type="number" id="editunservicable" name="unservicable" min="0" step="1" readonly>
-                        <p class="inline-hint">Auto: Total - Servicable</p>
-                    </div>
-                    <div class="field">
-                        <label for="editinstore">In store</label>
-                        <input type="number" id="editInstore" name="instore" min="0" step="1" readonly>
-                        <p class="inline-hint">Auto: Total - Issued</p>
                     </div>
                 </div>
                 <div class="modal-actions">
@@ -165,57 +207,54 @@
             </form>
         </div>
     </div>
-
     <div id="changePasswordModal" class="modal hidden">
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Change Password</h2>
                 <button class="modal-close" onclick="closeModal()"  aria-label="Close">&times;</button>
             </div>
-                <div class="modal-grid">
-                    <div class="form-group pass">
-                        <label for="password" class="form-label"> Current Password *</label>
-                        <input type="password" id="password" class="form-input" placeholder="Enter password" >
-                        <button type="button" class="password-toggle" onclick="togglePassword('password')">
-                            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="form-group pass">
-                        <label for="new-password" class="form-label">New Password *</label>
-                        <input type="password" id="new-password" class="form-input" placeholder="Enter password" >
-                        <button type="button" class="password-toggle" onclick="togglePassword('new-password')">
-                            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                        </button>
-                    </div>
-
-                    <div class="form-group pass">
-                        <label for="confirm-password" class="form-label">Confirm Password *</label>
-                        <input type="password" id="confirm-password" class="form-input" placeholder="Confirm password">
-                        <button type="button" class="password-toggle" onclick="togglePassword('confirm-password')">
-                            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                        </button>
-                    </div>
-                
-                
+            <div class="modal-grid">
+                <div class="form-group pass">
+                    <label for="password" class="form-label"> Current Password *</label>
+                    <input type="password" id="password" class="form-input" placeholder="Enter password" >
+                    <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
                 </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn secondary" onclick="closeModal()">Cancel</button>
-                    <button id="passwordChangeSubmitBtn" class="btn primary">Change Password</button>
+                <div class="form-group pass">
+                    <label for="new-password" class="form-label">New Password *</label>
+                    <input type="password" id="new-password" class="form-input" placeholder="Enter password" >
+                    <button type="button" class="password-toggle" onclick="togglePassword('new-password')">
+                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
                 </div>
+                <div class="form-group pass">
+                    <label for="confirm-password" class="form-label">Confirm Password *</label>
+                    <input type="password" id="confirm-password" class="form-input" placeholder="Confirm password">
+                    <button type="button" class="password-toggle" onclick="togglePassword('confirm-password')">
+                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn secondary" onclick="closeModal()">Cancel</button>
+                <button id="passwordChangeSubmitBtn" class="btn primary">Change Password</button>
+            </div>
         </div>
     </div>
+
 
     <script>
         lucide.createIcons();
@@ -223,6 +262,7 @@
             const toast = document.getElementById("notification-toast");
             toast.classList.remove("show");
         }
+
         function popupmenu() {
             const userInfoContainer = document.getElementById('userInfoContainer');
             if (userInfoContainer.style.display === 'none' || userInfoContainer.style.display === '') {
@@ -248,12 +288,9 @@
             userInfoContainer.style.display = 'none';
             console.log('Password Change Modal Opened');
         }
-
     </script>
-    <script type="module" src="js/engrnco.js" defer></script>
 
-
-    
+    <script type="module" src="js/storeman.js" defer></script>
 
 </body> 
 

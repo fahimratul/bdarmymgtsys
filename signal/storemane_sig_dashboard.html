@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="../css/piechart.css">
     <script src ="https://unpkg.com/lucide@latest" ></script>
 
-    <link rel='icon' href='static/logo_small.png' type='image/x-icon' />
+    <link rel='icon' href='../static/logo_small.png' type='image/x-icon' />
     <title>Storeman Inventory</title>
 </head>
 <body>
@@ -159,6 +159,7 @@
                 <th class="select-column" id="selectColumnHeader" style="display: none;">
                     <input type="checkbox" id="selectAll" title="Select all rows">
                 </th>
+                <th>Serial No</th>
                 <th>Nomenclature/Name</th>
                 <th>Measurement Unit</th>
                 <th>Authorized</th>
@@ -190,11 +191,11 @@
                     </div>
                     <div class="field">
                         <label for="editAuthorized">Measurement Unit</label>
-                        <input type="text" id="editAuthorized" name="unit" required>
+                        <input type="text" id="editUnit" name="unit" required>
                     </div>
                     <div class="field">
-                        <label for="editMeasurementUnit">Authorized</label>
-                        <input type="text" id="editMeasurementUnit" name="authorized" required>
+                        <label for="editAuthorized">Authorized</label>
+                        <input type="text" id="editAuthorized" name="authorized" required>
                     </div>
                     <div class="field">
                         <label for="edittotal">Total</label>

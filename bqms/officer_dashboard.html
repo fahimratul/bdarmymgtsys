@@ -3,35 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/offr.css">
-    <link rel="stylesheet" href="css/card.css">
-    <link rel="stylesheet" href="css/pendingitem.css">
-    <link rel="stylesheet" href="css/notification.css">
-    <link rel="stylesheet" href="css/adduser.css">
-    <link rel="stylesheet" href="css/piechart.css">
+    <link rel="stylesheet" href="../css/offr.css">
+    <link rel="stylesheet" href="../css/card.css">
+    <link rel="stylesheet" href="../css/pendingitem.css">
+    <link rel="stylesheet" href="../css/notification.css">
+    <link rel="stylesheet" href="../css/adduser.css">
+    <link rel="stylesheet" href="../css/piechart.css">
     <script src ="https://unpkg.com/lucide@latest" ></script>
-    <link rel='icon' href='static/logo_small.png' type='image/x-icon' />
+
+    <link rel='icon' href='../static/logo_small.png' type='image/x-icon' />
     <title>Offr Inventory</title>
 </head>
 <body>
-    
-    <nav id="notforclo">
-        <ul>
-            <li><a href="officer_engr_dashboard.html?key=engr" class="active" id="engr">Engr Inventory</a></li>
-            <li><a href="officer_engr_dashboard.html?key=bqms" id="bqms">BKNCO Inventory</a></li>
-            <li><a href="user_management.html">User Management</a></li>
-            <li ><a href="#" onclick="popupmenu()"> User ▼ </a> </li>
-        </ul>
-    </nav>
-    <nav id="forclo">
-        <ul>
-            <li><a href="clodashboard.html" >Home</a></li>
-            <li><a href="user_management.html">User Management</a></li>
-            <li><a href="notifications.html">Notifications</a></li>
-            <li ><a href="#" onclick="popupmenu()"> User ▼ </a> </li>
-        </ul>
-    </nav>
-
     <div id="notification-toast" class="notification-toast"></div>   
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay">
@@ -39,21 +22,27 @@
         <div class="loading-text">Loading Inventory Data</div>
         <div class="loading-subtext">Please wait...</div>
     </div>
-
-    <h1 id="title">Engineering Inventory</h1>
-     <div id="officer_notification_issue" class="officernotification"></div>
-
-    <div id="officer_notification_unsvc" class="officernotification"></div>
-
     
-    <!-- User ▼ Container -->
-    <div class="topdown-container" id="userInfoContainer" style="display: none;">
-        <h3 id ="username"></h3>
-        <h4 id ="rank"></h4>
-        <h4 id ="banumber"></h4>
-        <button class="btn primary" id="changePasswordBtn" onclick="passwordChangeModal()">Change Password</button>
-        <button class="btn secondary" id="logoutButton" onclick="logout()">Logout</button>        
-    </div>
+    <nav id="notforclo">
+        <ul>
+            <li><a href="../ammodashboard.html"> Go To Ammunition</a></li>
+            <li><a href="officer_dashboard.html" class="active">Inventory</a></li>
+            <li><a href="pendingIssue.html">Pending Issues Items Request</a></li>
+            <li><a href="pendingunsvc.html">Pending Unsvc Items Request</a></li>
+            <li><a href="../user_management.html">User Management</a></li>
+            <li ><a href="#" onclick="popupmenu()"> User ▼ </a> </li>
+        </ul>
+    </nav>
+    <nav id="forclo">
+        <ul>
+            <li><a href="../clodashboard.html" >Home</a></li>
+            <li><a href="../user_management.html">User Management</a></li>
+            <li><a href="../notifications.html">Notifications</a></li>
+            <li ><a href="#" onclick="popupmenu()"> User ▼ </a> </li>
+        </ul>
+    </nav>
+    <h1 id="title">BQMS Inventory Management</h1>
+
 
     <div class="topdown-container" id="userInfoContainer" style="display: none;">
         <h3 id ="username"></h3>
@@ -63,16 +52,60 @@
         <button class="btn secondary" id="logoutButton" onclick="logout()">Logout</button>        
     </div>
 
+    <div class="pendingitem" id="newpendingtotalitem">
+        <h2>Pending New Held of Items</h2>
+        <table class="pendingitemTable">
+        <thead>
+            <tr>
+                <th>serial</th>
+                <th>Nomenclature/Name</th>
+                <th>Measurement Unit</th>
+                <th>Authorized</th>
+                <th>Previous Held</th>
+                <th>Upcoming</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="newitemtotalTableBody">
+            <!-- Inventory items will be dynamically inserted here -->
+        </tbody>
+        </table>
+    </div>
+    <!--pending new item-->
+    <div class="pendingitem" id="newpendingitem">
+        <h2>Pending New Items</h2>
+        <table class="pendingitemTable">
+        <thead>
+            <tr>
+                <th>serial</th>
+                <th>Nomenclature/Name</th>
+                <th>Authorized</th>
+                <th>Measurement Unit</th>
+                <th>Held</th>
+                <th>Issued</th>
+                <th>In store</th>
+                <th>Servicable</th>
+                <th>Unservicable</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="newitemTableBody">
+            <!-- Inventory items will be dynamically inserted here -->
+        </tbody>
+        </table>
+    </div>
+    
+    <!--Dashboard Card-->
     <div class="dashboard-card">
-            <div class="card">
-                <div class="card-icon">
-                    <i data-lucide="box"></i>
-                </div>
-                <div class="card-info">
-                    <h2 id="serial">0</h2>
-                    <p>Total Type of Item</p>
-                </div>
+        <div class="card">
+            <div class="card-icon">
+                <i data-lucide="box"></i>
             </div>
+            <div class="card-info">
+                <h2 id="serial">0</h2>
+                <p>Total Type of Item</p>
+            </div>
+        </div>
         <div class="card">
             <div class="card-icon">
                 <i data-lucide="box"></i>
@@ -118,7 +151,7 @@
                 <p>In Store Items</p>
             </div>
         </div>
-            <div class="card" onclick="window.location.href='additem.html'" style="cursor: pointer;">
+            <div class="card" onclick="window.location.href='../additem.html'" style="cursor: pointer;">
                 <div class="card-icon">
                     <i data-lucide="plus-circle"></i>
                 </div>
@@ -127,7 +160,24 @@
                     <p></p>
                 </div>
             </div>
-        </div>
+            <div class="card" id="issueItemBtn" style="cursor: pointer;">
+                <div class="card-icon">
+                    <i data-lucide="send"></i>
+                </div>
+                <div class="card-info">
+                    <h2 id="addItems">Issue Items</h2>
+                    <p></p>
+                </div>
+            </div>
+            <div class="card" onclick="window.location.href='unservicable.html'" style="cursor: pointer;">
+                <div class="card-icon">
+                    <i data-lucide="x-circle"></i>
+                </div>
+                <div class="card-info">
+                    <h2 id="addItems">Unservicable Items</h2>
+                    <p></p>
+                </div>
+            </div>
     </div>
 
     <!-- Search and Add Item -->
@@ -138,19 +188,32 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
             <input type="text" id="searchInput" class="library-search-input" placeholder="Search Item...">
-        </div>   
-        <button class="additem-btn" id="addItemBtn">Add Item</button> 
+        </div>
+        <div class="pdf-buttons-container">
+            <button class="pdf-btn" id="printAllTable" title="Print entire table">
+                <i data-lucide="printer"></i> Print All
+            </button>
+            <button class="pdf-btn" id="printSelectedRows" title="Print selected rows" style="display: none;">
+                <i data-lucide="file-check"></i> Print Selected
+            </button>
+            <button class="pdf-btn" id="toggleSelectMode" title="Toggle row selection mode">
+                <i data-lucide="check-square"></i> Select Rows
+            </button>
+        </div>
     </div>
 
 
-
-    <!-- Inventory Table -->
+    <div class="tableshow">
     <table>
         <thead>
             <tr>
-                <th>serial</th>
+                <th class="select-column" id="selectColumnHeader" style="display: none;">
+                    <input type="checkbox" id="selectAll" title="Select all rows">
+                 <th>serial</th>
+               </th>
                 <th>Nomenclature/Name</th>
-                <th>Authorized Unit</th>
+                <th>Measurement Unit</th>
+                <th>Authorized</th>
                 <th>Held</th>
                 <th>Issued</th>
                 <th>In store</th>
@@ -163,6 +226,10 @@
             <!-- Inventory items will be dynamically inserted here -->
         </tbody>
     </table>
+        
+    </div>
+    <!-- Inventory Table -->
+
 
     <!-- Edit Item Modal -->
     <div id="editModal" class="modal hidden">
@@ -178,30 +245,16 @@
                         <input type="text" id="editName" name="name" required>
                     </div>
                     <div class="field">
-                        <label for="editAuthorized">Authorized Unit</label>
+                        <label for="editAuthorized">Measurement Unit</label>
+                        <input type="text" id="editUnit" name="unit" required>
+                    </div>
+                    <div class="field">
+                        <label for="editMeasurementUnit">Authorized</label>
                         <input type="text" id="editAuthorized" name="authorized" required>
                     </div>
                     <div class="field">
-                        <label for="edittotal">Total</label>
-                        <input type="number" id="edittotal" name="total" min="0" step="1" required>
-                    </div>
-                    <div class="field">
-                        <label for="editservicable">Servicable</label>
-                        <input type="number" id="editServicable" name="servicable" min="0" step="1" required>
-                    </div>
-                    <div class="field">
-                        <label for="editIssue">Issued</label>
-                        <input type="number" id="editIssue" name="issue" min="0" step="1" required>
-                    </div>
-                    <div class="field">
-                        <label for="editunservicable">Unservicable</label>
-                        <input type="number" id="editunservicable" name="unservicable" min="0" step="1" readonly>
-                        <p class="inline-hint">Auto: Total - Servicable</p>
-                    </div>
-                    <div class="field">
-                        <label for="editinstore">In store</label>
-                        <input type="number" id="editInstore" name="instore" min="0" step="1" readonly>
-                        <p class="inline-hint">Auto: Total - Issued</p>
+                        <label for="editTotal">Held</label>
+                        <input type="number" id="editTotal" name="total" min="0" required>
                     </div>
                     <div class="field">
                         <label for="deleteitem">To Delete this Item write 'CONFIRM'</label>
@@ -268,16 +321,10 @@
 
     <script>
         lucide.createIcons();
-        addItemBtn = document.getElementById('addItemBtn');
-        addItemBtn.addEventListener('click', function() {
-            window.location.href = 'additem.html';
-        });
+
         function hideNotification() {
             const toast = document.getElementById("notification-toast");
             toast.classList.remove("show");
-        }
-        function OpenUserManagement(){
-            window.location.href = 'user_management.html';
         }
         function popupmenu() {
             const userInfoContainer = document.getElementById('userInfoContainer');
@@ -304,28 +351,6 @@
             userInfoContainer.style.display = 'none';
             console.log('Password Change Modal Opened');
         }
-
-        function additem(role){
-            if(role ==='bqms'){
-                sessionStorage.setItem('lo_add_item_role', 'bqms');
-            }
-            else if(role ==='bknco'){
-                sessionStorage.setItem('lo_add_item_role', 'bknco');
-            }
-            window.location.href = 'additem.html';
-        }
-        window.addEventListener('DOMContentLoaded', () => {
-                    
-            const urlparams = new URLSearchParams(window.location.search);
-            const typeKey = urlparams.get('key');
-            console.log(typeKey);
-            if(typeKey === 'bqms'){    
-                document.getElementById("engr").classList.remove('active')
-                document.getElementById("bqms").classList.add('active')
-                document.getElementById("title").innerText = "BKNCO Inventory"    
-            }
-        });
-          
         window.addEventListener('DOMContentLoaded', () => {
                 const role=sessionStorage.getItem('role');
                 if(role==='clo' || role === 'cc'){
@@ -336,10 +361,9 @@
                     document.getElementById('notforclo').style.display='block';
                 }
         });
-
     </script>
 
-    <script type="module" src="js/officerengr.js" defer></script>
+    <script type="module" src="js/officer.js" defer></script>
 
 </body> 
 

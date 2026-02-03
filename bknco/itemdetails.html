@@ -7,10 +7,11 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/additem.css">
-    <link rel="stylesheet" href="css/notification.css">
-    <link rel="stylesheet" href="css/vehiclehistory.css">
-    <link rel='icon' href='static/logo_small.png' type='image/x-icon' />
+    <link rel="stylesheet" href="../css/additem.css">
+    <link rel="stylesheet" href="../css/notification.css">
+    <link rel="stylesheet" href="../css/vehiclehistory.css">
+    <link rel='icon' href='../static/logo_small.png' type='image/x-icon' />
+    <title>Item Details</title>
 </head>
 <body>
     <div id="notification-toast" class="notification-toast"></div>
@@ -48,7 +49,11 @@
                             <span class="info-value" id="typeofitem"></span>
                         </div>
                         <div class="info-group">
-                            <span class="info-label">Authorized Unit:</span>
+                            <span class="info-label">Measurement Unit:</span>
+                            <span class="info-value" id="unit"></span>
+                        </div>
+                        <div class="info-group">
+                            <span class="info-label">Authorized:</span>
                             <span class="info-value" id="authorized"></span>
                         </div>
                         <div class="info-group">
@@ -75,7 +80,7 @@
                     </div>
                     <div class="button">
                         <button id="issueitem" class="maintainance-button" style="display: none;">Issue Item</button>
-                        <button id="markasunservicable" class="maintainance-button">Mark as Unservicable</button>
+                        <button id="markasunservicable" class="maintainance-button" style="display: none;">Mark as Unservicable</button>
                     </div>
                     <div class="history-section">
                         <h2>Issue History</h2>
@@ -84,8 +89,7 @@
                                 <tr>
                                     <th>Voucher No</th>
                                     <th>Date</th>
-                                    <th>Person/Unit</th>
-                                    <th>Location</th>
+                                    <th>Person/Location</th>
                                     <th>Quantity</th>
                                     <th>Status</th>
                                 </tr>

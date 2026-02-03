@@ -86,6 +86,7 @@ console.log("Officer Script Loaded");
 
 let dataCache = {};
 let newitemCache = {};
+let newtotalitemCache = {};
 
 let currentEditKey = null;
 const modal = document.getElementById('editModal');
@@ -96,7 +97,8 @@ const editForm = document.getElementById('editForm');
 const inputs = {
     name: document.getElementById('editName'),
     authorized: document.getElementById('editAuthorized'),
-    total: document.getElementById('edittotal'),
+    unit: document.getElementById('editUnit'),
+    total: document.getElementById('editTotal'),
     deleteitem: document.getElementById('deleteitem')
 };
 
@@ -238,6 +240,7 @@ function pendingnewitemdata() {
                 const item = data[key];
                 const name = item.name || '';
                 const authorized = item.authorized ?? '';
+                const unit = item.unit || '';
                 const total = item.total ?? 0;
                 const servicable = item.servicable ?? 0;
                 const unservicable = item.unservicable ?? 0;
@@ -247,6 +250,7 @@ function pendingnewitemdata() {
                 html += `<tr class="row-data" id="${name}" data-key="${key}" style="cursor: pointer;">
                             <td>${serial}</td>
                             <td>${name}</td>
+                            <td>${unit}</td>
                             <td>${authorized}</td>
                             <td>${total}</td>
                             <td>${issue}</td>
@@ -288,7 +292,7 @@ function pendingnewitemdata() {
         console.error('Error loading pending new item data:', error);
     });
 } 
-let newtotalitemCache = {};
+
 function pendingnewtotalitemdata() {
     let dbRef =ref(db, 'officerapproval/newtotal/siginventory/');
     const newpendingtotalitem = document.getElementById('newpendingtotalitem');
@@ -305,18 +309,17 @@ function pendingnewtotalitemdata() {
                 console.log(key);
                 const item = data[key];
                 const name = item.name || '';
+                const unit = item.unit || '';
                 const authorized = item.authorized ?? '';
                 const oldtotal = dataCache[key]?.total ?? 0;
                 const newtotal = item.total ?? 0;
-                const total = oldtotal + newtotal;
-                console.log(oldtotal, newtotal, total);
                 html += `<tr class="row-data" id="${name}" data-key="${key}" style="cursor: pointer;">
                             <td>${serial}</td>
                             <td>${name}</td>
+                            <td>${unit}</td>
                             <td>${authorized}</td>
                             <td>${oldtotal}</td>
                             <td>${newtotal}</td>
-                            <td>${total}</td>
                             <td>
                             <button class="approve-btn" data-key='${key}'>Accept</button>
                             <button class="reject-btn" data-key='${key}'>Reject</button>
@@ -352,19 +355,22 @@ function pendingnewtotalitemdata() {
 } 
 
 
-
-
 function approveNewtotalItem(key) {
-    const newItem = newtotalitemCache[key];
-    if (!newItem) return;
     const currentItem = newtotalitemCache[key] || {};
-    console.log(currentItem);
-    const updatedTotal = (dataCache[key]?.total || 0) + (currentItem.total || 0);
-    console.log(updatedTotal);
-    update(ref(db, 'siginventory/' + key), {
+    if (!currentItem) return;
+    
+    const total = dataCache[key]?.total || 0;
+    const instore = dataCache[key]?.instore || 0;
+    const newinstore = currentItem.total - total + instore;
+    const newservicable = newinstore - (dataCache[key]?.unservicable || 0);
+
+    update(ref(db, 'siginventory/main/' + key), {
         name: currentItem.name || '',
+        unit: currentItem.unit || '',
         authorized: currentItem.authorized || '',
-        total: updatedTotal
+        total: currentItem.total || 0,
+        instore: newinstore,
+        servicable: newservicable
     }).then(() => {
         console.log('New total item approved and updated in inventory');
         remove(ref(db, 'officerapproval/newtotal/siginventory/' + key)).then(() => {
@@ -379,9 +385,10 @@ function approveNewtotalItem(key) {
         console.error('Error approving new total item:', error);
     });
     set(ref(db, 'clo_cc_notification/' + Date.now()), {
-        msg: `SIgnal Inventory item "${currentItem.name || ''}" total has been updated by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`
+        from: 'Signal Inventory',
+        msg: `Signal Inventory item "${currentItem.name || ''}" total has been updated by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`,
+        date: new Date().toLocaleString()
     }).then(() => {
-        
         console.log('CLO/CC notified successfully about the update.');
     }).catch((error) => {
         console.error('Error notifying CLO/CC about the update:', error);
@@ -406,7 +413,7 @@ function rejectNewtotalItem(key) {
 function approveNewItem(key) {
     const newItem = newitemCache[key];
     if (!newItem) return;
-    set(ref(db, 'siginventory/' + key), newItem).then(() => {
+    set(ref(db, 'siginventory/main/' + key), newItem).then(() => {
         console.log('New item approved and added to inventory');
         remove(ref(db, 'officerapproval/new/siginventory/' + key)).then(() => {
             console.log('New item request removed from pending approvals');
@@ -419,6 +426,16 @@ function approveNewItem(key) {
     }).catch((error) => {
         console.error('Error approving new item:', error);
     });
+    set(ref(db, 'clo_cc_notification/' + Date.now()), {
+        from: 'Signal Inventory',
+        msg: `New Signal Inventory item "${newItem.name || ''}" has been added by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`,
+        date: new Date().toLocaleString()
+    }).then(() => {
+        console.log('CLO/CC notified successfully about the new item.');
+    }).catch((error) => {
+        console.error('Error notifying CLO/CC about the new item:', error);
+    });
+    set(ref(db, 'clonotification'), true);
 }
 
 function rejectNewItem(key) {
@@ -432,56 +449,7 @@ function rejectNewItem(key) {
 }
 
 
-
-
-
-let unsvcnotificationDataCache = {};
-
-const unsvcnotificationbody = document.getElementById('officer_notification_unsvc');
-function loadunsvcnotifactions() {
-    const dbRef = ref(db, 'unsvcpending/so');
-    get(dbRef).then((snapshot) => {
-        unsvcnotificationDataCache = snapshot.val();
-        let html = '';
-        unsvcnotificationbody.style.display='flex';
-        if (unsvcnotificationDataCache) {
-            for (const key in unsvcnotificationDataCache) {
-                const notification = unsvcnotificationDataCache[key];
-                const message = notification.msg || '';
-                html += `<div class="msg">
-                        <p class="content">${message}<br><br> </p>
-                        <button class="accept-btn" data-key="${key}">Accept</button>
-                        <button class="reject-btn" data-key="${key}">Reject</button> 
-                    </div>`;
-            }
-            unsvcnotificationbody.innerHTML = html;
-            unsvcnotificationbody.style.minHeight='max-content';
-            console.log("Notifications Loaded");
-            console.log(unsvcnotificationDataCache);
-            // Attach accept/reject handlers
-            unsvcnotificationbody.querySelectorAll('.accept-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const key = btn.dataset.key;
-                    acceptunsvc(key);
-                    console.log('Accepted notification with key:', key);
-                });
-            });
-            unsvcnotificationbody.querySelectorAll('.reject-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const key = btn.dataset.key;
-                    rejectunsvc(key);
-                    console.log('Rejected notification with key:', key);
-                });
-            });
-        }
-    }).catch((error) => {
-        console.error('Error loading notifications:', error);
-    });
-} 
-
-
 if(role==='so'){
-    loadunsvcnotifactions();
     pendingnewitemdata();
     setTimeout(() => {
         pendingnewtotalitemdata();
@@ -517,7 +485,8 @@ function openEditModal(key) {
     if (!item) return;
     currentEditKey = key;
     inputs.name.value = item.name || '';
-    inputs.authorized.value = item.authorized ?? 'NOS';
+    inputs.authorized.value = item.authorized ?? '';
+    inputs.unit.value = item.unit || '';
     inputs.total.value = item.total ?? 0;
     modal.classList.remove('hidden');
 }
@@ -538,14 +507,20 @@ modal?.addEventListener('click', (e) => {
 editForm?.addEventListener('submit', (e) => {
     e.preventDefault();
     if (!currentEditKey) return;
-    const newtotalitem = Number(inputs.total.value) + dataCache[currentEditKey].total;
+    const total = dataCache[currentEditKey]?.total || 0;
+    const instore = dataCache[currentEditKey]?.instore || 0;
+    const newinstore = (parseInt(inputs.total.value, 10) || 0) - total + instore;
+    const newservicable = newinstore - (dataCache[currentEditKey]?.unservicable || 0);
    const updated = {
         ...dataCache[currentEditKey],
         name: inputs.name.value.trim(),
-        authorized: inputs.authorized.value,
-        total: newtotalitem
+        authorized: parseInt(inputs.authorized.value, 10) || 0,
+        unit: inputs.unit.value.trim(),
+        total: parseInt(inputs.total.value, 10) || 0,
+        instore: newinstore,
+        servicable: newservicable
     }; 
-    update(ref(db, 'siginventory/' + currentEditKey), updated)
+    update(ref(db, 'siginventory/main/' + currentEditKey), updated)
         .then(() => {
             console.log('Data updated successfully');
             showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
@@ -576,7 +551,7 @@ deleteItemBtn?.addEventListener('click', (e) => {
         return;
     }
     
-    remove(ref(db, 'siginventory/' + currentEditKey))
+    remove(ref(db, 'siginventory/main/' + currentEditKey))
     .then(() => {
         console.log('Data deleted successfully');
         showNotification('Inventory item is pending for deletion.', 'success', 'Deletion Successful');
@@ -599,75 +574,6 @@ logoutButton?.addEventListener('click', () => {
     window.location.href = './../index.html';
 });
 
-
-const issueModal = document.getElementById('issuelistModal');
-
-
-
-
-function acceptunsvc(key){
-    unsvcnotificationbody.innerHTML = '';
-    const unsvcitem = unsvcnotificationDataCache[key];
-    const mainitem = dataCache[key];
-    console.log(mainitem, unsvcitem);
-    if(!unsvcitem) return;
-    const quantity = unsvcitem.quantity || 0;
-    const newunservicable = (mainitem.unservicable || 0) + quantity;
-    const newservicable = (mainitem.servicable || 0) - quantity;
-    
-    remove(ref(db, 'unsvcpending/so/' + key)).then(() => {
-        console.log('Unservicable notification removed successfully');
-    }).catch((error) => {
-        console.error('Error removing unservicable notification:', error);
-    });
-    update(ref(db, 'siginventory/' + key), {
-        unservicable: newunservicable,
-        servicable: newservicable
-    }).then(() => {
-        console.log('Unservicable accepted and inventory updated');        
-    }).catch((error) => {
-        console.error('Error updating inventory for unservicable acceptance:', error);
-    });
-    set(ref(db, 'siginventory/' + key + '/unsvc/'+ Date.now()), {
-        date: unsvcitem.date || '',
-        quantity: unsvcitem.quantity || 0,
-        reason: unsvcitem.reason || '',
-        marked_by: unsvcitem.marked_by || '',
-    }).then(() => {
-        console.log('Unservicable history recorded successfully');
-    }).catch((error) => {
-        console.error('Error recording unservicable history:', error);
-    });
-    setTimeout(() => {
-        showNotification('Unservicable request accepted and inventory updated.', 'success', 'Unservicable Accepted');
-        loaditemdata();
-        loadunsvcnotifactions();
-    }, 700);
-    set(ref(db, 'clo_cc_notification/' + Date.now()), {
-        msg: unsvcitem.msg || ''
-    }).then(() => {
-        
-        console.log('CLO/CC notified successfully about accepted unservicable.');
-    }).catch((error) => {
-        console.error('Error notifying CLO/CC about accepted unservicable:', error);
-    });
-    
-    set(ref(db, 'clonotification'), true);
-    loaditemdata();
-}
-function rejectunsvc(key){
-    unsvcnotificationbody.innerHTML = '';
-    remove(ref(db, 'unsvcpending/so/' + key)).then(() => {
-        console.log('Unservicable notification removed successfully');
-    }).catch((error) => {
-        console.error('Error removing unservicable notification:', error);
-    });
-    setTimeout(() => {
-        showNotification('Unservicable request rejected.', 'info', 'Unservicable Rejected');
-        loadunsvcnotifactions();
-    }, 700);
-    loadunsvcnotifactions();
-}
 
 // PDF Functionality
 let isSelectionMode = false;
