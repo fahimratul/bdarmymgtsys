@@ -521,7 +521,7 @@ function printIssueRequest(issueRequest, itemsToIssue, voucherNo, issueDate, loc
                 <h3 class="section-title">Recipient Information</h3>
                 <div class="info-grid">
                     <div class="info-item">
-                        <span class="info-label">Location:</span>
+                        <span class="info-label">Location/Person:</span>
                         <span class="info-value">${issueRequest.location}</span>
                     </div>
                 </div>

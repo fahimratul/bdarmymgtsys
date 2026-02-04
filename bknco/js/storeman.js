@@ -689,7 +689,7 @@ function printReport(tableRows, title, summaryData) {
             </table>
             
             <div class="footer">
-                <p>BANRDB Store Management System - Signal Inventory Report</p>
+                <p>BANRDB Store Management System - BKNCO Inventory Report</p>
                 <p>This report was generated automatically on ${currentDate}</p>
             </div>
             
