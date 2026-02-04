@@ -455,7 +455,7 @@ function changePassword() {
                 .then(() => {
                     showNotification("Password changed successfully", "success", "Success");
                     sessionStorage.clear();
-                    window.location.href = 'index.html';
+                    window.location.href = '../index.html';
                 })
                 .catch((error) => {
                     console.error("Error updating password:", error);
