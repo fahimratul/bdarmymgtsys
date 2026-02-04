@@ -136,6 +136,7 @@ loaditemdata('sig', 'siginventory/main/');
 loaditemdata('mt', 'mtinventory/main/');
 loaditemdata('bknco', 'bkncoinventory/main/');
 loaditemdata('bqms', 'bqmsinventory/main/');
+loaditemdata('workshop', 'workshop/main/');
 
 const logoutButton = document.getElementById('logoutButton');
 

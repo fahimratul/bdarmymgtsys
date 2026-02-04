@@ -197,6 +197,12 @@ function checkAmmoValidation(ammoType) {
 function addAmmo() {
     const ammoTypeInput = document.getElementById('ammo-type');
     const ammoTypeValue = ammoTypeInput.value.trim();
+    const ammoTypeClassInput = document.getElementById('ammo-typeclass');
+    const ammoTypeClassValue = ammoTypeClassInput.value.trim();
+    if (ammoTypeClassValue === '') {
+        showNotification("Ammo Serial Number cannot be empty", "error", "Validation Error");
+        return;
+    }
     const ammoType = ammoTypeValue.replace(/[^a-zA-Z0-9]+/g, '_').toLowerCase();
     if (ammoType === '') {
         showNotification("Type of Ammo cannot be empty", "error", "Validation Error");
@@ -209,7 +215,8 @@ function addAmmo() {
         }
         const newAmmoRef = ref(db, 'ammoindex/typesofammo/' + ammoType);
         update(newAmmoRef, {
-            name: ammoTypeValue
+            name: ammoTypeValue,
+            type: ammoTypeClassValue
         }).then(() => {
             showNotification("Type of Ammo added successfully", "success", "Success");
             ammoTypeInput.value = '';

@@ -22,7 +22,7 @@ const db = getDatabase(app);
 console.log(db);
 console.log("Firebase Initialized");
 
-let allowedRoles = ['lo', 'cc', 'clo', 'ammonco'];
+let allowedRoles = ['ammonco'];
 
 window.addEventListener('DOMContentLoaded', () => {
     let baNumber = sessionStorage.getItem('baNumber');
@@ -66,7 +66,6 @@ let ranklist ={
     gen:"General"
 };
 
-const role = sessionStorage.getItem('role');
 
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -115,7 +114,7 @@ function loadammodata() {
             row.addEventListener('click', () => {
                 const ammoKey = row.getAttribute('data-key');
                 sessionStorage.setItem('ammotypename', typeofammo[ammoKey].name);
-                window.location.href = `ammodetails.html?ammo=${ammoKey}`;
+                window.location.href = `ammodetails_storeman.html?ammo=${ammoKey}`;
             });
         });
         if(loadingOverlay) 
@@ -197,6 +196,12 @@ function checkAmmoValidation(ammoType) {
 function addAmmo() {
     const ammoTypeInput = document.getElementById('ammo-type');
     const ammoTypeValue = ammoTypeInput.value.trim();
+    const ammoTypeClassInput = document.getElementById('ammo-typeclass');
+    const ammoTypeClassValue = ammoTypeClassInput.value.trim();
+    if (ammoTypeClassValue === '') {
+        showNotification("Ammo Serial Number cannot be empty", "error", "Validation Error");
+        return;
+    }
     const ammoType = ammoTypeValue.replace(/[^a-zA-Z0-9]+/g, '_').toLowerCase();
     if (ammoType === '') {
         showNotification("Type of Ammo cannot be empty", "error", "Validation Error");
@@ -207,9 +212,11 @@ function addAmmo() {
             showNotification("Type of Ammo already exists", "error", "Validation Error");
             return;
         }
-        const newAmmoRef = ref(db, 'ammoindex/typesofammo/' + ammoType);
+        const newAmmoRef = ref(db, 'officerapproval/typesofammo/' + ammoType);
         update(newAmmoRef, {
-            name: ammoTypeValue
+            name: ammoTypeValue,
+            type: ammoTypeClassValue
+
         }).then(() => {
             showNotification("Type of Ammo added successfully", "success", "Success");
             ammoTypeInput.value = '';

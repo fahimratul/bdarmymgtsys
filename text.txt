@@ -1,57 +1,3 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
-
-import { getDatabase, set, get, ref} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
-
-
-const firebaseConfig = {
-apiKey: "AIzaSyCIX-3-GunSudlllY-dFRo943ysFXtBiOk",
-authDomain: "bdarmystoremgt.firebaseapp.com",
-databaseURL: "https://bdarmystoremgt-default-rtdb.firebaseio.com",
-projectId: "bdarmystoremgt",
-storageBucket: "bdarmystoremgt.firebasestorage.app",
-messagingSenderId: "960978586847",
-appId: "1:960978586847:web:afcee2217a1c3c876ead6a",
-measurementId: "G-H27M1SNMPX"
-};
-
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const db = getDatabase(app);
-console.log("Firebase Initialized");
-
-console.log("Add Item Script Loaded");
-
-
-
-
-
-
-function writeInventoryItem(ser,sec, part_no, name, unit, held, lp) {
-    const serial = ser;
-    const newname = name.replace(/[^a-zA-Z0-9]+/g, '_').toLowerCase() +'_'+serial;
-    set(ref(db, 'workshop/main/' + newname),{
-        name: name,
-        unit: unit,
-        authorized: 0,
-        total: held,
-        part_no: part_no,
-        sec: sec,
-        servicable: held,
-        unservicable: 0,
-        issue: 0,
-        instore: held,
-        lp: lp
-    }).then(() => {
-        console.log("Item Added Successfully"+ serial);
-    })
-    .catch((error) => {
-        console.error("Error adding item: ", error);
-        alert("Error adding item: " + error.message);
-    });
-
-}
-
 
 writeInventoryItem(500, "Lv7/Isuzu", "1-82215-024-0", "Lens frt turn sig lamp", "No", 0, "LP-24/108");
 writeInventoryItem(501, "Lv7/Isuzu", "1-82210-002-1", "Lamp assy frt comb", "No", 5, "LP-24/107");
@@ -1482,7 +1428,7 @@ writeInventoryItem(1919, "F/Van", "NIV", "Capacitor 230v-160 MFD", "No", 2, "LP-
 writeInventoryItem(1920, "F/Van", "NIV", "Motor capacitor 230v-300 MFD", "No", 1, "LP-20/133");
 writeInventoryItem(1921, "W-1", "NIV", "Capacitor 40 MFD  ", "No", 8, "LP-27/01");
 writeInventoryItem(1922, "W-1", "NIV", "Gauge inlet RO Meter", "No", 2, "LP-27/09");
-writeInventoryItem(1923, "W-1", "NIV-029840 ", "Gauge drain RO", "No", 5, "LP-27/12");
+writeInventoryItem(1923, "W-1", "NIV-029840 ", "Gauge drain RO", "No", s, "LP-27/12");
 writeInventoryItem(1924, "Gen", "NIV", "Self starter", "No", 4, "LP-27/43");
 writeInventoryItem(1925, "Gen", "NIV", "Water pump drive belt (20-30 KVA)", "No", 1, "LP-27/87");
 writeInventoryItem(1926, "Gen", "NK", "Overhauling gasket ", "No", 3, "LP-27/89");

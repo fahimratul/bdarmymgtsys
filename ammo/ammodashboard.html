@@ -17,10 +17,11 @@
     
     <nav id="notforclo">
         <ul>
-            <li><a href="../bqms/officer_dashboard.html">Home</a></li>
-            <li><a href="../ammo/ammodashboard.html" class="active">Ammo Inventory</a></li>
+            <li><a href="../bqms/officer_dashboard.html">Go To BQMS Inventory</a></li>
+            <li><a href="ammodashboard.html" class="active">Ammo Inventory</a></li>
+            <li><a href="ammo_change.html" >Pending Changes</a></li>
             <li><a href="../user_management.html">User Management</a></li>
-            <li ><a href="#" onclick="popupmenu()"> User ▼ </a> </li>
+            <li><a href="#" onclick="popupmenu()"> User ▼ </a></li>
         </ul>
     </nav>
     <nav id="forclo">
@@ -84,6 +85,10 @@
                     <label for="ammo-type" class="form-label">Type of Ammo *</label>
                     <input type="text" id="ammo-type" class="form-input" placeholder="Enter Type of Ammo" >
                 </div>
+                <div class="form-group">
+                    <label for="ammo-typeclass" class="form-label">Ammo Serial Number *</label>
+                    <input type="text" id="ammo-typeclass" class="form-input" placeholder="e.g: C-5, C-14 & 21" >
+                </div>  
             </div>
             <div class="modal-actions">
                 <button type="button" class="btn secondary" id="addAmmoCloseBtn">Cancel</button>

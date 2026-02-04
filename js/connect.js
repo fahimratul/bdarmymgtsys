@@ -104,14 +104,19 @@ function handlelogin() {
                             console.log("Redirecting to engineer dashboard");
                             window.location.href = './engr/officer_dashboard.html';
                         }
+                        else if(role === 'workshop'){
+                            console.log("Redirecting to workshop dashboard");
+                            window.location.href = './workshop/officer_dashboard.html';
+                        }
                         else {
                             console.log("Redirecting to officer dashboard");
                             window.location.href = './signal/officer_so_dashboard.html';
                         }
+                        
                     } 
                     else if (role_type === 'bqms'){
                         if(role ==='ammonco'){
-                            window.location.href ='./ammo/ammodashboard.html';
+                            window.location.href ='./ammo/ammo_storeman.html';
                             return;
                         }
                         if(role === 'signco'){
@@ -128,6 +133,10 @@ function handlelogin() {
                         }
                         else if (role === 'bqms'){
                             window.location.href ='./bqms/storeman_dashboard.html';
+                            return;
+                        }
+                        else if( role === 'workshopnco'){
+                            window.location.href ='./workshop/storeman_dashboard.html';
                             return;
                         }
                         window.location.href ='engrnco.html';

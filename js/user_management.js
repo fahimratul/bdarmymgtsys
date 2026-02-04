@@ -97,7 +97,11 @@ function loaditemdata() {
         undercommandrole = ['bqms', 'ammonco'];
     }
     else if (role === 'mto'){
+        
         undercommandrole = ['mtnco', 'mtjco'];
+    }
+    else if( role === 'workshop'){
+        undercommandrole = ['workshopnco'];
     }
     else{
         undercommandrole = null; // CLO and above can see all

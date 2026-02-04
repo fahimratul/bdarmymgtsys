@@ -43,7 +43,7 @@ let pendingItemsDataCaches={};
 function pendingitems(){
     const loadingOverlay = document.getElementById('loadingOverlay');
     const pendingitemsContainer = document.getElementById('pendingsection');
-    const dbRef = ref(db, 'unservicable_storeman/eo/');
+    const dbRef = ref(db, 'unservicable_storeman/workshop/');
     let html='';
     get(dbRef).then((snapshot) => {
         pendingItemsDataCaches = snapshot.val() || {};
@@ -170,14 +170,14 @@ function removeItemRow(rowId, sectionId, parentSectionId, itemID) {
     console.log('Removed item with ID:', itemID);
 
     
-    remove(ref(db, `unservicable_storeman/eo/${parentSectionId}/items/${itemID}`));
+    remove(ref(db, `unservicable_storeman/workshop/${parentSectionId}/items/${itemID}`));
     
     const itemsContainer = document.getElementById(sectionId);
     if (itemsContainer.children.length === 0) {
         const pendingitemsContainer = document.getElementById(parentSectionId);
         pendingitemsContainer.remove();
         const key = parentSectionId;
-        remove(ref(db, `unservicable_storeman/eo/${key}`));
+        remove(ref(db, `unservicable_storeman/workshop/${key}`));
         showNotification('All items removed. Pending request is deleted automatically.', 'info', 'Request Deleted Automatically');
     }
 }
@@ -211,7 +211,7 @@ function processIssueRequest(key) {
             showNotification('Please specify valid quantities for all items.', 'error', 'Validation Failed');
             return;
         }
-        const mainitem = get(ref(db, `engrinventory/main/${itemkey}`));
+        const mainitem = get(ref(db, `workshop/main/${itemkey}`));
         mainitem.then((snapshot) => {
             const itemData = snapshot.val();
             const availableQty = (itemData.instore || 0) - (itemData.unservicable || 0);
@@ -221,19 +221,19 @@ function processIssueRequest(key) {
             }
             console.log(`Issuing ${quantity} of item ${itemData.name}`);
             msgforclo+=`${quantity} X ${itemData.name} for ${reason} ,; `;
-            set(ref(db, `engrinventory/${itemkey}/unsvc/${voucherNumber}`), {
+            set(ref(db, `workshop/${itemkey}/unsvc/${voucherNumber}`), {
                 date: issueDate,
                 quantity: quantity,
                 reason: reason,
 
             });
-            update(ref(db, `engrinventory/main/${itemkey}`), {
+            update(ref(db, `workshop/main/${itemkey}`), {
                 unservicable: (itemData.unservicable || 0) + quantity,
                 servicable: (itemData.servicable || 0) - quantity
             });
         });
     }
-    remove(ref(db, `unservicable_storeman/eo/${key}`))
+    remove(ref(db, `unservicable_storeman/workshop/${key}`))
     .then(() => {
         console.log('Pending issue request removed from database.');
     })
@@ -243,7 +243,7 @@ function processIssueRequest(key) {
     const issueRef = push(ref(db, 'clo_cc_notification/'));
     set(issueRef, {
         msg: msgforclo,
-        from: 'Engineering Inventory',
+        from: 'Workshop Inventory',
         time: formatDate(new Date())   
     }).then(() => {
         showNotification('Items marked as unserviceable successfully! Opening print dialog...', 'success', 'Request Submitted');
@@ -258,7 +258,7 @@ function processIssueRequest(key) {
 }
 
 function rejectIssueRequest(key) {
-    remove(ref(db, `unservicable_storeman/eo/${key}`))
+    remove(ref(db, `unservicable_storeman/workshop/${key}`))
     .then(() => {
         showNotification('Issue request rejected successfully.', 'success', 'Request Rejected');
         // Remove the corresponding pending item section from the DOM

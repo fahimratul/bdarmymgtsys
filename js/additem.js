@@ -76,26 +76,26 @@ function checkInventoryItem(name) {
     const newname = name.replace(/[^a-zA-Z0-9]+/g, '_').toLowerCase();
     let dbRef;
     if(role === 'engrnco' || role === 'eo') {
-        dbRef = ref(db, 'engrinventory/' + newname);
+        dbRef = ref(db, 'engrinventory/main/' + newname);
     }
     else if(role === 'signco' || role === 'so') {
         dbRef = ref(db, 'siginventory/main/' + newname);
     }
     else if(role === 'mtnco' || role === 'mtjco' || role === 'mto') {
-        dbRef = ref(db, 'mtinventory/' + newname);
+        dbRef = ref(db, 'mtinventory/main/' + newname);
     }
     else if(role === 'bqms') {
-        dbRef = ref(db, 'bqmsinventory/' + newname);
+        dbRef = ref(db, 'bqmsinventory/main/' + newname);
     }
     else if(role === 'bknco') {
-        dbRef = ref(db, 'bkncoinventory/' + newname);
+        dbRef = ref(db, 'bkncoinventory/main/' + newname);
     }
     else if(role === 'lo') {
         if(loAddItemRole === 'bqms') {
-            dbRef = ref(db, 'bqmsinventory/' + newname);
+            dbRef = ref(db, 'bqmsinventory/main/' + newname);
         }
         else if(loAddItemRole === 'bknco') {
-            dbRef = ref(db, 'bkncoinventory/' + newname);
+            dbRef = ref(db, 'bkncoinventory/main/' + newname);
         }
         else {
             console.error('Invalid LO add item role:', loAddItemRole);
@@ -187,7 +187,7 @@ function writeInventoryItem(name, data) {
                 });
             }
             else if(role === 'eo') {
-                set(ref(db, 'engrinventory/' + newname),{
+                set(ref(db, 'engrinventory/main/' + newname),{
                     name: name,
                     authorized: data.authorized,
                     total: data.total,
@@ -217,7 +217,7 @@ function writeInventoryItem(name, data) {
                 });
             }
             else if(role === 'mto'){
-                set(ref(db, 'mtinventory/' + newname),{
+                set(ref(db, 'mtinventory/main/' + newname),{
                     name: name,
                     authorized: data.authorized,
                     unit: data.unit,
@@ -233,7 +233,7 @@ function writeInventoryItem(name, data) {
             }
             else if(role === 'lo') {
                 if(loAddItemRole === 'bqms') {
-                    set(ref(db, 'bqmsinventory/' + newname),{
+                    set(ref(db, 'bqmsinventory/main/' + newname),{
                         name: name,
                         authorized: data.authorized,
                         total: data.total,
@@ -247,7 +247,7 @@ function writeInventoryItem(name, data) {
                     });
                 }
                 else if(loAddItemRole === 'bknco') {
-                    set(ref(db, 'bkncoinventory/' + newname),{
+                    set(ref(db, 'bkncoinventory/main/' + newname),{
                         name: name,
                         authorized: data.authorized,
                         total: data.total,
