@@ -139,6 +139,10 @@ function handlelogin() {
                             window.location.href ='./workshop/storeman_dashboard.html';
                             return;
                         }
+                        else if(role === 'mtnco' || role === 'mtjco'){
+                            window.location.href ='./mt_dashboard.html';
+                            return;
+                        }
                         window.location.href ='engrnco.html';
                     
                     } 
