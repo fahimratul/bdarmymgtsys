@@ -46,7 +46,7 @@ function pendingitems(){
     const loadingOverlay = document.getElementById('loadingOverlay');
     itemCounter++;
     const pendingitemsContainer = document.getElementById('pendingsection');
-    const dbRef = ref(db, 'issuepending/bqms/');
+    const dbRef = ref(db, 'issuepending/mt/');
     let html='';
     get(dbRef).then((snapshot) => {
         pendingItemsDataCaches = snapshot.val() || {};
@@ -170,14 +170,14 @@ function removeItemRow(rowId, sectionId, parentSectionId, itemID) {
     }
     console.log('Removed item with ID:', itemID);
 
-    remove(ref(db, `issuepending/bqms/${parentSectionId}/items/${itemID}`));
+    remove(ref(db, `issuepending/mt/${parentSectionId}/items/${itemID}`));
     
     const itemsContainer = document.getElementById(sectionId);
     if (itemsContainer.children.length === 0) {
         const pendingitemsContainer = document.getElementById(parentSectionId);
         pendingitemsContainer.remove();
         const key = parentSectionId;
-        remove(ref(db, `issuepending/bqms/${key}`));
+        remove(ref(db, `issuepending/mt/${key}`));
         showNotification('All items removed. Pending request is deleted automatically.', 'info', 'Request Deleted Automatically');
     }
 }
@@ -212,7 +212,7 @@ function processIssueRequest(key) {
             showNotification('Please specify valid quantities for all items.', 'error', 'Validation Failed');
             return;
         }
-        const mainitem = get(ref(db, `bqmsinventory/main/${itemkey}`));
+        const mainitem = get(ref(db, `mtinventory/main/${itemkey}`));
         mainitem.then((snapshot) => {
             const itemData = snapshot.val();
             const availableQty = (itemData.servicable || 0) - (itemData.issue || 0);
@@ -222,12 +222,12 @@ function processIssueRequest(key) {
             }
             console.log(`Issuing ${quantity} of item ${itemData.name}`);
             msg= msg + quantity+ 'X' + itemData.name + ', ';
-            set(ref(db, `bqmsinventory/${itemkey}/history/${voucherNumber}`), {
+            set(ref(db, `mtinventory/${itemkey}/history/${voucherNumber}`), {
                 date: issueDate,
                 location: recipientLocation,
                 quantity: quantity
             });
-            update(ref(db, `bqmsinventory/main/${itemkey}`), {
+            update(ref(db, `mtinventory/main/${itemkey}`), {
                 issue: (itemData.issue || 0) + quantity,
                 instore: (itemData.instore || 0) - quantity
             });
@@ -235,7 +235,7 @@ function processIssueRequest(key) {
     }
 
     printIssueRequest(pendingItemsDataCaches[key], Object.values(pendingItemsDataCaches[key].items), voucherNumber, issueDate, recipientLocation);
-    remove(ref(db, `issuepending/bqms/${key}`))
+    remove(ref(db, `issuepending/mt/${key}`))
     .then(() => {
         console.log('Pending issue request removed from database.');
     })
@@ -245,7 +245,7 @@ function processIssueRequest(key) {
     const issueRef = push(ref(db, 'clo_cc_notification/'));
     set(issueRef, {
         msg: msg,
-        from: 'BQMS Inventory',
+        from: 'MT Inventory',
         time: new Date().toLocaleString()   
     }).then(() => {
         showNotification('Items issued successfully! Opening print dialog...', 'success', 'Request Submitted');
@@ -258,7 +258,7 @@ function processIssueRequest(key) {
 }
 
 function rejectIssueRequest(key) {
-    remove(ref(db, `issuepending/bqms/${key}`))
+    remove(ref(db, `issuepending/mt/${key}`))
     .then(() => {
         showNotification('Issue request rejected successfully.', 'success', 'Request Rejected');
         // Remove the corresponding pending item section from the DOM

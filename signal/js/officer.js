@@ -456,6 +456,11 @@ if(role==='so'){
     }, 1000);
 }
 
+else{
+    document.getElementById('newpendingitem').style.display='none';
+    document.getElementById('newpendingtotalitem').style.display='none';
+}
+
 
 
 loaditemdata();

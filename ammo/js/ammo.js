@@ -43,7 +43,7 @@ window.addEventListener('DOMContentLoaded', () => {
  
 
 
-import {showNotification} from './notification.js';
+import {showNotification} from '../../js/notification.js';
 console.log("Script Loaded");
 
 
@@ -98,8 +98,8 @@ function loadammodata() {
                 const ammo = data[key];
                 html += `
                     <tr class="ammo-row" id="${ammo.name}" data-key="${key}" style="cursor: pointer;">
-                        <td>${serial++}</td>
-                        <td>${ammo.name}</td>
+                        <td>${serial}</td>
+                        <td>${ammo.name} <span style="background-color: yellow;"> (${ammo.type})</span></td>
                     </tr>
                 `;
                 serial++;

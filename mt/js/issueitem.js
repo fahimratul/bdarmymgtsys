@@ -41,7 +41,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function loadInventoryData() {
     const loadingOverlay = document.getElementById('loadingOverlay');
-    const dbRef = ref(db, 'bqmsinventory/main/');
+    const dbRef = ref(db, 'mtinventory/main/');
     
     get(dbRef).then((snapshot) => {
         inventoryData = snapshot.val() || {};
@@ -235,13 +235,13 @@ function processIssueRequest() {
             showNotification(`Insufficient quantity available for ${item.name}. Available: ${availableQty}`, 'error', 'Insufficient Stock');
             return;
         }
-        set(ref(db, `bqmsinventory/${itemKey}/history/${voucherNumber}`), {
+        set(ref(db, `mtinventory/${itemKey}/history/${voucherNumber}`), {
             date: issueDate,
             issued_by: sessionStorage.getItem('baNumber'),
             quantity: quantity,
             location: recipientLocation
         });
-        update(ref(db, `bqmsinventory/main/${itemKey}`), {
+        update(ref(db, `mtinventory/main/${itemKey}`), {
             issue: (item.issue || 0) + quantity,
             instore: (item.instore || 0) - quantity
         });
@@ -257,7 +257,7 @@ function processIssueRequest() {
     const msg= itemsToIssue.map(item => `${item.quantity} x ${item.itemName}`).join(', ');
     set(issueRef, {
         msg: `Issue request: ${msg} to ${recipientLocation}`,
-        from: 'BQMS Inventory',
+        from: ' MT Inventory',
         date: new Date().toLocaleString()
     }).then(() => {
         showNotification('Items issued successfully! Opening print dialog...', 'success', 'Request Submitted');

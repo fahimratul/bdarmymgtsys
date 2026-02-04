@@ -455,6 +455,10 @@ if(role==='eo'){
         pendingnewtotalitemdata();
     }, 1000);
 }
+else{
+    document.getElementById('newpendingitem').style.display='none';
+    document.getElementById('newpendingtotalitem').style.display='none';
+}
 
 
 

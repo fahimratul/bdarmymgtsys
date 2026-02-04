@@ -40,7 +40,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function loadInventoryData() {
     const loadingOverlay = document.getElementById('loadingOverlay');
-    const dbRef = ref(db, 'bqmsinventory/main/');
+    const dbRef = ref(db, 'mtinventory/main/');
     
     get(dbRef).then((snapshot) => {
         inventoryData = snapshot.val() || {};
@@ -230,13 +230,13 @@ function processIssueRequest() {
             showNotification(`Insufficient quantity available for ${item.name}. Available: ${availableQty}`, 'error', 'Insufficient Stock');
             return;
         }
-        set(ref(db, `bqmsinventory/${itemKey}/unsvc/${voucherNumber}`), {
+        set(ref(db, `mtinventory/${itemKey}/unsvc/${voucherNumber}`), {
             date: issueDate,
             issued_by: sessionStorage.getItem('baNumber'),
             quantity: quantity,
             reason: reason
         });
-        update(ref(db, `bqmsinventory/main/${itemKey}`), {
+        update(ref(db, `mtinventory/main/${itemKey}`), {
             unservicable: (item.unservicable || 0) + quantity,
             servicable: (item.servicable || 0) - quantity
         });
@@ -252,7 +252,7 @@ function processIssueRequest() {
     set(ref(db, 'clo_cc_notification/'+ Date.now()), {
         msg: `New unservicable request processed with Voucher No: ${voucherNumber}`,
         date: new Date().toLocaleString(),
-        from: "BQMS Inventory"
+        from: "MT Inventory"
     }).then(() => {
         showNotification(`Unservicable request processed successfully with Voucher No: ${voucherNumber}`, 'success', 'Request Processed');
         clearForm();

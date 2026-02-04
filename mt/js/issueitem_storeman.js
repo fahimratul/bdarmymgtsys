@@ -41,7 +41,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function loadInventoryData() {
     const loadingOverlay = document.getElementById('loadingOverlay');
-    const dbRef = ref(db, 'bqmsinventory/main/');
+    const dbRef = ref(db, 'mtinventory/main/');
     
     get(dbRef).then((snapshot) => {
         inventoryData = snapshot.val() || {};
@@ -257,7 +257,7 @@ function processIssueRequest() {
     };
     
     // Save issue request to database
-    const issueRef = ref(db, 'issuepending/bqms/'+voucherNumber);
+    const issueRef = ref(db, 'issuepending/mt/'+voucherNumber);
     set(issueRef, issueRequest).then(() => {
         showNotification('Issue request submitted successfully! Opening print dialog...', 'success', 'Request Submitted');
         

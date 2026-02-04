@@ -100,7 +100,7 @@ function loaditemdata() {
         issue:0,
         instore:0
     };
-    let dbRef =ref(db, 'bqmsinventory/main/');
+    let dbRef =ref(db, 'mtinventory/main/');
 
     const loadingOverlay = document.getElementById('loadingOverlay');
 
@@ -273,7 +273,7 @@ editForm?.addEventListener('submit', (e) => {
     };
 
     console.table({ key: currentEditKey, updated });
-    const dbRef = ref(db, 'officerapproval/newtotal/bqmsinventory/' + currentEditKey);
+    const dbRef = ref(db, 'officerapproval/newtotal/mtinventory/' + currentEditKey);
     set(dbRef, updated).then(() => {
         showNotification('Item update request submitted for approval.', 'info', 'Update Requested');
         loaditemdata();

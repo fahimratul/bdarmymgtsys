@@ -131,12 +131,11 @@ function loaditemdata(type, path) {
 
 
 
-loaditemdata('engr', 'engrinventory/');
-loaditemdata('sig', 'siginventory/');
-loaditemdata('mt', 'mtinventory/');
-loaditemdata('bknco', 'bkncoinventory/');
-loaditemdata('bqms', 'bqmsinventory/');
-
+loaditemdata('engr', 'engrinventory/main/');
+loaditemdata('sig', 'siginventory/main/');
+loaditemdata('mt', 'mtinventory/main/');
+loaditemdata('bknco', 'bkncoinventory/main/');
+loaditemdata('bqms', 'bqmsinventory/main/');
 
 const logoutButton = document.getElementById('logoutButton');
 

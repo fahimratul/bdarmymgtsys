@@ -4,31 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <link rel="stylesheet" href="css/adduser.css">
-    <link rel="stylesheet" href="css/card.css">
-    <link rel="stylesheet" href="css/engrnco.css">
-    <link rel="stylesheet" href="css/notification.css">
-    <link rel="stylesheet" href="css/piechart.css">
-    <link rel="stylesheet" href="css/ammodetails.css">
+    <link rel="stylesheet" href="../css/adduser.css">
+    <link rel="stylesheet" href="../css/card.css">
+    <link rel="stylesheet" href="../css/engrnco.css">
+    <link rel="stylesheet" href="../css/notification.css">
+    <link rel="stylesheet" href="../css/piechart.css">
+    <link rel="stylesheet" href="../css/ammodetails.css">
     <script src ="https://unpkg.com/lucide@latest" ></script>
-    <link rel='icon' href='static/logo_small.png' type='image/x-icon' />
+    <link rel='icon' href='../static/logo_small.png' type='image/x-icon' />
     <title>Ammo Inventory</title>
 </head>
 <body>
     <nav id="notforclo">
         <ul>
-            <li><a href="officer_lo_dashboard.html">Home</a></li>
-            <li><a href="user_management.html">User Management</a></li>
-            <li><a href="ammodashboard.html" class="active">Ammo Inventory</a></li>
+            <li><a href="../bqms/officer_dashboard.html">Home</a></li>
+            <li><a href="../ammo/ammodashboard.html" class="active">Ammo Inventory</a></li>
+            <li><a href="../user_management.html">User Management</a></li>
             <li ><a href="#" onclick="popupmenu()"> User ▼ </a> </li>
         </ul>
     </nav>
     
     <nav id="forclo">
         <ul>
-            <li><a href="clodashboard.html" class="active">Home</a></li>
-            <li><a href="user_management.html">User Management</a></li>
-            <li><a href="notifications.html">Notifications</a></li>
+            <li><a href="../clodashboard.html" class="active">Home</a></li>
+            <li><a href="../user_management.html">User Management</a></li>
+            <li><a href="../notifications.html">Notifications</a></li>
             <li ><a href="#" onclick="popupmenu()"> User ▼ </a> </li>
         </ul>
     </nav>
@@ -51,7 +51,13 @@
     
     <h1>Details of</h1>
     <h2 id="ammotypeheading"></h2>
-    <button class="btn primary" id="addAmmoBtn">Add New Lot</button>
+    <div class="button-group">
+        <button class="btn primary" id="addAmmoBtn">Add New Lot</button>
+        <button id="printAmmoBtn" class="btn btn-secondary">
+            <i class="fas fa-print"></i> Print Report
+        </button>
+    </div>
+
     <br>
     <table>
         <thead>
@@ -187,7 +193,11 @@
                 <div class="form-group">
                     <label for="lotdetailsunsvcquantity" class="form-label">Un Svc Quantity *</label>
                     <input type="number" id="lotdetailsunsvcquantity" class="form-input" min="0" placeholder="Enter Un Svc Quantity" >
-                </div>    
+                </div>   
+                <div class="form-group" >
+                    <label for="lotdetailsexpenditure" class="form-label">Total Svc Quantity *</label>
+                    <input type="number" id="lotdetailsexpenditure" class="form-input" min="0" placeholder="Enter Total Svc Quantity" disabled >
+                </div> 
             </div>
             <h3>Kote Distribution</h3>
             <div class="modal-grid">
@@ -195,22 +205,43 @@
                     <label for="lotdetailsinf1quantity" class="form-label">Inf-1 Quantity *</label>
                     <input type="number" id="lotdetailsinf1quantity" class="form-input" min="0" placeholder="Enter Inf-1 Quantity" >
                 </div>
+                
+                <div class ="form-group">
+                    <label for="expenditureinf1" class="form-label">Expenditure Quantity *</label>
+                    <input type="number" id="expenditureinf1" class="form-input" min="0" placeholder="Enter Expenditure Quantity" >
+                </div>
                 <div class="form-group">
                     <label for="lotdetailsinf2quantity" class="form-label">Inf-2 Quantity *</label>
                     <input type="number" id="lotdetailsinf2quantity" class="form-input" min="0" placeholder="Enter Inf-2 Quantity" >
+                </div>
+                <div class ="form-group">
+                    <label for="expenditureinf2" class="form-label">Expenditure Quantity *</label>
+                    <input type="number" id="expenditureinf2" class="form-input" min="0" placeholder="Enter Expenditure Quantity" >
                 </div>
                 <div class="form-group">
                     <label for="lotdetailsinf3quantity" class="form-label">Inf-3 Quantity *</label>
                     <input type="number" id="lotdetailsinf3quantity" class="form-input" min="0" placeholder="Enter Inf-3 Quantity" >
                 </div>
+                <div class ="form-group">
+                    <label for="expenditureinf3" class="form-label">Expenditure Quantity *</label>
+                    <input type="number" id="expenditureinf3" class="form-input" min="0" placeholder="Enter Expenditure Quantity" >
+                </div>
                 <div class="form-group">
                     <label for="lotdetailsinf4quantity" class="form-label">Inf-4 Quantity *</label>
                     <input type="number" id="lotdetailsinf4quantity" class="form-input" min="0" placeholder="Enter Inf-4 Quantity" >
+                </div>
+                <div class ="form-group">
+                    <label for="expenditureinf4" class="form-label">Expenditure Quantity *</label>
+                    <input type="number" id="expenditureinf4" class="form-input" min="0" placeholder="Enter Expenditure Quantity" >
                 </div>
                 <div class="form-group">
                     <label for="lotdetailsspquantity" class="form-label">Sp Quantity *</label>
                     <input type="number" id="lotdetailsspquantity" class="form-input" min="0" placeholder="Enter Sp Quantity" >
                 </div>
+                <div class ="form-group">
+                    <label for="expendituresp" class="form-label">Expenditure Quantity *</label>
+                    <input type="number" id="expendituresp" class="form-input" min="0" placeholder="Enter Expenditure Quantity" >   
+                </div>  
             </div>
             <h3>Camp Distribution</h3>
             <div class="modal-grid">
@@ -218,15 +249,28 @@
                     <label for="lotdetailsbayooquantity" class="form-label">BAYOO Quantity *</label>
                     <input type="number" id="lotdetailsbayooquantity" class="form-input" min="0" placeholder="Enter BAYOO Quantity" >
                 </div>
+                
+                <div class ="form-group">
+                    <label for="expenditurebayoo" class="form-label">Expenditure Quantity *</label>
+                    <input type="number" id="expenditurebayoo" class="form-input" min="0" placeholder="Enter Expenditure Quantity" >
+                </div>
                 <div class="form-group">
                     <label for="lotdetailsdrodroquantity" class="form-label">DRODRO Quantity *</label>
                     <input type="number" id="lotdetailsdrodroquantity" class="form-input" min="0" placeholder="Enter DRODRO Quantity" >   
+                </div>
+                
+                <div class ="form-group">
+                    <label for="expendituredrodro" class="form-label">Expenditure Quantity *</label>
+                    <input type="number" id="expendituredrodro" class="form-input" min="0" placeholder="Enter Expenditure Quantity" >
                 </div>
                 <div class="form-group">
                     <label for="lotdetailsrhooquantity" class="form-label">RHOO Quantity *</label>
                     <input type="number" id="lotdetailsrhooquantity" class="form-input" min="0" placeholder="Enter RHOO Quantity" >
                 </div>
-
+                <div class ="form-group">
+                    <label for="expenditurerhoo" class="form-label">Expenditure Quantity *</label>
+                    <input type="number" id="expenditurerhoo" class="form-input" min="0" placeholder="Enter Expenditure Quantity" >
+                </div>    
             </div>
 
             <div class="modal-actions">

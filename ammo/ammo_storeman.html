@@ -4,30 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <link rel="stylesheet" href="css/adduser.css">
-    <link rel="stylesheet" href="css/card.css">
-    <link rel="stylesheet" href="css/engrnco.css">
-    <link rel="stylesheet" href="css/notification.css">
-    <link rel="stylesheet" href="css/piechart.css">
+    <link rel="stylesheet" href="../css/adduser.css">
+    <link rel="stylesheet" href="../css/card.css">
+    <link rel="stylesheet" href="../css/engrnco.css">
+    <link rel="stylesheet" href="../css/notification.css">
+    <link rel="stylesheet" href="../css/piechart.css">
     <script src ="https://unpkg.com/lucide@latest" ></script>
-    <link rel='icon' href='static/logo_small.png' type='image/x-icon' />
+    <link rel='icon' href='../static/logo_small.png' type='image/x-icon' />
     <title>Ammo Inventory</title>
 </head>
 <body>
     
     <nav id="notforclo">
         <ul>
-            <li><a href="bqms/officer_dashboard.html">Home</a></li>
-            <li><a href="ammodashboard.html" class="active">Ammo Inventory</a></li>
-            <li><a href="user_management.html">User Management</a></li>
-            <li ><a href="#" onclick="popupmenu()"> User ▼ </a> </li>
-        </ul>
-    </nav>
-    <nav id="forclo">
-        <ul>
-            <li><a href="clodashboard.html" class="active">Home</a></li>
-            <li><a href="user_management.html">User Management</a></li>
-            <li><a href="notifications.html">Notifications</a></li>
+            <li><a href="../ammo/ammodashboard.html" class="active">Ammo Inventory</a></li>
             <li ><a href="#" onclick="popupmenu()"> User ▼ </a> </li>
         </ul>
     </nav>
@@ -172,24 +162,8 @@
             userInfoContainer.style.display = 'none';
             console.log('Password Change Modal Opened');
         }
-        
-        window.addEventListener('DOMContentLoaded', () => {
-            const role=sessionStorage.getItem('role');
-            if(role==='ammonco'){
-                document.getElementById('notforclo').style.display='none';
-                document.getElementById('forclo').style.display='none';
-                return;
-            }
-            if(role==='clo' || role === 'cc'){
-                document.getElementById('notforclo').style.display='none';
-                document.getElementById('forclo').style.display='block';
-            } else {
-                document.getElementById('forclo').style.display='none';
-                document.getElementById('notforclo').style.display='block';
-            }
-        });
 </script>
-<script type="module" src="js/ammo.js" defer></script>
+<script type="module" src="js/ammo_storeman.js" defer></script>
 
 </body>
 </html>

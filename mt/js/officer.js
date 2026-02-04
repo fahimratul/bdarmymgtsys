@@ -110,7 +110,7 @@ function loaditemdata() {
         issue:0,
         instore:0
     };
-    let dbRef =ref(db, 'bqmsinventory/main/');
+    let dbRef =ref(db, 'mtinventory/main/');
 
     const loadingOverlay = document.getElementById('loadingOverlay');
 
@@ -225,7 +225,7 @@ function loaditemdata() {
 
 
 function pendingnewitemdata() {
-    let dbRef =ref(db, 'officerapproval/new/bqmsinventory/');
+    let dbRef =ref(db, 'officerapproval/new/mtinventory/');
     const newpendingitembody = document.getElementById('newpendingitem');
     const newitemTableBody = document.getElementById('newitemTableBody');
 
@@ -294,7 +294,7 @@ function pendingnewitemdata() {
 } 
 
 function pendingnewtotalitemdata() {
-    let dbRef =ref(db, 'officerapproval/newtotal/bqmsinventory/');
+    let dbRef =ref(db, 'officerapproval/newtotal/mtinventory/');
     const newpendingtotalitem = document.getElementById('newpendingtotalitem');
     const newitemtotalTableBody = document.getElementById('newitemtotalTableBody');
 
@@ -364,7 +364,7 @@ function approveNewtotalItem(key) {
     const newinstore = currentItem.total - total + instore;
     const newservicable = newinstore - (dataCache[key]?.unservicable || 0);
 
-    update(ref(db, 'bqmsinventory/main/' + key), {
+    update(ref(db, 'mtinventory/main/' + key), {
         name: currentItem.name || '',
         unit: currentItem.unit || '',
         authorized: currentItem.authorized || '',
@@ -373,7 +373,7 @@ function approveNewtotalItem(key) {
         servicable: newservicable
     }).then(() => {
         console.log('New total item approved and updated in inventory');
-        remove(ref(db, 'officerapproval/newtotal/bqmsinventory/' + key)).then(() => {
+        remove(ref(db, 'officerapproval/newtotal/mtinventory/' + key)).then(() => {
             console.log('New total item request removed from pending approvals');
             pendingnewtotalitemdata();
             loaditemdata();
@@ -385,8 +385,8 @@ function approveNewtotalItem(key) {
         console.error('Error approving new total item:', error);
     });
     set(ref(db, 'clo_cc_notification/' + Date.now()), {
-        from: 'BQMS Inventory',
-        msg: `BQMS Inventory item "${currentItem.name || ''}" total has been updated by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`,
+        from: 'MT Inventory',
+        msg: `MT Inventory item "${currentItem.name || ''}" total has been updated by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`,
         date: new Date().toLocaleString()
     }).then(() => {
         console.log('CLO/CC notified successfully about the update.');
@@ -400,7 +400,7 @@ function approveNewtotalItem(key) {
 
 
 function rejectNewtotalItem(key) {
-    remove(ref(db, 'officerapproval/newtotal/bqmsinventory/' + key)).then(() => {
+    remove(ref(db, 'officerapproval/newtotal/mtinventory/' + key)).then(() => {
         console.log('New total item request rejected and removed from pending approvals');
         pendingnewtotalitemdata();
         showNotification('New total inventory item request rejected successfully.', 'info', 'Item Rejected');
@@ -413,9 +413,9 @@ function rejectNewtotalItem(key) {
 function approveNewItem(key) {
     const newItem = newitemCache[key];
     if (!newItem) return;
-    set(ref(db, 'bqmsinventory/main/' + key), newItem).then(() => {
+    set(ref(db, 'mtinventory/main/' + key), newItem).then(() => {
         console.log('New item approved and added to inventory');
-        remove(ref(db, 'officerapproval/new/bqmsinventory/' + key)).then(() => {
+        remove(ref(db, 'officerapproval/new/mtinventory/' + key)).then(() => {
             console.log('New item request removed from pending approvals');
             pendingnewitemdata();
             loaditemdata();
@@ -427,8 +427,8 @@ function approveNewItem(key) {
         console.error('Error approving new item:', error);
     });
     set(ref(db, 'clo_cc_notification/' + Date.now()), {
-        from: 'BQMS Inventory',
-        msg: `New BQMS Inventory item "${newItem.name || ''}" has been added by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`,
+        from: 'MT Inventory',
+        msg: `New MT Inventory item "${newItem.name || ''}" has been added by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`,
         date: new Date().toLocaleString()
     }).then(() => {
         console.log('CLO/CC notified successfully about the new item.');
@@ -439,7 +439,7 @@ function approveNewItem(key) {
 }
 
 function rejectNewItem(key) {
-    remove(ref(db, 'officerapproval/new/bqmsinventory/' + key)).then(() => {
+    remove(ref(db, 'officerapproval/new/mtinventory/' + key)).then(() => {
         console.log('New item request rejected and removed from pending approvals');
         pendingnewitemdata();
         showNotification('New inventory item request rejected successfully.', 'info', 'Item Rejected');
@@ -449,13 +449,17 @@ function rejectNewItem(key) {
 }
 
 
-if(role==='lo'){
+if(role==='mto'){
     pendingnewitemdata();
     setTimeout(() => {
         pendingnewtotalitemdata();
     }, 1000);
 }
 
+else{
+    document.getElementById('newpendingitem').style.display='none';
+    document.getElementById('newpendingtotalitem').style.display='none';
+}
 
 
 loaditemdata();
@@ -532,9 +536,9 @@ editForm?.addEventListener('submit', (e) => {
         });
 
         set(ref(db, 'clo_cc_notification/' + Date.now()), {
-            from: 'BQMS Inventory',
+            from: ' MT Inventory',
             date: new Date().toLocaleString(),
-            msg: `BQMS Inventory item "${inputs.name.value.trim()}" has been updated by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`
+            msg: ` MT Inventory item "${inputs.name.value.trim()}" has been updated by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`
         }).then(() => {
             console.log('CLO/CC notified successfully about the update.');
         }).catch((error) => {
@@ -553,7 +557,7 @@ deleteItemBtn?.addEventListener('click', (e) => {
         return;
     }
     
-    remove(ref(db, 'bqmsinventory/main/' + currentEditKey))
+    remove(ref(db, 'mtinventory/main/' + currentEditKey))
     .then(() => {
         console.log('Data deleted successfully');
         showNotification('Inventory item is pending for deletion.', 'success', 'Deletion Successful');

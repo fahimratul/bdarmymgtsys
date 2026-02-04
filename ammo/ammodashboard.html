@@ -3,45 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/offr.css">
-    <link rel="stylesheet" href="css/card.css">
-    <link rel="stylesheet" href="css/piechart.css">
-    <link rel="stylesheet" href="css/pendingitem.css">
-    <link rel="stylesheet" href="css/notification.css">
-    <link rel="stylesheet" href="css/adduser.css">
-    <script src ="https://unpkg.com/lucide@latest" ></script>
-    <link rel='icon' href='static/logo_small.png' type='image/x-icon' />
-    <title>Inventory Management</title>
-</head>
-<body style="margin-top: 70px;">
     
-    <nav>
+    <link rel="stylesheet" href="../css/adduser.css">
+    <link rel="stylesheet" href="../css/card.css">
+    <link rel="stylesheet" href="../css/engrnco.css">
+    <link rel="stylesheet" href="../css/notification.css">
+    <link rel="stylesheet" href="../css/piechart.css">
+    <script src ="https://unpkg.com/lucide@latest" ></script>
+    <link rel='icon' href='../static/logo_small.png' type='image/x-icon' />
+    <title>Ammo Inventory</title>
+</head>
+<body>
+    
+    <nav id="notforclo">
         <ul>
-            <li><a href="clodashboard.html" class="active">Home</a></li>
-            <li><a href="user_management.html">User Management</a></li>
-            <li><select id="inventorySelect" onchange="handleInventoryChange(this.value)">
-                <option value="">Reports</option>
-                <option value="engr">Engineer Inventory</option>
-                <option value="sig">Signal Inventory</option>
-                <option value="mt">MT Inventory</option>
-                <option value="bknco">Bknco Inventory</option>
-                <option value="bqms">BQMS Inventory</option>    
-            </select>
-            </li>
+            <li><a href="../bqms/officer_dashboard.html">Home</a></li>
+            <li><a href="../ammo/ammodashboard.html" class="active">Ammo Inventory</a></li>
+            <li><a href="../user_management.html">User Management</a></li>
+            <li ><a href="#" onclick="popupmenu()"> User ▼ </a> </li>
+        </ul>
+    </nav>
+    <nav id="forclo">
+        <ul>
+            <li><a href="../clodashboard.html" class="active">Home</a></li>
+            <li><a href="../user_management.html">User Management</a></li>
+            <li><a href="../notifications.html">Notifications</a></li>
             <li ><a href="#" onclick="popupmenu()"> User ▼ </a> </li>
         </ul>
     </nav>
 
-    <div id="notification-toast" class="notification-toast"></div>   
+    <div id="notification-toast" class="notification-toast"></div>
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay">
         <div class="spinner"></div>
         <div class="loading-text">Loading Inventory Data</div>
         <div class="loading-subtext">Please wait...</div>
     </div>
-
-    <h1 id="title"></h1>
-
+    <h1>Ammo Inventory</h1>
     <div class="topdown-container" id="userInfoContainer" style="display: none;">
         <h3 id ="username"></h3>
         <h4 id ="rank"></h4>
@@ -50,86 +48,49 @@
         <button class="btn secondary" id="logoutButton" onclick="logout()">Logout</button>        
     </div>
 
-    <!--Dashboard Card-->
-    <div class="dashboard-card">
-        <div class="card">
-            <div class="card-icon">
-                <i data-lucide="box"></i>
+    
+        <div class="search-container">
+            <div class="library-search-container">
+                <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <input type="text" id="searchInput" class="library-search-input" placeholder="Search Type of Ammo...">
             </div>
-            <div class="card-info">
-                <h2 id="totalItems">0</h2>
-                <p>Total Items</p>
-            </div>
+            <button class="btn secondary" id="addammobtn">Add</button>   
         </div>
-        <div class="card">
-            <div class="card-icon">
-                <i data-lucide="check-circle"></i>
-            </div>
-            <div class="card-info">
-                <h2 id="servicableItems">0</h2>
-                <p>Servicable Items</p>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-icon">
-                <i data-lucide="x-circle"></i>
-            </div>
-            <div class="card-info">
-                <h2 id="unservicableItems">0</h2>
-                <p>Unservicable Items</p>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-icon">
-                <i data-lucide="truck"></i>
-            </div>
-            <div class="card-info">
-                <h2 id="issuedItems">0</h2>
-                <p>Issued Items</p>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-icon">
-                <i data-lucide="archive"></i>
-            </div>
-            <div class="card-info">
-                <h2 id="inStoreItems">0</h2>
-                <p>In Store Items</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Search and Add Item -->
-
-    <div class="search-container">
-        <div class="library-search-container">
-            <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-            </svg>
-            <input type="text" id="searchInput" class="library-search-input" placeholder="Search Item...">
-        </div>  
-    </div>
 
 
 
-    <!-- Inventory Table -->
     <table>
         <thead>
             <tr>
                 <th>serial</th>
-                <th>Nomenclature/Name</th>
-                <th>Authorized Unit</th>
-                <th>Held</th>
-                <th>Issued</th>
-                <th>In store</th>
-                <th>Servicable</th>
-                <th>Unservicable</th>
+                <th>type</th>
             </tr>
         </thead>
-        <tbody id="itemTableBody">
-            <!-- Inventory items will be dynamically inserted here -->
+        <tbody id="AmmoTableBody">
+            <!-- ammo items will be dynamically inserted here -->
         </tbody>
     </table>
+
+    <div id="addAmmoModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Ammo Type</h2>
+                <button class="modal-close" id="closeaddmodal" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-grid">
+                <div class="form-group">
+                    <label for="ammo-type" class="form-label">Type of Ammo *</label>
+                    <input type="text" id="ammo-type" class="form-input" placeholder="Enter Type of Ammo" >
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn secondary" id="addAmmoCloseBtn">Cancel</button>
+                <button id="addAmmoSubmitBtn" class="btn primary">Add Ammo Type</button>
+            </div>  
+        </div>
+    </div>
 
     <div id="changePasswordModal" class="modal hidden">
         <div class="modal-content">
@@ -160,6 +121,7 @@
                         </svg>
                     </button>
                 </div>
+
                 <div class="form-group pass">
                     <label for="confirm-password" class="form-label">Confirm Password *</label>
                     <input type="password" id="confirm-password" class="form-input" placeholder="Confirm password">
@@ -179,15 +141,11 @@
         </div>
     </div>
 
-
-    <script>
+<script>
         lucide.createIcons();
         function hideNotification() {
             const toast = document.getElementById("notification-toast");
             toast.classList.remove("show");
-        }
-        function OpenUserManagement(){
-            window.location.href = 'user_management.html';
         }
         function popupmenu() {
             const userInfoContainer = document.getElementById('userInfoContainer');
@@ -214,19 +172,24 @@
             userInfoContainer.style.display = 'none';
             console.log('Password Change Modal Opened');
         }
-                function handleInventoryChange(dept) {
-            if (dept) {
-                loadinventory(dept);
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            const role=sessionStorage.getItem('role');
+            if(role==='ammonco'){
+                document.getElementById('notforclo').style.display='none';
+                document.getElementById('forclo').style.display='none';
+                return;
             }
-        }
-        function loadinventory(dept) {
-            window.location.href = `cloinventory.html`;
-            sessionStorage.setItem('dept', dept);
-        }
-    </script>
+            if(role==='clo' || role === 'cc'){
+                document.getElementById('notforclo').style.display='none';
+                document.getElementById('forclo').style.display='block';
+            } else {
+                document.getElementById('forclo').style.display='none';
+                document.getElementById('notforclo').style.display='block';
+            }
+        });
+</script>
+<script type="module" src="js/ammo.js" defer></script>
 
-    <script type="module" src="js/cloinventory.js" defer></script>
-
-</body> 
-
+</body>
 </html>

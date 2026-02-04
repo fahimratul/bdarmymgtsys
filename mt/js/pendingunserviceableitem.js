@@ -43,7 +43,7 @@ let pendingItemsDataCaches={};
 function pendingitems(){
     const loadingOverlay = document.getElementById('loadingOverlay');
     const pendingitemsContainer = document.getElementById('pendingsection');
-    const dbRef = ref(db, 'unservicable_storeman/bqms/');
+    const dbRef = ref(db, 'unservicable_storeman/mt/');
     let html='';
     get(dbRef).then((snapshot) => {
         pendingItemsDataCaches = snapshot.val() || {};
@@ -169,15 +169,14 @@ function removeItemRow(rowId, sectionId, parentSectionId, itemID) {
     }
     console.log('Removed item with ID:', itemID);
 
-    
-    remove(ref(db, `unservicable_storeman/bqms/${parentSectionId}/items/${itemID}`));
+    remove(ref(db, `unservicable_storeman/mt/${parentSectionId}/items/${itemID}`));
     
     const itemsContainer = document.getElementById(sectionId);
     if (itemsContainer.children.length === 0) {
         const pendingitemsContainer = document.getElementById(parentSectionId);
         pendingitemsContainer.remove();
         const key = parentSectionId;
-        remove(ref(db, `unservicable_storeman/bqms/${key}`));
+        remove(ref(db, `unservicable_storeman/mt/${key}`));
         showNotification('All items removed. Pending request is deleted automatically.', 'info', 'Request Deleted Automatically');
     }
 }
@@ -221,19 +220,19 @@ function processIssueRequest(key) {
             }
             console.log(`Issuing ${quantity} of item ${itemData.name}`);
             msgforclo+=`${quantity} X ${itemData.name} for ${reason} ,; `;
-            set(ref(db, `bqmsinventory/${itemkey}/unsvc/${voucherNumber}`), {
+            set(ref(db, `mtinventory/${itemkey}/unsvc/${voucherNumber}`), {
                 date: issueDate,
                 quantity: quantity,
                 reason: reason,
 
             });
-            update(ref(db, `bqmsinventory/main/${itemkey}`), {
+            update(ref(db, `mtinventory/main/${itemkey}`), {
                 unservicable: (itemData.unservicable || 0) + quantity,
                 servicable: (itemData.servicable || 0) - quantity
             });
         });
     }
-    remove(ref(db, `unservicable_storeman/bqms/${key}`))
+    remove(ref(db, `unservicable_storeman/mt/${key}`))
     .then(() => {
         console.log('Pending issue request removed from database.');
     })
@@ -243,7 +242,7 @@ function processIssueRequest(key) {
     const issueRef = push(ref(db, 'clo_cc_notification/'));
     set(issueRef, {
         msg: msgforclo,
-        from: 'BQMS Inventory',
+        from: 'MT Inventory',
         time: formatDate(new Date())   
     }).then(() => {
         showNotification('Items marked as unserviceable successfully! Opening print dialog...', 'success', 'Request Submitted');
@@ -258,7 +257,7 @@ function processIssueRequest(key) {
 }
 
 function rejectIssueRequest(key) {
-    remove(ref(db, `unservicable_storeman/bqms/${key}`))
+    remove(ref(db, `unservicable_storeman/mt/${key}`))
     .then(() => {
         showNotification('Issue request rejected successfully.', 'success', 'Request Rejected');
         // Remove the corresponding pending item section from the DOM

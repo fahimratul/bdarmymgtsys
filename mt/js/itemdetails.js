@@ -45,7 +45,7 @@ function loaditemsdetails() {
     typeKey = urlparams.get('type');
     console.log('Item Key:', itemKey);
     console.log('Type Key:', typeKey);
-    let dbRef = ref(db, `bqmsinventory/main/`+ itemKey);
+    let dbRef = ref(db, `mtinventory/main/`+ itemKey);
     const loadingOverlay = document.getElementById('loadingOverlay');
     get(dbRef).then((snapshot) => {
         dataCache = snapshot.val();
@@ -84,7 +84,7 @@ loaditemsdetails();
 
 let itemhistoryCache = {};
 function loaditemhistory() {
-    let dbRef = ref(db, `bqmsinventory/`+ itemKey + `/history`);
+    let dbRef = ref(db, `mtinventory/`+ itemKey + `/history`);
     const loadingOverlay = document.getElementById('loadingOverlay');
     get(dbRef).then((snapshot) => {
         const data = snapshot.val();
@@ -153,7 +153,7 @@ function loaditemhistory() {
 loaditemhistory();
 let itemunsvccache = {};
 function loaditemunsvc() {
-    let dbRef = ref(db, `bqmsinventory/`+ itemKey + `/unsvc`);
+    let dbRef = ref(db, `mtinventory /`+ itemKey + `/unsvc`);
     const loadingOverlay = document.getElementById('loadingOverlay');
     get(dbRef).then((snapshot) => {
         const data = snapshot.val();
@@ -233,7 +233,7 @@ function returnItemToStore(recordKey) {
     const newissue = (dataCache.issue || 0) - quantity;
     const newInstore = (dataCache.instore || 0) + quantity;
     let path;
-    path = `bqmsinventory/main/`+ itemKey;  
+    path = `mtinventory/main/`+ itemKey;  
     const updates = {};
     updates['issue'] = newissue;
     updates['instore'] = newInstore;
@@ -244,7 +244,7 @@ function returnItemToStore(recordKey) {
         console.error('Error returning item to store:', error);
         showNotification('Error returning item to store. Please try again.', 'error');
     });
-    path = `bqmsinventory/${itemKey}/history/${recordKey}`;
+    path = `mtinventory/${itemKey}/history/${recordKey}`;
     update(ref(db, path), { returned: true }).then(() => {
         console.log('History record updated successfully');
         showNotification('History record updated successfully', 'success');
@@ -253,7 +253,7 @@ function returnItemToStore(recordKey) {
         console.error('Error updating history record:', error);
     });
     set(ref(db, 'clo_cc_notification/'+Date.now()), {
-        from: 'BQMS Inventory',
+        from: 'MT Inventory',
         date: new Date().toLocaleString(),
         msg: `Item Returned to Store: ${dataCache.name}, Quantity: ${quantity}  Location: ${record.location}`,
     });
@@ -273,7 +273,7 @@ function markAsServicable(recordKey) {
     const quantity = parseInt(record.quantity, 10);
     const newUnservicable = (dataCache.unservicable || 0) - quantity;
     const newServicable = (dataCache.servicable || 0) + quantity;
-    let dbRef = ref(db, `bqmsinventory/main/`+ itemKey);
+    let dbRef = ref(db, `mtinventory/main/`+ itemKey);
     const updates = {};
     updates['unservicable'] = newUnservicable;
     updates['servicable'] = newServicable;
@@ -284,7 +284,7 @@ function markAsServicable(recordKey) {
         console.error('Error marking item as servicable:', error);
         showNotification('Error marking item as servicable. Please try again.', 'error');
     });
-    const path = `bqmsinventory/${itemKey}/unsvc/${recordKey}`;
+    const path = `mtinventory/${itemKey}/unsvc/${recordKey}`;
     update(ref(db, path), { markedsvc: true }).then(() => {
         console.log('Unservicable history record updated successfully');
     })
@@ -292,7 +292,7 @@ function markAsServicable(recordKey) {
         console.error('Error updating unservicable history record:', error);
     });
     set(ref(db, 'clo_cc_notification/'+Date.now()), {
-        from: 'BQMS Inventory',
+        from: 'MT Inventory',
         date: new Date().toLocaleString(),
         msg: `Item Marked as Servicable: ${dataCache.name}, Quantity: ${quantity}`,
     });

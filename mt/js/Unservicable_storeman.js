@@ -40,7 +40,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function loadInventoryData() {
     const loadingOverlay = document.getElementById('loadingOverlay');
-    const dbRef = ref(db, 'bqmsinventory/main/');
+    const dbRef = ref(db, 'mtinventory/main/');
     
     get(dbRef).then((snapshot) => {
         inventoryData = snapshot.val() || {};
@@ -248,7 +248,7 @@ function processIssueRequest() {
         voucherNumber,
         issueDate
     };
-    const dbref = ref(db, `unservicable_storeman/bqms/${voucherNumber}`);
+    const dbref = ref(db, `unservicable_storeman/mt/${voucherNumber}`);
     set(dbref, issueRequest).then(() => {
         showNotification('Unservicable request submitted successfully.', 'success', 'Request Submitted');
         printUnservicableVoucher(voucherNumber, issueDate, itemsToIssue);

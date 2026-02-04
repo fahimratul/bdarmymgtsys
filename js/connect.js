@@ -111,11 +111,11 @@ function handlelogin() {
                     } 
                     else if (role_type === 'bqms'){
                         if(role ==='ammonco'){
-                            window.location.href ='ammodashboard.html';
+                            window.location.href ='./ammo/ammodashboard.html';
                             return;
                         }
                         if(role === 'signco'){
-                            window.location.href ='signal/storemane_sig_dashboard.html';
+                            window.location.href ='./signal/storemane_sig_dashboard.html';
                             return;
                         }
                         else if(role === 'engrnco'){
