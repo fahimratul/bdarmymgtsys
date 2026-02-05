@@ -459,8 +459,17 @@ function printUnservicableVoucher(voucherNumber, issueDate, itemsToIssue) {
                 
                 .signature-line {
                     border-bottom: 1px solid #333;
-                    height: 50px;
+                    height: 80px;
                     margin-bottom: 5px;
+                }
+                .signature-line2 {
+                    border-bottom: 1px solid #333;
+                    height: 5px;
+                    margin-bottom: 5px;
+                }
+                .signature-username {
+                    font-size: 14px;
+                    margin: 0 0 2px 0;
                 }
                 
                 .signature-note {
@@ -543,7 +552,10 @@ function printUnservicableVoucher(voucherNumber, issueDate, itemsToIssue) {
                     </div>
                     <div class="signature-field">
                         <p class="signature-label">Issued By:</p>
-                        <div class="signature-line"></div>
+                        <p class="signature-username"><strong>${sessionStorage.getItem('username')}</strong></p>
+                        <p  class="signature-username">${sessionStorage.getItem('rank_proper')}</p>
+                        <p class="signature-username">${sessionStorage.getItem('baNumber')}</p>
+                        <div class="signature-line2"></div>
                         <p class="signature-note">Signature & Date</p>
                     </div>
                 </div>

@@ -190,15 +190,25 @@ function loaditemdata() {
 
         tableBody.querySelectorAll('.row-data').forEach(row => {
             row.addEventListener('click', (e) => {
-                if (e.target.classList.contains('edit-btn')) {
-                    openEditModal(key);
+                if(isSelectionMode){
+                    const checkbox = row.querySelector('.row-select');
+                    if (checkbox) {
+                        checkbox.checked = !checkbox.checked;
+                        updateRowSelection(checkbox);
+                        updatePrintButtonStates();
+                    }
                 }
-                if (e.target.classList.contains('row-select') || e.target.classList.contains('select-column')){
-                    return;
+                else{
+                    if (e.target.classList.contains('edit-btn')) {
+                        openEditModal(key);
+                    }
+                    if (e.target.classList.contains('row-select') || e.target.classList.contains('select-column')){
+                        return;
+                    }
+                    const key = row.dataset.key;
+                    console.log("Row clicked for key:", key);
+                    window.location.href = `itemdetails.html?key=${key}&type=engr`;    
                 }
-                const key = row.dataset.key;
-                console.log("Row clicked for key:", key);
-                window.location.href = `itemdetails.html?key=${key}&type=engr`;
             });
         });
 

@@ -464,8 +464,17 @@ function printIssueRequest(issueRequest, itemsToIssue, voucherNo, issueDate, loc
                 
                 .signature-line {
                     border-bottom: 1px solid #333;
-                    height: 50px;
+                    height: 80px;
                     margin-bottom: 5px;
+                }
+                .signature-line2 {
+                    border-bottom: 1px solid #333;
+                    height: 5px;
+                    margin-bottom: 5px;
+                }
+                .signature-username {
+                    font-size: 14px;
+                    margin: 0 0 2px 0;
                 }
                 
                 .signature-note {
