@@ -73,7 +73,7 @@ function loadnotifactions() {
         let html = '';
         notificationbody.style.display='flex';
         if (notificationDataCache) {
-            for (const key in notificationDataCache) {
+            for (const key of Object.keys(notificationDataCache).reverse()) {
                 const notification = notificationDataCache[key];
                 const message = notification.msg || '';
                 const from= notification.from || '';

@@ -76,6 +76,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const banumber=sessionStorage.getItem('baNumber');
     document.getElementById('username').textContent='Name: ' + username;
     document.getElementById('rank').textContent=ranklist[rank] ? 'Rank: ' + ranklist[rank] : 'Rank: ' + rank;
+    sessionStorage.setItem('rank_proper', ranklist[rank] ? ranklist[rank] : rank);
     document.getElementById('banumber').textContent='BA Number: ' + banumber;
 });
 

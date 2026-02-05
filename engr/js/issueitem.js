@@ -140,7 +140,7 @@ function populateItemSelect(rowId) {
         if (availableQty > 0) {
             const option = document.createElement('option');
             option.value = key;
-            option.textContent = `${item.name || 'Unnamed Item'} (Available: ${availableQty})`;
+            option.textContent = `${item.name || 'Unnamed Item'} `;
             select.appendChild(option);
         }
     }
@@ -162,11 +162,11 @@ function updateAvailableQuantity(rowId) {
     if (select.value && inventoryData[select.value]) {
         const item = inventoryData[select.value];
         const availableQty = (item.servicable || 0) - (item.issue || 0);
-        availableQtyDiv.textContent = `Available: ${availableQty}`;
+        availableQtyDiv.value = availableQty;
         quantityInput.max = availableQty;
         quantityInput.value = '';
     } else {
-        availableQtyDiv.textContent = 'Available: 0';
+        availableQtyDiv.value= 0;
         quantityInput.max = 0;
         quantityInput.value = '';
     }
@@ -235,6 +235,11 @@ function processIssueRequest() {
             showNotification(`Insufficient quantity available for ${item.name}. Available: ${availableQty}`, 'error', 'Insufficient Stock');
             return;
         }
+        itemsToIssue.push({
+            itemKey: itemKey,
+            itemName: item.name,
+            quantity: quantity
+        });
         set(ref(db, `engrinventory/${itemKey}/history/${voucherNumber}`), {
             date: issueDate,
             issued_by: sessionStorage.getItem('baNumber'),
@@ -271,6 +276,7 @@ function processIssueRequest() {
     });
     
     set(ref(db, 'clonotification'), true);
+    printIssueRequest(issueRequest, itemsToIssue, voucherNumber, issueDate, recipientLocation);
 }
 
 function clearForm() {
@@ -291,3 +297,329 @@ window.removeItemRow = removeItemRow;
 window.updateAvailableQuantity = updateAvailableQuantity;
 window.validateQuantity = validateQuantity;
 
+
+
+function printIssueRequest(issueRequest, itemsToIssue, voucherNo, issueDate, location) {
+    const currentDate = new Date().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    
+    // Build items table rows
+    let itemsTableRows = '';
+    let totalQuantity = 0;
+    
+    itemsToIssue.forEach((item, index) => {
+        totalQuantity += item.quantity;
+        itemsTableRows += `
+            <tr>
+                <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${index + 1}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${item.itemName}</td>
+                <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${item.quantity}</td>
+          </tr>
+        `;
+    });
+    
+    const printContent = `
+            <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Issue Request - ${issueRequest.recipientName}</title>
+            <style>
+                @media print {
+                    @page {
+                        margin: 0.5in;
+                        size: portrait;
+                    }
+                    body {
+                        font-family: 'Arial', sans-serif;
+                        color: #333;
+                        line-height: 1.6;
+                        margin: 0;
+                        padding: 0;
+                    }
+                    .no-print { display: none !important; }
+                }
+                
+                body {
+                    font-family: 'Arial', sans-serif;
+                    color: #333;
+                    line-height: 1.6;
+                    padding: 20px;
+                    max-width: 800px;
+                    margin: 0 auto;
+                }
+                
+                .header {
+                    text-align: center;
+                    border-bottom: 3px solid #007bff;
+                    padding-bottom: 5px;
+                }
+                
+                .header h1 {
+                    margin: 0;
+                    color: #000000;
+                    font-size: 24px;
+                    font-weight: bold;
+                }
+                
+                .header h2 {
+                    margin: 10px 0 5px 0;
+                    color: #333;
+                    font-size: 20px;
+                }
+                
+                .header p {
+                    margin: 0;
+                    color: #666;
+                    font-size: 14px;
+                }
+                
+                .info-section {
+                    background-color: #f8f9fa;
+                    padding: 20px;
+                    border: 1px solid #000000;
+                    border-left: 5px solid #007bff;
+                }
+                
+                .recipient-section {
+                    background-color: #e8f4fd;
+                    padding: 20px;
+                    border: 1px solid #000000;
+                    border-left: 5px solid #17a2b8;
+                }
+                
+                .section-title {
+                    margin: 0 0 15px 0;
+                    color: #333;
+                    font-size: 18px;
+                    border-bottom: 2px solid #dee2e6;
+                    padding-bottom: 8px;
+                    font-weight: bold;
+                }
+                
+                .info-grid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 15px;
+                }
+                
+                .info-item {
+                    display: flex;
+                }
+                
+                .info-label {
+                    font-weight: bold;
+                    color: #495057;
+                    min-width: 120px;
+                }
+                
+                .info-value {
+                    color: #333;
+                }
+                .table-section {
+                    margin-top: 25px;
+                }
+                .table-section h3 {
+                    text-align: center;
+                }
+                
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    background-color: white;
+                    overflow: hidden;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                    margin-bottom: 25px;
+                }
+                
+                th {
+                    padding: 8px;
+                    border: 1px solid #dee2e6;
+                    background-color: #ffffff;
+                    color: rgb(0, 0, 0);
+                    font-weight: bold;
+                }
+                
+                td {
+                    padding: 8px;
+                    border: 1px solid #ddd;
+                }
+                
+                tr:nth-child(even) {
+                    background-color: #f8f9fa;
+                }
+                
+                .total-row {
+                    background-color: #f8f9fa !important;
+                    font-weight: bold;
+                }
+                
+                .total-quantity {
+                    color: #007bff;
+                    font-size: 16px;
+                }
+                
+                .approval-section {
+                    padding: 5px 20px;
+                    margin-bottom: 25px;
+                    border: 1px solid #000000;
+                    border-left: 5px solid #ffc107;
+                }
+                
+                .signature-grid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 20px;
+                }
+                
+                .signature-label {
+                    margin: 0 0 40px 0;
+                    font-weight: bold;
+                    color: #495057;
+                }
+                
+                .signature-line {
+                    border-bottom: 1px solid #333;
+                    height: 80px;
+                    margin-bottom: 5px;
+                }
+                .signature-line2 {
+                    border-bottom: 1px solid #333;
+                    height: 5px;
+                    margin-bottom: 5px;
+                }
+                .signature-username {
+                    font-size: 14px;
+                    margin: 0 0 2px 0;
+                }
+                .signature-note {
+                    margin: 0;
+                    font-size: 12px;
+                    color: #666;
+                }
+                
+                
+                .footer {
+                    text-align: center;
+                    padding-top: 5px;
+                    font-size: 12px;
+                    color: #666;
+                }
+                
+                .footer p {
+                    margin: 0 0 5px 0;
+                }
+                
+                .footer .system-name {
+                    font-weight: bold;
+                }
+                
+                .footer .retention-note {
+                    font-style: italic;
+                    margin-top: 5px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>BANRDB Store Management System</h1>
+                <h2>Issue Request Form</h2>
+                <p>Generated on ${currentDate}</p>
+            </div>
+            
+            <div class="info-section">
+                <h3 class="section-title">Request Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Voucher No:</span>
+                        <span class="info-value">${voucherNo}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Issue Date:</span>
+                        <span class="info-value">${issueDate}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="recipient-section">
+                <h3 class="section-title">Recipient Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Location/Person:</span>
+                        <span class="info-value">${location}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="table-section">
+                <h3 class="section-title">Items to Issue</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="text-align: center;">S/N</th>
+                            <th style="text-align: left;">Item Name</th>
+                            <th style="text-align: center;">Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${itemsTableRows}
+                        <tr class="total-row">
+                            <td colspan="2" style="text-align: right;">Total Quantity:</td>
+                            <td style="text-align: center;" class="total-quantity">${totalQuantity}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="approval-section">
+                <h3 class="section-title">Approval Section</h3>
+                <div class="signature-grid">
+                    <div class="signature-field">
+                        <p class="signature-label">Approved By:</p>
+                        <div class="signature-line"></div>
+                        <p class="signature-note">Signature & Date</p>
+                    </div>
+                    <div class="signature-field">
+                        <p class="signature-label">Issued By:</p>
+                        <p class="signature-username"><strong>${sessionStorage.getItem('username')}</strong></p>
+                        <p  class="signature-username">${sessionStorage.getItem('rank_proper')}</p>
+                        <div class="signature-line2"></div>
+                        <p class="signature-note">Signature & Date</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer">
+                <p class="system-name">BANRDB Store Management System</p>
+                <p>This document was generated automatically on ${currentDate}</p>
+                <p class="retention-note">Please retain this copy for your records</p>
+            </div>
+            
+            <script>
+                // Auto-print when page loads
+                window.onload = function() {
+                    window.print();
+                    // Close window after printing (optional)
+                    window.onafterprint = function() {
+                        window.close();
+                    };
+                };
+            </script>
+        </body>
+        </html>`;
+    
+    // Open print window
+    const printWindow = window.open('', '_blank', 'width=800,height=1000');
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    
+    // Show success notification
+    if (typeof showNotification === 'function') {
+        showNotification('Print dialog opened successfully!', 'success', 'Print Ready');
+    }
+}
+window.printIssueRequest = printIssueRequest;
