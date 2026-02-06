@@ -188,3 +188,9 @@ document.getElementById('notification_menu').addEventListener('click', () => {
         });
     }
 });
+
+// Auto-reload page every 30 seconds
+setInterval(() => {
+    console.log('Auto-reloading page...');
+    window.location.reload();
+}, 30000); // 30 seconds = 30000 milliseconds

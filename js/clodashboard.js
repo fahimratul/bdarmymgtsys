@@ -138,6 +138,12 @@ loaditemdata('bknco', 'bkncoinventory/main/');
 loaditemdata('bqms', 'bqmsinventory/main/');
 loaditemdata('workshop', 'workshop/main/');
 
+// Auto-reload page every 30 seconds
+setInterval(() => {
+    console.log('Auto-reloading page...');
+    window.location.reload();
+}, 30000); // 30 seconds = 30000 milliseconds
+
 const logoutButton = document.getElementById('logoutButton');
 
 logoutButton?.addEventListener('click', () => {

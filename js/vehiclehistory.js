@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
 
-import { getDatabase, get, ref, update } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getDatabase,set, get, ref, update } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
 
 const firebaseConfig = {
@@ -126,12 +126,21 @@ function loadvehicledata() {
     });
 }
 
-if(role !== 'mto' && role !== 'cc' && role !== 'clo'){
-    document.getElementById('campSelect').disabled = true;
-}
+
 
 document.getElementById('campSelect').addEventListener('change', (e) => {
-    
+    if(role !== 'mto' && role !== 'cc' && role !== 'clo'){
+        const newCamp = e.target.value;
+        const dbref = ref(db, 'officerapproval/campchange/' + vehicleKey);
+        set(dbref, {
+            camp: newCamp
+        }).then(() => {
+            showNotification('Camp change request sent successfully.');
+            console.log('Camp change request sent successfully to officer approval');
+        }).catch((error) => {
+            console.error('Error sending camp change request:', error);
+        });    
+} else {
     const newCamp = e.target.value;
     const dbRef = ref(db, `vehiclelist/` + vehicleKey);
     update(dbRef, {camp: newCamp})
@@ -142,7 +151,8 @@ document.getElementById('campSelect').addEventListener('change', (e) => {
     })
     .catch((error) => {
         console.error('Error updating camp:', error);
-    }); 
+    });
+} 
 });
 
 

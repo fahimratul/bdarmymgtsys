@@ -23,20 +23,10 @@
     </div>
         <nav id="notforclo">
         <ul>
-            <li><a href="#" onclick="window.location.href='mt_dashboard.html?key=viewtr'" id= "viewTrBtn" class="active">View Transport State</a></li>
-            <li><a href="#" onclick="window.location.href='./mt/officer_dashboard.html'">View Inventory</a></li>
+            <li><a href="mt_dashboard_storeman.html" class="active">Home</a></li>
+            <li><a href="#" onclick="window.location.href='./mt/storeman_dashboard.html'">View Inventory</a></li>
             <li><a href="addvehicle.html">Add Vehicle</a></li>
-            <li id="notformtjco"><a href="user_management.html">User Management</a></li>
-
             <li ><a href="#" onclick="popupmenu()"> User ▼ </a> </li>
-        </ul>
-    </nav>
-    <nav id="forclo">
-        <ul>
-            <li><a href="clodashboard.html" >Home</a></li>
-            <li><a href="user_management.html">User Management</a></li>
-            <li><a href="notifications.html">Notifications</a></li>
-            <li ><a href="#" onclick="popupmenu()"> User Info </a> </li>
         </ul>
     </nav>
 
@@ -140,7 +130,6 @@
 
 
     <div id="officer_notification" class="officernotification"></div>
-    <div id="campchange_notification" class="officernotification"></div>
     <div class="table-container" id="transportTableContainer" >
 
         <div class="dashboard-card">
@@ -506,22 +495,6 @@
             userInfoContainer.style.display = 'none';
             console.log('Password Change Modal Opened');
         }
-
-        window.addEventListener('DOMContentLoaded', () => {
-                const urlParams = new URLSearchParams(window.location.search);
-                const key = urlParams.get('key');
-                const role=sessionStorage.getItem('role');
-                if(role==='clo' || role === 'cc'){
-                    document.getElementById('notforclo').style.display='none';
-                    document.getElementById('forclo').style.display='block';
-                } else {
-                    document.getElementById('forclo').style.display='none';
-                    document.getElementById('notforclo').style.display='block';
-                }
-                if(role==='mtjco' || role==='mtnco'){
-                    document.getElementById('notformtjco').style.display='none';
-                }
-        });
     </script>
     <script type="module" src="js/mtjconco.js" defer></script>
 

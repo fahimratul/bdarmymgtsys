@@ -410,7 +410,7 @@ function approveNewtotalItem(key) {
     }).catch((error) => {
         console.error('Error notifying CLO/CC about the update:', error);
     });
-    
+
     
     set(ref(db, 'clonotification'), true);
 }
@@ -727,6 +727,10 @@ function printAllTable() {
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 5].textContent}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 6].textContent}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 7].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 8].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 9].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 10].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 11].textContent}</td>
             </tr>
         `;
     }
@@ -785,6 +789,10 @@ function printSelectedRows() {
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 5].textContent}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 6].textContent}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 7].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 8].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 9].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 10].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 11].textContent}</td>
             </tr>
         `;
     });
@@ -918,7 +926,9 @@ function printReport(tableRows, title, summaryData) {
                 tr:nth-child(even) {
                     background-color: #f8f9fa;
                 }
-                
+                td: nth-child(4), th: nth-child(4) {
+                    width: 25%;
+                }
                 .footer {
                     text-align: center;
                     margin-top: 30px;
@@ -972,8 +982,12 @@ function printReport(tableRows, title, summaryData) {
                 <thead>
                     <tr>
                         <th>Serial</th>
+                        <th>Sec </th>
+                        <th>Part No.</th>
                         <th>Nomenclature/Name</th>
-                        <th>Authorized Unit</th>
+                        <th>Measurement Unit</th>
+                        <th>Authorized</th>
+                        <th>Lp</th>
                         <th>Held</th>
                         <th>Issued</th>
                         <th>In Store</th>
@@ -987,7 +1001,7 @@ function printReport(tableRows, title, summaryData) {
             </table>
             
             <div class="footer">
-                <p>BANRDB Store Management System - Engineering Inventory Report</p>
+                <p>BANRDB Store Management System - Workshop Inventory Report</p>
                 <p>This report was generated automatically on ${currentDate}</p>
             </div>
             

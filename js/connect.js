@@ -140,7 +140,7 @@ function handlelogin() {
                             return;
                         }
                         else if(role === 'mtnco' || role === 'mtjco'){
-                            window.location.href ='./mt_dashboard.html';
+                            window.location.href ='./mt_dashboard_storeman.html';
                             return;
                         }
                         window.location.href ='engrnco.html';

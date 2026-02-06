@@ -446,6 +446,10 @@ function printAllTable() {
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 5].textContent}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 6].textContent}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 7].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 8].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 9].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 10].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 11].textContent}</td>
             </tr>
         `;
     }
@@ -496,14 +500,18 @@ function printSelectedRows() {
         
         tableRows += `
             <tr>
-                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex].textContent}</td>
-                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 1].textContent}</td>
-                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 2].textContent}</td>
-                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 3].textContent}</td>
-                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 4].textContent}</td>
-                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 5].textContent}</td>
-                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 6].textContent}</td>
-                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 7].textContent}</td>
+                <th>Serial</th>
+                <th>Sec </th>
+                <th>Part No.</th>
+                <th>Nomenclature/Name</th>
+                <th>Measurement Unit</th>
+                <th>Authorized</th>
+                <th>Lp</th>
+                <th>Held</th>
+                <th>Issued</th>
+                <th>In Store</th>
+                <th>Servicable</th>
+                <th>Unservicable</th>
             </tr>
         `;
     });

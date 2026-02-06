@@ -43,7 +43,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 import {showNotification} from './notification.js';
-console.log("EngrNCO Script Loaded");
+console.log(" Script Loaded");
 
 let dataCache = {};
 let currentEditKey = null;
