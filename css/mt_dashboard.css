@@ -88,23 +88,25 @@
     margin: 0;
     width: 45%;
     text-align: left;
-    font-size: 1rem;
+    font-size: 1.25rem;
     color: #333;
     z-index: 10;
+    position: relative;
 
 }
+
 
 .card-info h4:nth-child(odd){
-    text-align: left;
+    text-align: center;
 }
 .card-info h4:nth-child(even){
-    text-align: right;
+    text-align: center;
     margin-right: 8px;
 }
 .card-info h4:first-child{
     width: 100%;
     text-align: center;
-    margin-bottom: 8px;
+    background-color: white;
 }
 .card-info h4:hover{
     cursor: pointer;
@@ -138,10 +140,22 @@
 .mt h4{
     background: #aab7f3;
     border-radius: 6px;
-    padding: .7rem .25rem;
+    padding: .75rem .25rem;
     color: #1e293b;
     margin: 0.25rem;
-    font-size: .75rem;
+    font-size: 28px;
+    font-weight: bold;
+}
+.mt h4 span{
+    font-weight: normal;
+    font-size: 16px;
+    margin-right: 4px;
+    color: #000000;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translateY(50%) translateX(-50%);
+    white-space: nowrap;
 }
 .card-icon h3{
     font-size: 1.25rem;
@@ -156,8 +170,6 @@
     #transportTableContainer{
         flex-direction: column;
     }
-
-
     .dashboard-card{
         flex-wrap: nowrap;
         overflow-x: auto;

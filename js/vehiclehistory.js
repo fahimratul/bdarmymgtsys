@@ -291,6 +291,8 @@ function updaterecord(event, details, date, msg) {
             let dbref = ref(db, `clo_cc_notification/${voucherNo}`);    
             updateVehicleHistoryRecord(event, details, date);
             const notificationData = {
+                from: 'MTO',
+                date: new Date().toISOString(),
                 msg: 'Vehicle Number ' + vehicleKey + ' '+ msg + ' Details: ' + details,
             };
             update(dbref, notificationData)
@@ -300,6 +302,8 @@ function updaterecord(event, details, date, msg) {
             .catch((error) => {
                 console.error('Error sending notification to CLOC:', error);
             });
+            
+                set(ref(db, 'clonotification'), true);
         }
         const dbref = ref(db, `vehiclelist/`+vehicleKey);
         update(dbref, {condition: event === 'Maintenance' ? 'inmaintenance' : event === 'Grounded' ? 'grounded' : event === 'Marking as A LR' ? 'alr' : event === 'Marking as A SR' ? 'asr' : dataCache.condition})

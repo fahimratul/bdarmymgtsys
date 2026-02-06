@@ -302,6 +302,8 @@ issueForm.addEventListener('submit', (e) => {
             console.error('Error adding history record:', error);
         });         
         set(ref(db, 'clo_cc_notification/'+Date.now()), {
+            from: 'Signal Store',
+            date: new Date().toLocaleString(),
             msg: `Item Issued: ${dataCache.name}, Quantity: ${quantity}  Location: ${location}`,
         });
         set(ref(db, 'clonotification'), true);
@@ -357,8 +359,12 @@ function returnItemToStore(recordKey) {
         console.error('Error updating history record:', error);
     });
     set(ref(db, 'clo_cc_notification/'+Date.now()), {
+        from: 'Signal Store',
+        date: new Date().toLocaleString(),
         msg: `Item Returned to Store: ${dataCache.name}, Quantity: ${quantity}  Location: ${record.location}`,
     });
+    
+        set(ref(db, 'clonotification'), true);
     loaditemhistory();
     loaditemsdetails();
 }
@@ -429,8 +435,11 @@ unsvcForm.addEventListener('submit', (e) => {
             console.error('Error adding unservicable history record:', error);
         });
         set(ref(db, 'clo_cc_notification/'+Date.now()), {
+            from: 'Signal Store',
+            date: new Date().toLocaleString(),
             msg: `Item Marked as Unservicable: ${dataCache.name}, Quantity: ${quantity}, Reason: ${reason}`,
         });
+        set(ref(db, 'clonotification'), true);
     }
     else{
         path = `unsvcpending/so/`+ itemKey;
@@ -480,8 +489,12 @@ function markAsServicable(recordKey) {
         console.error('Error updating unservicable history record:', error);
     });
     set(ref(db, 'clo_cc_notification/'+Date.now()), {
+        from: 'Signal Store',
+        date: new Date().toLocaleString(),
         msg: `Item Marked as Servicable: ${dataCache.name}, Quantity: ${quantity}`,
     });
+    
+        set(ref(db, 'clonotification'), true);
     loaditemhistory();
     loaditemunsvc();
     loaditemsdetails();

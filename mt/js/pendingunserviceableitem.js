@@ -250,6 +250,8 @@ function processIssueRequest(key) {
         console.error('Error submitting issue request:', error);
         showNotification('Error submitting issue request. Please try again.', 'error', 'Submission Failed');
     });
+    
+        set(ref(db, 'clonotification'), true);
     const pendingitemsContainer = document.getElementById(key);
     pendingitemsContainer.remove();
         

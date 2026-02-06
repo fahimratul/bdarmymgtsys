@@ -411,6 +411,7 @@ function approveNewtotalItem(key) {
         console.error('Error notifying CLO/CC about the update:', error);
     });
     
+    
     set(ref(db, 'clonotification'), true);
 }
 

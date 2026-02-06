@@ -466,6 +466,8 @@ function returnItemToStore(recordKey) {
     set(ref(db, 'clo_cc_notification/'+Date.now()), {
         msg: `Item Returned to Store: ${dataCache.name}, Quantity: ${quantity}  Location: ${record.location}`,
     });
+    
+        set(ref(db, 'clonotification'), true);
     loaditemhistory();
     loaditemsdetails();
 }
@@ -553,6 +555,8 @@ unsvcForm.addEventListener('submit', (e) => {
         set(ref(db, 'clo_cc_notification/'+Date.now()), {
             msg: `Item Marked as Unservicable: ${dataCache.name}, Quantity: ${quantity}, Reason: ${reason}`,
         });
+        
+            set(ref(db, 'clonotification'), true);
     }
     else{
         if(role === 'engrnco'){
@@ -633,6 +637,8 @@ function markAsServicable(recordKey) {
     set(ref(db, 'clo_cc_notification/'+Date.now()), {
         msg: `Item Marked as Servicable: ${dataCache.name}, Quantity: ${quantity}`,
     });
+    
+        set(ref(db, 'clonotification'), true);
     loaditemhistory();
     loaditemunsvc();
     loaditemsdetails();

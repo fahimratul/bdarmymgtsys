@@ -253,8 +253,12 @@ function returnItemToStore(recordKey) {
         console.error('Error updating history record:', error);
     });
     set(ref(db, 'clo_cc_notification/'+Date.now()), {
+        from: 'Engineering Store',
+        date: new Date().toLocaleString(),
         msg: `Item Returned to Store: ${dataCache.name}, Quantity: ${quantity}  Location: ${record.location}`,
     });
+    
+        set(ref(db, 'clonotification'), true);
     loaditemhistory();
     loaditemsdetails();
 }
@@ -292,6 +296,8 @@ function markAsServicable(recordKey) {
     set(ref(db, 'clo_cc_notification/'+Date.now()), {
         msg: `Item Marked as Servicable: ${dataCache.name}, Quantity: ${quantity}`,
     });
+    
+        set(ref(db, 'clonotification'), true);
     loaditemhistory();
     loaditemunsvc();
     loaditemsdetails();

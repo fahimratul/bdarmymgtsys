@@ -385,19 +385,19 @@ function loadvehicledata() {
         document.getElementById('groundedVehicles').textContent = vehicleinfo.total.grounded;
 
         for (const camp in camplist) {
-            document.getElementById(`totalVehicles${camp}`).textContent = `Total: ${vehicleinfo[camp].total}`;
-            document.getElementById(`ALRVehicles${camp}`).textContent = `A LR: ${vehicleinfo[camp].alr}`;
-            document.getElementById(`ASRVehicles${camp}`).textContent = `A SR: ${vehicleinfo[camp].asr}`;
-            document.getElementById(`inMaintenanceVehicles${camp}`).textContent = `Maintenance: ${vehicleinfo[camp].inmaintenance}`;
-            document.getElementById(`groundedVehicles${camp}`).textContent = `Grounded: ${vehicleinfo[camp].grounded}`;
+            document.getElementById(`totalVehicles${camp}`).innerHTML = `<span>Total</span> ${vehicleinfo[camp].total}`;
+            document.getElementById(`ALRVehicles${camp}`).innerHTML = `<span>A LR</span> ${vehicleinfo[camp].alr}`;
+            document.getElementById(`ASRVehicles${camp}`).innerHTML = `<span>A SR</span> ${vehicleinfo[camp].asr}`;
+            document.getElementById(`inMaintenanceVehicles${camp}`).innerHTML = `<span>Maintenance</span> ${vehicleinfo[camp].inmaintenance}`;
+            document.getElementById(`groundedVehicles${camp}`).innerHTML = `<span>Grounded</span> ${vehicleinfo[camp].grounded}`;
             
         }
         for (const classtype in classlist) {
-            document.getElementById(`totalVehicles${classtype}`).textContent = `Total: ${vehicleinfoclass[classtype].total}`;
-            document.getElementById(`ALRVehicles${classtype}`).textContent = `A LR: ${vehicleinfoclass[classtype].alr}`;
-            document.getElementById(`ASRVehicles${classtype}`).textContent = `A SR: ${vehicleinfoclass[classtype].asr}`;
-            document.getElementById(`inMaintenanceVehicles${classtype}`).textContent = `In Maintenance: ${vehicleinfoclass[classtype].inmaintenance}`;
-            document.getElementById(`groundedVehicles${classtype}`).textContent = `Grounded: ${vehicleinfoclass[classtype].grounded}`;    
+            document.getElementById(`totalVehicles${classtype}`).innerHTML = `<span>Total</span> ${vehicleinfoclass[classtype].total}`;
+            document.getElementById(`ALRVehicles${classtype}`).innerHTML = `<span>A LR</span> ${vehicleinfoclass[classtype].alr}`;
+            document.getElementById(`ASRVehicles${classtype}`).innerHTML = `<span>A SR</span> ${vehicleinfoclass[classtype].asr}`;
+            document.getElementById(`inMaintenanceVehicles${classtype}`).innerHTML = `<span>In Maintenance</span> ${vehicleinfoclass[classtype].inmaintenance}`;
+            document.getElementById(`groundedVehicles${classtype}`).innerHTML = `<span>Grounded</span> ${vehicleinfoclass[classtype].grounded}`;    
         }
         // Attach edit handlers
         tableBody.querySelectorAll('.edit-btn').forEach(btn => {
@@ -781,7 +781,7 @@ function filterVehiclesbyclick(classFilter, conditionFilter, campFilter) {
         row.style.display = (matchClass && matchCondition && matchCamp) ? '' : 'none';
     });
 
-    const targetElement = document.getElementById('VehicleTableBody');
+    const targetElement = document.getElementById('searchInputVehicle');
     if (targetElement) {
         targetElement.scrollIntoView({
         behavior: 'smooth' // Makes the scroll transition smooth
@@ -937,3 +937,86 @@ document.getElementById('groundedVehicleslowbed')?.addEventListener('click', () 
     filterVehiclesbyclick('lowbed', 'grounded', '');
     showNotification('Showing Low Bed Grounded vehicles', 'info', 'Filter Applied');
 });
+document.getElementById('totalVehiclesbayoo')?.addEventListener('click', () => {    
+    filterVehiclesbyclick('', '', 'bayoo');
+    showNotification('Showing Bayoo vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('totalVehiclesdrodro')?.addEventListener('click', () => {    
+    filterVehiclesbyclick('', '', 'drodro');
+    showNotification('Showing Drodro vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('totalVehiclesrhoo')?.addEventListener('click', () => {    
+    filterVehiclesbyclick('', '', 'rhoo');
+    showNotification('Showing Rhoo vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('totalVehiclesndromo')?.addEventListener('click', () => {    
+    filterVehiclesbyclick('', '', 'ndromo');
+    showNotification('Showing Ndromo vehicles', 'info', 'Filter Applied');
+});
+
+document.getElementById('ALRVehiclesbayoo')?.addEventListener('click', () => {
+    filterVehiclesbyclick('', 'alr', 'bayoo');
+    showNotification('Showing Bayoo ALR vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('ASRVehiclesbayoo')?.addEventListener('click', () => {
+    filterVehiclesbyclick('', 'asr', 'bayoo');
+    showNotification('Showing Bayoo ASR vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('inMaintenanceVehiclesbayoo')?.addEventListener('click', () => {
+    filterVehiclesbyclick('', 'inmaintenance', 'bayoo');
+    showNotification('Showing Bayoo Maintenance vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('groundedVehiclesbayoo')?.addEventListener('click', () => {
+    filterVehiclesbyclick('', 'grounded', 'bayoo');
+    showNotification('Showing Bayoo Grounded vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('ALRVehiclesdrodro')?.addEventListener('click', () => {
+    filterVehiclesbyclick('', 'alr', 'drodro');
+    showNotification('Showing Drodro ALR vehicles', 'info', 'Filter Applied');
+}); 
+document.getElementById('ASRVehiclesdrodro')?.addEventListener('click', () => {
+    filterVehiclesbyclick('', 'asr', 'drodro');     
+    showNotification('Showing Drodro ASR vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('inMaintenanceVehiclesdrodro')?.addEventListener('click', () => {
+    filterVehiclesbyclick('', 'inmaintenance', 'drodro');
+    showNotification('Showing Drodro Maintenance vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('groundedVehiclesdrodro')?.addEventListener('click', () => {
+    filterVehiclesbyclick('', 'grounded', 'drodro');
+    showNotification('Showing Drodro Grounded vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('ALRVehiclesrhoo')?.addEventListener('click', () => {
+    filterVehiclesbyclick('', 'alr', 'rhoo');
+    showNotification('Showing Rhoo ALR vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('ASRVehiclesrhoo')?.addEventListener('click', () => {
+    filterVehiclesbyclick('', 'asr', 'rhoo');
+    showNotification('Showing Rhoo ASR vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('inMaintenanceVehiclesrhoo')?.addEventListener('click', () => {
+    filterVehiclesbyclick('', 'inmaintenance', 'rhoo'); 
+    showNotification('Showing Rhoo Maintenance vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('groundedVehiclesrhoo')?.addEventListener('click', () => {
+    filterVehiclesbyclick('', 'grounded', 'rhoo');
+    showNotification('Showing Rhoo Grounded vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('ALRVehiclesndromo')?.addEventListener('click', () => {
+    filterVehiclesbyclick('', 'alr', 'ndromo');
+    showNotification('Showing Ndromo ALR vehicles', 'info', 'Filter Applied');
+}); 
+document.getElementById('ASRVehiclesndromo')?.addEventListener('click', () => {
+    filterVehiclesbyclick('', 'asr', 'ndromo');
+    showNotification('Showing Ndromo ASR vehicles', 'info', 'Filter Applied');
+});
+document.getElementById('inMaintenanceVehiclesndromo')?.addEventListener('click', () => {
+    filterVehiclesbyclick('', 'inmaintenance', 'ndromo');
+    showNotification('Showing Ndromo Maintenance vehicles', 'info', 'Filter Applied');
+}   );  
+document.getElementById('groundedVehiclesndromo')?.addEventListener('click', () => {
+    filterVehiclesbyclick('', 'grounded', 'ndromo');
+    showNotification('Showing Ndromo Grounded vehicles', 'info', 'Filter Applied');
+});
+
+

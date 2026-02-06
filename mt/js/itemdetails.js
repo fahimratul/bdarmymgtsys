@@ -257,6 +257,8 @@ function returnItemToStore(recordKey) {
         date: new Date().toLocaleString(),
         msg: `Item Returned to Store: ${dataCache.name}, Quantity: ${quantity}  Location: ${record.location}`,
     });
+    
+        set(ref(db, 'clonotification'), true);
     loaditemhistory();
     loaditemsdetails();
 }
@@ -296,6 +298,8 @@ function markAsServicable(recordKey) {
         date: new Date().toLocaleString(),
         msg: `Item Marked as Servicable: ${dataCache.name}, Quantity: ${quantity}`,
     });
+    
+        set(ref(db, 'clonotification'), true);
     loaditemhistory();
     loaditemunsvc();
     loaditemsdetails();
