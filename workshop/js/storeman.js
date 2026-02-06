@@ -37,7 +37,7 @@ window.addEventListener('DOMContentLoaded', () => {
         window.location.href = 'login.html';
         return;
     }
-    console.log('Logged in as BA Number:', baNumber);    
+    console.log('Logged in as Army No: ', baNumber);    
     initializePDFButtons();
     initializeIssueButton();
 });
@@ -71,7 +71,7 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('username').textContent='Name: ' + username;
     document.getElementById('rank').textContent=ranklist[rank] ? 'Rank: ' + ranklist[rank] : 'Rank: ' + rank;
     sessionStorage.setItem('rank_proper', ranklist[rank] ? ranklist[rank] : rank);
-    document.getElementById('banumber').textContent='BA Number: ' + banumber;
+    document.getElementById('banumber').textContent='Army No:  ' + banumber;
 });
 
 

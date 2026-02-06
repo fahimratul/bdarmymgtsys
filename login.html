@@ -13,7 +13,7 @@
     <div class="login-container">
         <h1 id="login-title"></h1>
         <div class="form-group">
-            <label for="ba-number">BA Number</label>
+            <label for="ba-number" id="ba-number-label">BA Number</label>
             <input type="text" id="ba-number" name="ba-number" placeholder="Enter your BA number" required>
         </div>
         <div class="form-group pass">
@@ -56,8 +56,10 @@
             const roletype=sessionStorage.getItem('role_type');
             if (roletype ==='bqms') {
                 titleElement.textContent = 'Storeman Login';
+                document.getElementById('ba-number-label').textContent ='Army No';
             } else if (roletype ==='mtjconco') {
                 titleElement.textContent = 'MT Login';
+                document.getElementById('ba-number-label').textContent ='Army No';
             } else if (roletype ==='officer') {
                 titleElement.textContent = 'Officer Login';
                 document.getElementById('officer_signup').style.display = 'block';

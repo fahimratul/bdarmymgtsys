@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
 
-import { getDatabase, get, ref, update , remove} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getDatabase,set,  get, ref, update , remove} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
 
 const firebaseConfig = {
@@ -125,7 +125,13 @@ window.addEventListener('DOMContentLoaded', () => {
     const banumber=sessionStorage.getItem('baNumber');
     document.getElementById('username').textContent='Name: ' + username;
     document.getElementById('rank').textContent=ranklist[rank] ? 'Rank: ' + ranklist[rank] : 'Rank: ' + rank;
+    if(role === 'mtjco' || role === 'mtnco'){
+    document.getElementById('banumber').textContent='Army No: ' + banumber;
+    }
+    else
+    {
     document.getElementById('banumber').textContent='BA Number: ' + banumber;
+    }
 });
 
 
@@ -470,9 +476,114 @@ function loadnotifactions() {
         console.error('Error loading notifications:', error);
     });
 }
+let campchangeNotificationDataCache = {};
+function loadcampchangeNotifications() {
+    const dbRef = ref(db, 'officerapproval/campchange/');
+    get(dbRef).then((snapshot) => {
+        campchangeNotificationDataCache = snapshot.val();
+        let html = '';
+        notificationbody.style.display='flex';
+        if (campchangeNotificationDataCache) {
+            for (const key in campchangeNotificationDataCache) {
+                const notification = campchangeNotificationDataCache[key];
+                const message = notification.msg || '';
+                html += `<div class="msg">
+                        <p class="content">${message}<br><br> </p>
+                        <button class="accept-btn" data-key="${key}">Accept</button>
+                        <button class="reject-btn" data-key="${key}">Reject</button> 
+                    </div>`;
+            }
+            notificationbody.innerHTML = html;
+            notificationbody.style.minHeight='max-content';
+            console.log("Notifications Loaded");
+            console.log(campchangeNotificationDataCache);
+            // Attach accept/reject handlers
+            notificationbody.querySelectorAll('.accept-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const key = btn.dataset.key;
+                    acceptCampchange(key);
+                    console.log('Accepted notification with key:', key);
+                });
+            });
+            notificationbody.querySelectorAll('.reject-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const key = btn.dataset.key;
+                    rejectCampchange(key);
+                    console.log('Rejected notification with key:', key);
+                });
+            });
+        }
+    }).catch((error) => {
+        console.error('Error loading notifications:', error);
+    });
+}
+
 if(role==='mto'){
     loadnotifactions();
+    loadcampchangeNotifications();
 }
+function acceptCampchange(key) {
+    const notification = campchangeNotificationDataCache?.[key];
+    if (!notification) {
+        console.error('Notification data not found for key:', key);
+        return;
+    }
+    const vehiclekey = key;
+    const newCamp = notification.camp;
+    const dbRef = ref(db, `vehiclelist/` + vehiclekey);
+    update(dbRef, {camp: newCamp})
+    .then(() => {
+        console.log('Vehicle camp updated successfully.');
+        showNotification('Vehicle camp updated successfully.', 'success', 'Update Successful');
+    })
+    .catch((error) => {
+        console.error('Error updating vehicle camp:', error);
+        showNotification('Failed to update vehicle camp. Please try again later.', 'error', 'Update Failed');
+    });
+    const notificationKey = key;
+    const dbref = ref(db, 'officerapproval/campchange/' + notificationKey);
+    remove(dbref)
+    .then(() => {
+        console.log('Notification removed successfully after accepting camp change.');
+    })
+    .catch((error) => {
+        console.error('Error removing notification:', error);
+    });
+
+
+    set(ref(db, `clo_cc_notification/${Date.now()}`), {
+        msg: 'BA-'+ vehiclekey+ ' has been approved for camp change to ' + camplist[newCamp],
+        from: 'MTO',
+        date: new Date().toLocaleString()
+     }).then(() => {
+        console.log('Notification sent to CLOC successfully.');
+    }).catch((error) => {
+        console.error('Error sending notification to CLOC:', error);
+        });    
+    set(ref(db, 'clonotification'), true);
+    setTimeout(() => {
+        window.location.reload();
+        showNotification('Camp change request accepted successfully.', 'success', 'Acceptance Successful');
+    }, 500);
+}
+function rejectCampchange(key) {
+    const notificationKey = key;
+    const dbref = ref(db, 'officerapproval/campchange/' + notificationKey);
+    remove(dbref)
+    .then(() => {
+        console.log('Notification removed successfully after rejecting camp change.');
+        showNotification('Camp change request rejected successfully.', 'success', 'Rejection Successful');
+        loadcampchangeNotifications();
+    })
+    .catch((error) => {
+        console.error('Error removing notification:', error);
+        showNotification('Failed to reject camp change request. Please try again later.', 'error', 'Rejection Failed');
+    });
+
+    setTimeout(() => {
+        window.location.reload();
+    }, 500);
+}        
 
 function updateVehicleHistoryRecord(vehicleKey, event, details, date, notificationKey) {
     const newKey = Date.now().toString();
@@ -788,6 +899,7 @@ function filterVehiclesbyclick(classFilter, conditionFilter, campFilter) {
     });
     }
 }
+
 
 
 document.getElementById('Allvehicles').addEventListener('click', () => {

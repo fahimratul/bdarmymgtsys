@@ -133,7 +133,8 @@ document.getElementById('campSelect').addEventListener('change', (e) => {
         const newCamp = e.target.value;
         const dbref = ref(db, 'officerapproval/campchange/' + vehicleKey);
         set(dbref, {
-            camp: newCamp
+            camp: newCamp,
+            msg: 'BA-'+ vehicleKey+ ' Request for camp change to ' + camplist[newCamp]
         }).then(() => {
             showNotification('Camp change request sent successfully.');
             console.log('Camp change request sent successfully to officer approval');

@@ -1,295 +1,298 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <link rel="stylesheet" href="css/adduser.css">
-    <link rel="stylesheet" href="css/engrnco.css">
-    <link rel="stylesheet" href="css/notification.css">
-    <link rel="stylesheet" href="css/piechart.css">
-    <link rel="stylesheet" href="css/mt_dashboard.css">
-    <link rel="stylesheet" href="css/loading.css">
-    <script src ="https://unpkg.com/lucide@latest" ></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel='icon' href='static/logo_small.png' type='image/x-icon' />
-    <title>Inventory</title>
-</head>
-<body>
-    <div id="notification-toast" class="notification-toast"></div>
-    <!-- Loading Overlay -->
-    <!-- <div id="loadingOverlay" class="loading-overlay">
-        <div class="spinner"></div>
-        <div class="loading-text">Loading Inventory Data</div>
-        <div class="loading-subtext">Please wait...</div>
-    </div> -->
-        <nav id="notforclo">
-        <ul>
-            <li><a href="#" onclick="window.location.href='mt_dashboard.html?key=viewtr'" id= "viewTrBtn" class="active">View Transport State</a></li>
-            <li><a href="#" onclick="window.location.href='./mt/officer_dashboard.html'">View Inventory</a></li>
-            <li><a href="addvehicle.html">Add Vehicle</a></li>
-            <li id="notformtjco"><a href="user_management.html">User Management</a></li>
-
-            <li ><a href="#" onclick="popupmenu()"> User ▼ </a> </li>
-        </ul>
-    </nav>
-    <nav id="forclo">
-        <ul>
-            <li><a href="clodashboard.html" >Home</a></li>
-            <li><a href="user_management.html">User Management</a></li>
-            <li><a href="notifications.html">Notifications</a></li>
-            <li ><a href="#" onclick="popupmenu()"> User Info </a> </li>
-        </ul>
-    </nav>
-
-    <div class="topdown-container" id="userInfoContainer" style="display: none;">
-        <h3 id ="username"></h3>
-        <h4 id ="rank"></h4>
-        <h4 id ="banumber"></h4>
-        <button class="btn primary" id="changePasswordBtn" onclick="passwordChangeModal()">Change Password</button>
-        <button class="btn secondary" id="logoutButton" onclick="logout()">Logout</button>        
-    </div>
-    <div class="options">
-   <div class="option active">
-      <div class="label">
-         <div class="icon">
-         </div>
-         <div class="info">
-            <div class="main">Blonkisoaz</div>
-            <div class="sub">Omuke trughte a otufta</div>
-         </div>
-      </div>
-   </div>
-   <div class="option">
-        
-      <div class="label">
-         <div class="icon">
-            
-         </div>
-         <div class="info">
-            <div class="main">Oretemauw</div>
-            <div class="sub">Omuke trughte a otufta</div>
-         </div>
-      </div>
-   </div>
-   <div class="option" >
-        
-      <div class="label">
-         <div class="icon">
-            <i class="fas fa-tree"></i>
-         </div>
-         <div class="info">
-            <div class="main">Iteresuselle</div>
-            <div class="sub">Omuke trughte a otufta</div>
-         </div>
-      </div>
-   </div>
-   <div class="option">
-        
-      <div class="label">
-         <div class="icon">
-            <i class="fas fa-tint"></i>
-         </div>
-         <div class="info">
-            <div class="main">Idiefe</div>
-            <div class="sub">Omuke trughte a otufta</div>
-         </div>
-      </div>
-   </div>
-   <div class="option">
-        
-      <div class="label">
-         <div class="icon">
-            class A
-         </div>
-         <div class="info">
-            
-                <h4 id="totalVehiclesclassA">Total Vehicles:</h4>
-                <h4 id="ALRVehiclesclassA">ALR</h4>
-
-                <h4 id="ASRVehiclesclassA">ASR</h4>
-
-                <h4 id="inMaintenanceVehiclesclassA">In MainTenance</h4>
-
-                <h4 id="groundedVehiclesclassA">Grounded</h4>
-         </div>
-      </div>
-   </div>
-</div>
-    <h2>Vehicle Overview Classes Wise</h2>
-    <div class="dashboard-card">
-        <div class="card nohover" >
-                <h4>Class A</h4>
-            <div class="card-info mt">
-                <h4 id="totalVehiclesclassA">0</h4>
-                <h4 id="ALRVehiclesclassA">0</h4>
-                <h4 id="ASRVehiclesclassA">0</h4>
-                <h4 id="inMaintenanceVehiclesclassA">0</h4>
-                <h4 id="groundedVehiclesclassA">0</h4>
-            </div>
-        </div>
-        <div class="card nohover" >
-                <h4>Class B</h4>
-            <div class="card-info mt">
-                <h4 id="totalVehiclesclassB">0</h4>
-                <h4 id="ALRVehiclesclassB">0</h4>
-                <h4 id="ASRVehiclesclassB">0</h4>
-                <h4 id="inMaintenanceVehiclesclassB">0</h4>
-                <h4 id="groundedVehiclesclassB">0</h4>
-            </div>
-        </div>
-        <div class="card nohover">
-                <h4>Spl Veh</h4>
-            <div class="card-info mt">
-                <h4 id="totalVehiclesspl">0</h4>
-                <h4 id="ALRVehiclesspl">0</h4>
-                <h4 id="ASRVehiclesspl">0</h4>
-                <h4 id="inMaintenanceVehiclesspl">0</h4>
-                <h4 id="groundedVehiclesspl">0</h4>
-            </div>
-        </div>
-        <div class="card nohover">
-            <h4>Sp Veh</h4>
-            <div class="card-info mt">
-                <h4 id="totalVehiclessp">0</h4>
-                <h4 id="ALRVehiclessp">0</h4>
-                <h4 id="ASRVehiclessp">0</h4>
-                <h4 id="inMaintenanceVehiclessp">0</h4>
-                <h4 id="groundedVehiclessp">0</h4>
-            </div>
-        </div>
-        
-        <div class="card nohover">
-            <h4>Water Trailer</h4>
-            <div class="card-info mt">
-                <h4 id="totalVehicleswatertrailer">0</h4>
-                <h4 id="ALRVehicleswatertrailer">0</h4>
-                <h4 id="ASRVehicleswatertrailer">0</h4>
-                <h4 id="inMaintenanceVehicleswatertrailer">0</h4>
-                <h4 id="groundedVehicleswatertrailer">0</h4>
-            </div>
-        </div>
-        <div class="card nohover">
-            <h4>Low Bed/ Fuel/ Water/ Trailer</h4>
-            <div class="card-info mt">
-                <h4 id="totalVehicleslowbed">0</h4>
-                <h4 id="ALRVehicleslowbed">0</h4>
-                <h4 id="ASRVehicleslowbed">0</h4>
-                <h4 id="inMaintenanceVehicleslowbed">0</h4>
-                <h4 id="groundedVehicleslowbed">0</h4>
-            </div>
-        </div>
-    </div>
-
-    <div id="changePasswordModal" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Change Password</h2>
-                <button class="modal-close" onclick="closeModal()"  aria-label="Close">&times;</button>
-            </div>
-                <div class="modal-grid">
-                    <div class="form-group pass">
-                        <label for="password" class="form-label"> Current Password *</label>
-                        <input type="password" id="password" class="form-input" placeholder="Enter password" >
-                        <button type="button" class="password-toggle" onclick="togglePassword('password')">
-                            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="form-group pass">
-                        <label for="new-password" class="form-label">New Password *</label>
-                        <input type="password" id="new-password" class="form-input" placeholder="Enter password" >
-                        <button type="button" class="password-toggle" onclick="togglePassword('new-password')">
-                            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                        </button>
-                    </div>
-
-                    <div class="form-group pass">
-                        <label for="confirm-password" class="form-label">Confirm Password *</label>
-                        <input type="password" id="confirm-password" class="form-input" placeholder="Confirm password">
-                        <button type="button" class="password-toggle" onclick="togglePassword('confirm-password')">
-                            <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                        </button>
-                    </div>
-                
-                
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn secondary" onclick="closeModal()">Cancel</button>
-                    <button id="passwordChangeSubmitBtn" class="btn primary">Change Password</button>
-                </div>
-        </div>
-    </div>
-
-    <script>
-        lucide.createIcons();
-        function hideNotification() {
-            const toast = document.getElementById("notification-toast");
-            toast.classList.remove("show");
-        }
-        function popupmenu() {
-            const userInfoContainer = document.getElementById('userInfoContainer');
-            if (userInfoContainer.style.display === 'none' || userInfoContainer.style.display === '') {
-                userInfoContainer.style.display = 'flex';
-            } else {
-                userInfoContainer.style.display = 'none';
-            }
-        }
-        function togglePassword(inputId) {
-            const passwordInput = document.getElementById(inputId);
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-        }
-
-        function closeModal() {
-            const changePasswordModal = document.getElementById('changePasswordModal'); 
-            changePasswordModal.classList.add('hidden');
-        }
-        function passwordChangeModal() {
-            const changePasswordModal = document.getElementById('changePasswordModal');
-            changePasswordModal.classList.remove('hidden');
-            const userInfoContainer = document.getElementById('userInfoContainer');
-            userInfoContainer.style.display = 'none';
-            console.log('Password Change Modal Opened');
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-                const urlParams = new URLSearchParams(window.location.search);
-                const key = urlParams.get('key');
-                const role=sessionStorage.getItem('role');
-                if(role==='clo' || role === 'cc'){
-                    document.getElementById('notforclo').style.display='none';
-                    document.getElementById('forclo').style.display='block';
-                } else {
-                    document.getElementById('forclo').style.display='none';
-                    document.getElementById('notforclo').style.display='block';
+        <html>
+        <head>
+            <title>Issue Request - ${issueRequest.recipientName}</title>
+            <style>
+                @media print {
+                    @page {
+                        margin: 0.5in;
+                        size: portrait;
+                    }
+                    body {
+                        font-family: 'Arial', sans-serif;
+                        color: #333;
+                        line-height: 1.6;
+                        margin: 0;
+                        padding: 0;
+                    }
+                    .no-print { display: none !important; }
                 }
-                if(role==='mtjco' || role==='mtnco'){
-                    document.getElementById('notformtjco').style.display='none';
+                
+                body {
+                    font-family: 'Arial', sans-serif;
+                    color: #333;
+                    line-height: 1.6;
+                    padding: 20px;
+                    max-width: 800px;
+                    margin: 0 auto;
                 }
-                $(".option").hover(function(){
-   $(".option").removeClass("active");
-   $(this).addClass("active");
-   
-});
-
-        });
-    </script>
-
-
-    
-
-</body> 
-
-</html>
+                
+                .header {
+                    text-align: center;
+                    border-bottom: 3px solid #007bff;
+                    padding-bottom: 5px;
+                }
+                
+                .header h1 {
+                    margin: 0;
+                    color: #000000;
+                    font-size: 24px;
+                    font-weight: bold;
+                }
+                
+                .header h2 {
+                    margin: 10px 0 5px 0;
+                    color: #333;
+                    font-size: 20px;
+                }
+                
+                .header p {
+                    margin: 0;
+                    color: #666;
+                    font-size: 14px;
+                }
+                
+                .info-section {
+                    background-color: #f8f9fa;
+                    padding: 20px;
+                    border: 1px solid #000000;
+                    border-left: 5px solid #007bff;
+                }
+                
+                .recipient-section {
+                    background-color: #e8f4fd;
+                    padding: 20px;
+                    border: 1px solid #000000;
+                    border-left: 5px solid #17a2b8;
+                }
+                
+                .section-title {
+                    margin: 0 0 15px 0;
+                    color: #333;
+                    font-size: 18px;
+                    border-bottom: 2px solid #dee2e6;
+                    padding-bottom: 8px;
+                    font-weight: bold;
+                }
+                
+                .info-grid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 15px;
+                }
+                
+                .info-item {
+                    display: flex;
+                }
+                
+                .info-label {
+                    font-weight: bold;
+                    color: #495057;
+                    min-width: 120px;
+                }
+                
+                .info-value {
+                    color: #333;
+                }
+                .table-section {
+                    margin-top: 25px;
+                }
+                .table-section h3 {
+                    text-align: center;
+                }
+                
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    background-color: white;
+                    overflow: hidden;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                    margin-bottom: 25px;
+                }
+                
+                th {
+                    padding: 8px;
+                    border: 1px solid #dee2e6;
+                    background-color: #ffffff;
+                    color: rgb(0, 0, 0);
+                    font-weight: bold;
+                }
+                
+                td {
+                    padding: 8px;
+                    border: 1px solid #ddd;
+                }
+                
+                tr:nth-child(even) {
+                    background-color: #f8f9fa;
+                }
+                
+                .total-row {
+                    background-color: #f8f9fa !important;
+                    font-weight: bold;
+                }
+                
+                .total-quantity {
+                    color: #007bff;
+                    font-size: 16px;
+                }
+                
+                .approval-section {
+                    padding: 5px 20px;
+                    margin-bottom: 25px;
+                    border: 1px solid #000000;
+                    border-left: 5px solid #ffc107;
+                }
+                
+                .signature-grid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 20px;
+                }
+                
+                .signature-label {
+                    margin: 0 0 10px 0;
+                    font-weight: bold;
+                    color: #495057;
+                }
+                
+                .signature-line {
+                    border-bottom: 1px solid #333;
+                    height: 80px;
+                    margin-bottom: 5px;
+                }
+                .signature-line2 {
+                    border-bottom: 1px solid #333;
+                    height: 5px;
+                    margin-bottom: 5px;
+                }
+                .signature-username {
+                    font-size: 14px;
+                    margin: 0 0 2px 0;
+                }
+                
+                .signature-note {
+                    margin: 0;
+                    font-size: 12px;
+                    color: #666;
+                }
+                
+                .footer {
+                    text-align: center;
+                    padding-top: 5px;
+                    font-size: 12px;
+                    color: #666;
+                }
+                
+                .footer p {
+                    margin: 0 0 5px 0;
+                }
+                
+                .footer .system-name {
+                    font-weight: bold;
+                }
+                
+                .footer .retention-note {
+                    font-style: italic;
+                    margin-top: 5px;
+                }
+                .fromcode {
+                    position: absolute;
+                    top: 0px;
+                    right: 20px;
+                    font-size: 12px;
+                    color: #999;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="fromcode">
+                <p>In lieu of BAFZ 2096</p>
+            </div>
+            <div class="header">
+                <h1>BANRDB Store Management System</h1>
+                <h2>Issue Request Form</h2>
+                <p>Generated on ${currentDate}</p>
+            </div>
+            
+            <div class="info-section">
+                <h3 class="section-title">Request Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Voucher No:</span>
+                        <span class="info-value">${voucherNo}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Issue Date:</span>
+                        <span class="info-value">${issueDate}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="recipient-section">
+                <h3 class="section-title">Recipient Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Location/Person:</span>
+                        <span class="info-value">${issueRequest.location}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="table-section">
+                <h3 class="section-title">Items to Issue</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="text-align: center;">S/N</th>
+                            <th style="text-align: left;">Item Name</th>
+                            <th style="text-align: center;">Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${itemsTableRows}
+                        <tr class="total-row">
+                            <td colspan="2" style="text-align: right;">Total Quantity:</td>
+                            <td style="text-align: center;" class="total-quantity">${totalQuantity}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="approval-section">
+                <h3 class="section-title">Approval Section</h3>
+                <div class="signature-grid">
+                    <div class="signature-field">
+                        <p class="signature-label">Approved By:</p>
+                        <div class="signature-line"></div>
+                        <p class="signature-note">Signature & Date</p>
+                    </div>
+                    <div class="signature-field">
+                        <p class="signature-label">Issued By:</p>
+                        <p class="signature-username"><strong>${sessionStorage.getItem('username')}</strong></p>
+                        <p  class="signature-username">${sessionStorage.getItem('rank_proper')}</p>
+                        <p class="signature-username">${sessionStorage.getItem('baNumber')}</p>
+                        <div class="signature-line2"></div>
+                        <p class="signature-note">Signature & Date</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer">
+                <p class="system-name">BANRDB Store Management System</p>
+                <p>This document was generated automatically on ${currentDate}</p>
+                <p class="retention-note">Please retain this copy for your records</p>
+            </div>
+            
+            <script>
+                // Auto-print when page loads
+                window.onload = function() {
+                    window.print();
+                    // Close window after printing (optional)
+                    window.onafterprint = function() {
+                        window.close();
+                    };
+                };
+            </script>
+        </body>
+        </html>

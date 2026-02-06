@@ -491,13 +491,23 @@ function printIssueRequest(issueRequest, itemsToIssue, voucherNo, issueDate, loc
                     font-weight: bold;
                 }
                 
-                .footer .retention-note {
+.footer .retention-note {
                     font-style: italic;
                     margin-top: 5px;
+                }
+                .fromcode {
+                    position: absolute;
+                    top: 0px;
+                    right: 20px;
+                    font-size: 12px;
+                    color: #999;
                 }
             </style>
         </head>
         <body>
+            <div class="fromcode">
+                <p>In lieu of BAFZ 2096</p>
+            </div>
             <div class="header">
                 <h1>BANRDB Store Management System</h1>
                 <h2>Issue Request Form</h2>

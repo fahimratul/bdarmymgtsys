@@ -74,7 +74,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const banumber=sessionStorage.getItem('baNumber');
     document.getElementById('username').textContent='Name: ' + username;
     document.getElementById('rank').textContent=ranklist[rank] ? 'Rank: ' + ranklist[rank] : 'Rank: ' + rank;
-    document.getElementById('banumber').textContent='BA Number: ' + banumber;
+    document.getElementById('banumber').textContent='Army No: ' + banumber;
 });
 
 let typeofammo ={};
