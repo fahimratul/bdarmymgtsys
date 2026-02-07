@@ -461,6 +461,36 @@ function rejectNewItem(key) {
 }
 
 
+function newPendingItemNotification(){
+    const fixedNotification = document.getElementById('fixednotification');
+    fixedNotification.style.display = 'flex';
+
+    onValue(ref(db, 'issuepending/so/'), (snapshot) => {
+        if(snapshot.exists()){
+            let html = fixedNotification.innerHTML;
+            const id = Date.now();
+            html += `<div class="notification-content" id="pending_${id}">
+            <p id="notificationMessage">You have a new Pending item for issue.</p>
+            <button class="notification-close" onclick="hidefixedNotification('pending_${id}')" aria-label="Close">&times;</button>
+            <button class="notification-view" id="viewPendingBtn" onclick="window.location.href='pendingIssue.html'">View</button>
+        </div>`
+        fixedNotification.innerHTML = html;
+        }
+    });
+    onValue(ref(db, 'unservicable_storeman/so/'), (snapshot) => {
+        if(snapshot.exists()){
+            let html = fixedNotification.innerHTML;
+            const id = Date.now();
+            html += `<div class="notification-content" id="pending_${id}">
+            <p id="notificationMessage">You have a new <strong>Unservicable</strong> item.</p>
+            <button class="notification-close" onclick="hidefixedNotification('pending_${id}')" aria-label="Close">&times;</button>
+            <button class="notification-view" id="viewPendingBtn" onclick="window.location.href='pendingunsvc.html'">View</button>
+        </div>`
+        fixedNotification.innerHTML = html;
+        }
+    });
+}
+
 if(role==='so'){
     pendingnewitemdata();
     setTimeout(() => {
