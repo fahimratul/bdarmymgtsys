@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
 
-import { getDatabase,set, get, ref, update } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getDatabase,set, get, ref, update , onValue} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
 
 const firebaseConfig = {
@@ -47,7 +47,7 @@ function loaditemsdetails() {
     console.log('Type Key:', typeKey);
     let dbRef = ref(db, `mtinventory/main/`+ itemKey);
     const loadingOverlay = document.getElementById('loadingOverlay');
-    get(dbRef).then((snapshot) => {
+    onValue(dbRef, (snapshot) => {
         dataCache = snapshot.val();
         
         if (dataCache) {
@@ -68,13 +68,6 @@ function loaditemsdetails() {
                 loadingOverlay.classList.add('hidden');
             }, 100);
         }
-    }).catch((error) => {
-        console.error('Error loading data:', error);
-        if (loadingOverlay) {
-            setTimeout(() => {
-                loadingOverlay.classList.add('hidden');
-            }, 100);
-        }
     });
 }
 
@@ -86,7 +79,7 @@ let itemhistoryCache = {};
 function loaditemhistory() {
     let dbRef = ref(db, `mtinventory/`+ itemKey + `/history`);
     const loadingOverlay = document.getElementById('loadingOverlay');
-    get(dbRef).then((snapshot) => {
+        onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
         itemhistoryCache = data || {};
         const tableBody = document.getElementById('history-tbody');
@@ -135,27 +128,16 @@ function loaditemhistory() {
                 loadingOverlay.classList.add('hidden');
             }, 100);
         }
-    }).catch((error) => {
-        console.error('Error loading data:', error);
-        const tableBody = document.getElementById('history-tbody');
-        if (tableBody) {
-            tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: #e53e3e;">Error loading data. Please refresh the page.</td></tr>';
-        }
-        // Hide loading overlay even on error
-        if (loadingOverlay) {
-            setTimeout(() => {
-                loadingOverlay.classList.add('hidden');
-            }, 100);
-        }
     });
 }
+
 
 loaditemhistory();
 let itemunsvccache = {};
 function loaditemunsvc() {
     let dbRef = ref(db, `mtinventory /`+ itemKey + `/unsvc`);
     const loadingOverlay = document.getElementById('loadingOverlay');
-    get(dbRef).then((snapshot) => {
+        onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
         itemunsvccache = data || {};
         const tableBody = document.getElementById('unsvc-history-tbody');
@@ -198,18 +180,6 @@ function loaditemunsvc() {
                 markAsServicable(recordKey);
             });
         });   
-        if (loadingOverlay) {
-            setTimeout(() => {
-                loadingOverlay.classList.add('hidden');
-            }, 100);
-        }
-    }).catch((error) => {
-        console.error('Error loading data:', error);
-        const tableBody = document.getElementById('unsvc-history-tbody');
-        if (tableBody) {
-            tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: #e53e3e;">Error loading data. Please refresh the page.</td></tr>';
-        }
-        // Hide loading overlay even on error
         if (loadingOverlay) {
             setTimeout(() => {
                 loadingOverlay.classList.add('hidden');

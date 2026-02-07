@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
 
-import { getDatabase,set, get, ref, update } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getDatabase,set, get, ref, update , onValue} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
 
 const firebaseConfig = {
