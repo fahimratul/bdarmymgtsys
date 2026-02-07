@@ -268,7 +268,7 @@ function searchItems() {
     });
 }
 
-document.getElementById('searchInput')?.addEventListener('keyup', searchItems);
+ 
 
 function openEditModal(key) {
     const item = dataCache?.[key];

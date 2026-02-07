@@ -53,7 +53,7 @@
                 <p>Total Type of Item</p>
             </div>
         </div>
-        <div class="card">
+        <div class="card" id="totalItemsDiv">
             <div class="card-icon">
                 <i data-lucide="box"></i>
             </div>
@@ -71,7 +71,7 @@
                 <p>Servicable Items</p>
             </div>
         </div>
-        <div class="card">
+        <div class="card" id="unservicableitemsDiv">
             <div class="card-icon">
                 <i data-lucide="x-circle"></i>
             </div>
@@ -80,7 +80,7 @@
                 <p>Unservicable Items</p>
             </div>
         </div>
-        <div class="card">
+        <div class="card" id="issuedItemsDiv">
             <div class="card-icon">
                 <i data-lucide="truck"></i>
             </div>
@@ -128,8 +128,20 @@
             </div>
     </div>
 
-    <!-- Search and Add Item -->
-
+    <div class="filter-container">
+            <button class="filter-btn" id="filterIssued" title="Show only items with issue > 0">
+                <i data-lucide="arrow-up"></i> With Issues
+            </button>
+            <button class="filter-btn" id="filterUnserviceable" title="Show only items with unserviceable > 0">
+                <i data-lucide="x-circle"></i> With Unserviceable
+            </button>
+            <button class="filter-btn" id="clearFilters" title="Clear all filters">
+                <i data-lucide="filter-x"></i> Clear Filters
+            </button>
+        </div>
+        <div class="filter-status">
+            <span id="filterStatus">Showing all items</span>
+        </div>
     <div class="search-container">
         <div class="library-search-container">
             <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
