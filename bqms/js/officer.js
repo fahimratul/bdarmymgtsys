@@ -115,113 +115,124 @@ function loaditemdata() {
 
     const loadingOverlay = document.getElementById('loadingOverlay');
 
-    get(dbRef).then((snapshot) => {
-        const data = snapshot.val();
-        dataCache = data || {};
-        let serial = 1;
-        const tableBody = document.getElementById('itemTableBody');
-        
-        if (!tableBody) {
-            console.error('itemTableBody element not found');
-            if (loadingOverlay) loadingOverlay.classList.add('hidden');
-            return;
-        }
-        
-        let html = '';
-        
-        // Build table rows
-        if (data) {
-            for (const key in data) {
-                const item = data[key];
-                const name = item.name || '';
-                const unit = item.unit || '';
-                const authorized = item.authorized ?? '';
-                const total = item.total ?? 0;
-                const servicable = item.servicable ?? 0;
-                const unservicable = item.unservicable ?? 0;
-                const issue = item.issue ?? 0;
-                const instore = item.instore ?? 0;
-                
-                html += `<tr class="row-data" id="${name}" data-key="${key}" style="cursor: pointer;">
-                            <td class="select-column" style="display: none;">
-                                <input type="checkbox" class="row-select" data-key="${key}">
-                            </td>
-                            <td>${serial}</td>
-                            <td>${name}</td>
-                            <td>${unit}</td>
-                            <td>${authorized}</td>
-                            <td>${total}</td>
-                            <td>${issue}</td>
-                            <td>${instore}</td>
-                            <td>${servicable}</td>
-                            <td>${unservicable}</td>
-                            <td>
-                            <button class="edit-btn" data-key='${key}'>Edit</button>
-                            </td>
-
-                        </tr>`;
-                serial += 1;
-                datainfo.total+=total;
-                datainfo.servicable+=servicable;
-                datainfo.unservicable+=unservicable;
-                datainfo.issue+=issue;
-                datainfo.instore+=instore;
-            }
-        } else {
-            html = '<tr><td colspan="9" style="text-align: center; padding: 2rem; color: #666;">No inventory data available</td></tr>';
-        }
-        
-        tableBody.innerHTML = html;
-        document.getElementById('serial').textContent = serial-1;
-        document.getElementById('totalItems').textContent = datainfo.total;
-        document.getElementById('servicableItems').textContent = datainfo.servicable;
-        document.getElementById('unservicableItems').textContent = datainfo.unservicable;
-        document.getElementById('issuedItems').textContent = datainfo.issue;
-        document.getElementById('inStoreItems').textContent = datainfo.instore;
-            
-        // Attach edit handlers
-        tableBody.querySelectorAll('.edit-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const key = btn.dataset.key;
-                console.log("Edit button clicked for key:", key);
-                openEditModal(key);
-            });
-        });
-
-        tableBody.querySelectorAll('.row-data').forEach(row => {
-            row.addEventListener('click', (e) => {
-                if (e.target.classList.contains('edit-btn')) {
-                    openEditModal(key);
-                }
-                if (e.target.classList.contains('row-select') || e.target.classList.contains('select-column')){
-                    return;
-                }
-                const key = row.dataset.key;
-                console.log("Row clicked for key:", key);
-                window.location.href = `itemdetails.html?key=${key}&type=bqms`;
-            });
-        });
-
-
-        // Hide loading overlay after data is loaded
-        if (loadingOverlay) {
-            setTimeout(() => {
-                loadingOverlay.classList.add('hidden');
-            }, 100);
-        }
-    }).catch((error) => {
-        console.error('Error loading data:', error);
-        const tableBody = document.getElementById('itemTableBody');
-        if (tableBody) {
-            tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem; color: #e53e3e;">Error loading data. Please refresh the page.</td></tr>';
-        }
-        // Hide loading overlay even on error
-        if (loadingOverlay) {
-            setTimeout(() => {
-                loadingOverlay.classList.add('hidden');
-            }, 100);
-        }
-    });
+ 
+     onValue(dbRef, (snapshot) => {
+         const data = snapshot.val();
+         dataCache = data || {};
+         let serial = 1;
+         const tableBody = document.getElementById('itemTableBody');
+         
+         if (!tableBody) {
+             console.error('itemTableBody element not found');
+             if (loadingOverlay) loadingOverlay.classList.add('hidden');
+             return;
+         }
+         
+         let html = '';
+         
+         // Build table rows
+         if (data) {
+             for (const key in data) {
+                 const item = data[key];
+                 const name = item.name || '';
+                 const unit = item.unit || '';
+                 const authorized = item.authorized ?? '';
+                 const total = item.total ?? 0;
+                 const servicable = item.servicable ?? 0;
+                 const unservicable = item.unservicable ?? 0;
+                 const issue = item.issue ?? 0;
+                 const instore = item.instore ?? 0;
+                 
+                 html += `<tr class="row-data" id="${name}" data-key="${key}" style="cursor: pointer;">
+                             <td class="select-column" style="display: none;">
+                                 <input type="checkbox" class="row-select" data-key="${key}">
+                             </td>
+                             <td>${serial}</td>
+                             <td>${name}</td>
+                             <td>${unit}</td>
+                             <td>${authorized}</td>
+                             <td>${total}</td>
+                             <td>${issue}</td>
+                             <td>${instore}</td>
+                             <td>${servicable}</td>
+                             <td>${unservicable}</td>
+                             <td>
+                             <button class="edit-btn" data-key='${key}'>Edit</button>
+                             </td>
+ 
+                         </tr>`;
+                 serial += 1;
+                 datainfo.total+=total;
+                 datainfo.servicable+=servicable;
+                 datainfo.unservicable+=unservicable;
+                 datainfo.issue+=issue;
+                 datainfo.instore+=instore;
+             }
+         } else {
+             html = '<tr><td colspan="9" style="text-align: center; padding: 2rem; color: #666;">No inventory data available</td></tr>';
+         }
+         
+         tableBody.innerHTML = html;
+         document.getElementById('serial').textContent = serial-1;
+         document.getElementById('totalItems').textContent = datainfo.total;
+         document.getElementById('servicableItems').textContent = datainfo.servicable;
+         document.getElementById('unservicableItems').textContent = datainfo.unservicable;
+         document.getElementById('issuedItems').textContent = datainfo.issue;
+         document.getElementById('inStoreItems').textContent = datainfo.instore;
+             
+         // Attach edit handlers
+         tableBody.querySelectorAll('.edit-btn').forEach(btn => {
+             btn.addEventListener('click', () => {
+                 const key = btn.dataset.key;
+                 console.log("Edit button clicked for key:", key);
+                 openEditModal(key);
+             });
+         });
+ 
+         tableBody.querySelectorAll('.row-data').forEach(row => {
+             row.addEventListener('click', (e) => {
+                 if(isSelectionMode){
+                     const checkbox = row.querySelector('.row-select');
+                     if (checkbox) {
+                         checkbox.checked = !checkbox.checked;
+                         updateRowSelection(checkbox);
+                         updatePrintButtonStates();
+                     }
+                 }
+                 else{
+                     if (e.target.classList.contains('edit-btn')) {
+                         openEditModal(key);
+                     }
+                     if (e.target.classList.contains('row-select') || e.target.classList.contains('select-column')){
+                         return;
+                     }
+                     const key = row.dataset.key;
+                     console.log("Row clicked for key:", key);
+                     window.location.href = `itemdetails.html?key=${key}&type=bqms`;    
+                 }
+             });
+         });
+ 
+ 
+         // Hide loading overlay after data is loaded
+         if (loadingOverlay) {
+             setTimeout(() => {
+                 loadingOverlay.classList.add('hidden');
+             }, 100);
+         }
+     }, (error) => {
+         console.error('Error loading data:', error);
+         const tableBody = document.getElementById('itemTableBody');
+         if (tableBody) {
+             tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem; color: #e53e3e;">Error loading data. Please refresh the page.</td></tr>';
+         }
+         // Hide loading overlay even on error
+         if (loadingOverlay) {
+             setTimeout(() => {
+                 loadingOverlay.classList.add('hidden');
+             }, 100);
+         }
+     });
 }
 
 

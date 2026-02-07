@@ -115,7 +115,7 @@ function loaditemdata() {
 
     const loadingOverlay = document.getElementById('loadingOverlay');
 
-    get(dbRef).then((snapshot) => {
+    onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
         dataCache = data || {};
         let serial = 1;
@@ -219,7 +219,7 @@ function loaditemdata() {
                 loadingOverlay.classList.add('hidden');
             }, 100);
         }
-    }).catch((error) => {
+    }, (error) => {
         console.error('Error loading data:', error);
         const tableBody = document.getElementById('itemTableBody');
         if (tableBody) {
@@ -460,7 +460,7 @@ function rejectNewItem(key) {
 
 
 function newPendingItemNotification(){
-    
+
 }
 
 if(role==='eo'){
