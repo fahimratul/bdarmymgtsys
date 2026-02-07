@@ -321,7 +321,7 @@ function searchItems() {
     });
 }
 
-document.getElementById('searchInput')?.addEventListener('keyup', searchItems);
+ 
 
 document.getElementById('itemTableBody')?.addEventListener('click', function(event) {
     if (event.target && event.target.id === 'delete-btn') {

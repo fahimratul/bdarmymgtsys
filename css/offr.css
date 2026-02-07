@@ -59,6 +59,17 @@ body {
     align-items: center;
 }
 
+/* Filter Status Line */
+.filter-status {
+    margin: 0.75rem 0;
+    text-align: center;
+    padding: 0.5rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #495057;
+    font-weight: 500;
+}
+
 .filter-btn {
     padding: 0.6rem 1rem;
     font-size: 0.9rem;
@@ -610,6 +621,11 @@ th {
         min-width: calc(33.33% - 0.25rem);
         font-size: 0.8rem;
         padding: 0.5rem 0.75rem;
+    }
+    .filter-status {
+        font-size: 0.8rem;
+        padding: 0.4rem;
+        margin: 0.5rem 0;
     }
     .pdf-buttons-container {
         justify-content: space-between;
