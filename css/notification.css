@@ -230,6 +230,7 @@
     flex-direction: column;
     gap: 8px;
     width: 300px;
+    display: none;
 }
 
 .notification-content {

@@ -461,12 +461,64 @@ function rejectNewItem(key) {
     });
 }
 
+function newPendingItemNotification(){
+    const fixedNotification = document.getElementById('fixednotification');
+    fixedNotification.style.display = 'flex';
+
+    onValue(ref(db, 'issuepending/bknco/'), (snapshot) => {
+        if(snapshot.exists()){
+            let html = fixedNotification.innerHTML;
+            html += `<div class="notification-content" id="bkncopending">
+            <p id="notificationMessage">You have a new Pending item From BKNCO.</p>
+            <button class="notification-close" onclick="hidefixedNotification('bkncopending')" aria-label="Close">&times;</button>
+            <button class="notification-view" id="viewPendingBtn" onclick="window.location.href='./../bknco/pendingIssue.html'">View</button>
+        </div>`
+        fixedNotification.innerHTML = html;
+        }
+    });
+    onValue(ref(db, 'issuepending/eo/'), (snapshot) => {
+        if(snapshot.exists()){
+            let html = fixedNotification.innerHTML;
+            html += `<div class="notification-content" id="engrpending">
+            <p id="notificationMessage">You have a new Pending item to issue From Engr Inventory.</p>
+            <button class="notification-close" onclick="hidefixedNotification('engrpending')" aria-label="Close">&times;</button>
+            <button class="notification-view" id="viewPendingBtn" onclick="window.location.href='./../engr/pendingIssue.html'">View</button>
+        </div>`
+        fixedNotification.innerHTML = html;
+        }
+    });
+    onValue(ref(db, 'unservicable_storeman/bknco/'), (snapshot) => {
+        if(snapshot.exists()){
+            let html = fixedNotification.innerHTML;
+            html += `<div class="notification-content" id="bkncounsvcpending">
+            <p id="notificationMessage">You have a new <strong>Unservicable</strong> item From BKNCO.</p>
+            <button class="notification-close" onclick="hidefixedNotification('bkncounsvcpending')" aria-label="Close">&times;</button>
+            <button class="notification-view" id="viewPendingBtn" onclick="window.location.href='./../bknco/pendingunsvc.html'">View</button>
+        </div>`
+        fixedNotification.innerHTML = html;
+        }
+    });
+    onValue(ref(db, 'unservicable_storeman/eo/'), (snapshot) => {
+        if(snapshot.exists()){
+            let html = fixedNotification.innerHTML;
+            html += `<div class="notification-content" id="eounsvcpending">
+            <p id="notificationMessage">You have a new <strong>Unservicable</strong> item From Engr Inventory.</p>
+            <button class="notification-close" onclick="hidefixedNotification('eounsvcpending')" aria-label="Close">&times;</button>
+            <button class="notification-view" id="viewPendingBtn" onclick="window.location.href='./../engr/pendingunsvc.html'">View</button>
+        </div>`
+        fixedNotification.innerHTML = html;
+        }
+    });
+    
+
+}
 
 if(role==='eo'){
     pendingnewitemdata();
     setTimeout(() => {
         pendingnewtotalitemdata();
     }, 1000);
+    newPendingItemNotification();
 }else{
     document.getElementById('newpendingitem').style.display='none';
     document.getElementById('newpendingtotalitem').style.display='none';
