@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
 
-import { getDatabase, get, ref,set, update, remove } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getDatabase, get, ref,set, update, remove, onValue } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
 
 const firebaseConfig = {
@@ -241,7 +241,7 @@ function pendingnewitemdata() {
     const newpendingitembody = document.getElementById('newpendingitem');
     const newitemTableBody = document.getElementById('newitemTableBody');
 
-    get(dbRef).then((snapshot) => {
+        onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
         newitemCache = data || {};
         let html = '';
@@ -300,7 +300,7 @@ function pendingnewitemdata() {
         });
 
 
-    }).catch((error) => {
+    },(error) => {
         console.error('Error loading pending new item data:', error);
     });
 } 

@@ -167,7 +167,7 @@ function writeInventoryItem(name, data) {
             else if(role === 'bqms') {
                 set(ref(db, 'officerapproval/new/bqmsinventory/' + newname),{
                 name: name,
-                authorized: data.authorized,
+                unit: data.unit,
                 total: data.total,
                 servicable: data.servicable,
                 unservicable: data.unservicable,
@@ -178,6 +178,7 @@ function writeInventoryItem(name, data) {
             else if(role === 'bknco') {
                 set(ref(db, 'officerapproval/new/bkncoinventory/' + newname),{
                     name: name,
+                    unit: data.unit,
                     authorized: data.authorized,
                     total: data.total,
                     servicable: data.servicable,
@@ -189,6 +190,7 @@ function writeInventoryItem(name, data) {
             else if(role === 'eo') {
                 set(ref(db, 'engrinventory/main/' + newname),{
                     name: name,
+                    unit: data.unit,
                     authorized: data.authorized,
                     total: data.total,
                     servicable: data.servicable,
@@ -204,8 +206,8 @@ function writeInventoryItem(name, data) {
             else if(role === 'so') {
                 set(ref(db, 'siginventory/main/' + newname),{
                     name: name,
-                    authorized: data.authorized,
                     unit: data.unit,
+                    authorized: data.authorized,
                     total: data.total,
                     servicable: data.servicable,
                     unservicable: data.unservicable,
@@ -219,8 +221,8 @@ function writeInventoryItem(name, data) {
             else if(role === 'mto'){
                 set(ref(db, 'mtinventory/main/' + newname),{
                     name: name,
-                    authorized: data.authorized,
                     unit: data.unit,
+                    authorized: data.authorized,
                     total: data.total,
                     servicable: data.servicable,
                     unservicable: data.unservicable,
@@ -235,6 +237,7 @@ function writeInventoryItem(name, data) {
                 if(loAddItemRole === 'bqms') {
                     set(ref(db, 'bqmsinventory/main/' + newname),{
                         name: name,
+                        unit: data.unit,
                         authorized: data.authorized,
                         total: data.total,
                         servicable: data.servicable,
@@ -249,6 +252,7 @@ function writeInventoryItem(name, data) {
                 else if(loAddItemRole === 'bknco') {
                     set(ref(db, 'bkncoinventory/main/' + newname),{
                         name: name,
+                        unit: data.unit,
                         authorized: data.authorized,
                         total: data.total,
                         servicable: data.servicable,

@@ -255,11 +255,23 @@ function returnItemToStore(recordKey) {
     set(ref(db, 'clo_cc_notification/'+Date.now()), {
         from: 'BKNCO Inventory',
         date: new Date().toLocaleString(),
-        msg: `Item Returned to Store: ${dataCache.name}, Quantity: ${quantity}  Location: ${record.location}`,
+        msg: `Item Returned to Store: ${dataCache.name}, Quantity: ${quantity}, From Location: ${record.location}`,
     });
     set(ref(db, 'clonotification'), true);
     loaditemhistory();
     loaditemsdetails();
+    if(role === 'bknco'){
+        const notificationPath = `eo/${Date.now()}`;
+        set(ref(db, notificationPath), {
+            from: 'BKNCO Inventory',
+            date: new Date().toLocaleString(),
+            msg: `Item Returned to Store: ${dataCache.name}, Quantity: ${quantity}, From Location: ${record.location}`,
+        }).then(() => {
+            // You can add any additional actions here if needed after the notification is set
+        }).catch((error) => {
+            console.error('Error sending notification to EO:', error);
+        });
+    }
 }
 
 
@@ -302,6 +314,18 @@ function markAsServicable(recordKey) {
     loaditemhistory();
     loaditemunsvc();
     loaditemsdetails();
+    if(role === 'bknco'){
+        const notificationPath = `eo/${Date.now()}`;
+        set(ref(db, notificationPath), {
+            from: 'BKNCO Inventory',
+            date: new Date().toLocaleString(),
+            msg: `Item Marked as Servicable: ${dataCache.name}, Quantity: ${quantity}`,
+        }).then(() => {
+            // You can add any additional actions here if needed after the notification is set
+        }).catch((error) => {
+            console.error('Error sending notification to EO:', error);
+        });
+    }
 }
 
 
