@@ -460,13 +460,42 @@ function rejectNewItem(key) {
         console.error('Error rejecting new item request:', error);
     });
 }
+function newPendingItemNotification(){
+    const fixedNotification = document.getElementById('fixednotification');
+    fixedNotification.style.display = 'flex';
 
+    onValue(ref(db, 'issuepending/workshop/'), (snapshot) => {
+        if(snapshot.exists()){
+            let html = fixedNotification.innerHTML;
+            const id = Date.now();
+            html += `<div class="notification-content" id="pending_${id}">
+            <p id="notificationMessage">You have a new Pending item From Workshop.</p>
+            <button class="notification-close" onclick="hidefixedNotification('pending_${id}')" aria-label="Close">&times;</button>
+            <button class="notification-view" id="viewPendingBtn" onclick="window.location.href='pendingIssue.html'">View</button>
+        </div>`
+        fixedNotification.innerHTML = html;
+        }
+    });
+    onValue(ref(db, 'unservicable_storeman/workshop/'), (snapshot) => {
+        if(snapshot.exists()){
+            let html = fixedNotification.innerHTML;
+            const id = Date.now();
+            html += `<div class="notification-content" id="pending_${id}">
+            <p id="notificationMessage">You have a new <strong>Unservicable</strong> item From Workshop.</p>
+            <button class="notification-close" onclick="hidefixedNotification('pending_${id}')" aria-label="Close">&times;</button>
+            <button class="notification-view" id="viewPendingBtn" onclick="window.location.href='pendingunsvc.html'">View</button>
+        </div>`
+        fixedNotification.innerHTML = html;
+        }
+    });
+}
 
-if(role==='eo'){
+if(role==='workshop'){
     pendingnewitemdata();
     setTimeout(() => {
         pendingnewtotalitemdata();
     }, 1000);
+        newPendingItemNotification();
 }else{
     document.getElementById('newpendingitem').style.display='none';
     document.getElementById('newpendingtotalitem').style.display='none';
