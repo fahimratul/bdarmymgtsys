@@ -15,7 +15,19 @@
     <title>Offr Inventory</title>
 </head>
 <body>
-    <div id="notification-toast" class="notification-toast"></div>   
+    <div id="notification-toast" class="notification-toast"></div> 
+    <div id="fixednotification" class="fixednotification">
+        <div class="notification-content" id="pending">
+            <p id="notificationMessage">You have a new Pending item.</p>
+            <button class="notification-close" onclick="hidefixedNotification('pending')" aria-label="Close">&times;</button>
+            <button class="notification-view" id="viewPendingBtn" onclick="window.location.href='pendingIssue.html'">View</button>
+        </div>
+        <div class="notification-content" id="unservicable">
+            <p id="notificationMessage">You have new unservicable items</p>
+            <button class="notification-close" onclick="hidefixedNotification('unservicable')" aria-label="Close">&times;</button>
+            <button class="notification-view" id="viewPendingBtn" onclick="window.location.href='pendingIssue.html'">View</button>
+        </div>
+    </div>  
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay">
         <div class="spinner"></div>
@@ -361,6 +373,10 @@
                     document.getElementById('notforclo').style.display='block';
                 }
         });
+        function hidefixedNotification(notificationId){
+            const fixedNotification = document.getElementById(notificationId);
+            fixedNotification.style.display = 'none';
+        }
     </script>
 
     <script type="module" src="js/officer.js" defer></script>

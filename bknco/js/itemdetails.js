@@ -232,7 +232,7 @@ function returnItemToStore(recordKey) {
     loaditemhistory();
     loaditemsdetails();
     if(role === 'bknco'){
-        const notificationPath = `eo/${Date.now()}`;
+        const notificationPath = `notification/eo/${Date.now()}`;
         set(ref(db, notificationPath), {
             from: 'BKNCO Inventory',
             date: new Date().toLocaleString(),
@@ -286,7 +286,7 @@ function markAsServicable(recordKey) {
     loaditemunsvc();
     loaditemsdetails();
     if(role === 'bknco'){
-        const notificationPath = `eo/${Date.now()}`;
+        const notificationPath = `notification/eo/${Date.now()}`;
         set(ref(db, notificationPath), {
             from: 'BKNCO Inventory',
             date: new Date().toLocaleString(),

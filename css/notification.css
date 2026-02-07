@@ -219,3 +219,46 @@
 .delete-btn:hover {
     background: linear-gradient(135deg, #770303 0%, #ea6683 100%);
 }
+
+.fixednotification {
+    position: fixed;
+    top: 60px;
+    right: 20px;
+    background: transparent;  
+    z-index: 9000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 300px;
+}
+
+.notification-content {
+    background: white;
+    border-radius: 8px;
+    backdrop-filter: blur(20px);
+    font-size: 14px;
+    color: #333;
+    padding: 10px 16px;
+    width: 100%;
+    border: 1px solid rgba(135, 189, 255, 0.762);
+}
+.notification-close, .notification-view {
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 14px;
+    cursor: pointer;
+}
+.notification-close {
+    background-color: #ef4444;
+}
+.notification-close:hover {
+    background-color: #dc2626;
+}
+.notification-view {
+    background-color: #3b82f6;
+}
+.notification-view:hover {
+    background-color: #2563eb;
+}

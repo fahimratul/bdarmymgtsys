@@ -231,6 +231,18 @@ function returnItemToStore(recordKey) {
         set(ref(db, 'clonotification'), true);
     loaditemhistory();
     loaditemsdetails();
+    if(role === 'bqms'){
+        const notificationPath = `notification/lo/${Date.now()}`;
+        set(ref(db, notificationPath), {
+            from: 'BQMS Inventory',
+            date: new Date().toLocaleString(),
+            msg: `Item  returned to store: ${dataCache.name}, Quantity: ${quantity}, From Location: ${record.location}`,
+        }).then(() => {
+            // You can add any additional actions here if needed after the notification is set
+        }).catch((error) => {
+            console.error('Error sending notification to EO:', error);
+        });
+    }
 }
 
 
@@ -269,10 +281,24 @@ function markAsServicable(recordKey) {
         msg: `Item Marked as Servicable: ${dataCache.name}, Quantity: ${quantity}`,
     });
     
-        set(ref(db, 'clonotification'), true);
+    set(ref(db, 'clonotification'), true);
+    
     loaditemhistory();
     loaditemunsvc();
     loaditemsdetails();
+
+    if(role === 'bqms'){
+        const notificationPath = `notification/lo/${Date.now()}`;
+        set(ref(db, notificationPath), {
+            from: 'BQMS Inventory',
+            date: new Date().toLocaleString(),
+            msg: `Item  marked as servicable: ${dataCache.name}, Quantity: ${quantity}, From Location: ${record.location}`,
+        }).then(() => {
+            // You can add any additional actions here if needed after the notification is set
+        }).catch((error) => {
+            console.error('Error sending notification to EO:', error);
+        });
+    }
 }
 
 

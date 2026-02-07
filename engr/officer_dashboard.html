@@ -351,7 +351,7 @@
             userInfoContainer.style.display = 'none';
             console.log('Password Change Modal Opened');
         }
-        window.addEventListener('DOMContentLoaded', () => {
+                window.addEventListener('DOMContentLoaded', () => {
                 const role=sessionStorage.getItem('role');
                 if(role==='clo' || role === 'cc'){
                     document.getElementById('notforclo').style.display='none';
@@ -361,6 +361,10 @@
                     document.getElementById('notforclo').style.display='block';
                 }
         });
+        function hidefixedNotification(notificationId){
+            const fixedNotification = document.getElementById(notificationId);
+            fixedNotification.style.display = 'none';
+        }
     </script>
 
     <script type="module" src="js/officer.js" defer></script>

@@ -228,9 +228,21 @@ function returnItemToStore(recordKey) {
         msg: `Item Returned to Store: ${dataCache.name}, Quantity: ${quantity}  Location: ${record.location}`,
     });
     
-        set(ref(db, 'clonotification'), true);
+    set(ref(db, 'clonotification'), true);
     loaditemhistory();
     loaditemsdetails();
+    if(role === 'engrnco'){
+        const notificationPath = `notification/eo/${Date.now()}`;
+        set(ref(db, notificationPath), {
+            from: 'Engineering Inventory',
+            date: new Date().toLocaleString(),
+            msg: `Item  marked as servicable: ${dataCache.name}, Quantity: ${quantity}, From Location: ${record.location}`,
+        }).then(() => {
+            // You can add any additional actions here if needed after the notification is set
+        }).catch((error) => {
+            console.error('Error sending notification to EO:', error);
+        });
+    }
 }
 
 
@@ -271,6 +283,18 @@ function markAsServicable(recordKey) {
     loaditemhistory();
     loaditemunsvc();
     loaditemsdetails();
+    if(role === 'engrnco'){
+        const notificationPath = `notification/eo/${Date.now()}`;
+        set(ref(db, notificationPath), {
+            from: 'Engineering Inventory',
+            date: new Date().toLocaleString(),
+            msg: `Item  marked as servicable: ${dataCache.name}, Quantity: ${quantity}, From Location: ${record.location}`,
+        }).then(() => {
+            // You can add any additional actions here if needed after the notification is set
+        }).catch((error) => {
+            console.error('Error sending notification to EO:', error);
+        });
+    }
 }
 
 

@@ -308,7 +308,7 @@ function pendingnewtotalitemdata() {
     const newpendingtotalitem = document.getElementById('newpendingtotalitem');
     const newitemtotalTableBody = document.getElementById('newitemtotalTableBody');
 
-    get(dbRef).then((snapshot) => {
+    onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
         newtotalitemCache = data || {};
         let html = '';
@@ -359,7 +359,7 @@ function pendingnewtotalitemdata() {
         });
 
 
-    }).catch((error) => {
+    },(error) => {
         console.error('Error loading pending new item data:', error);
     });
 } 
@@ -459,6 +459,10 @@ function rejectNewItem(key) {
 }
 
 
+function newPendingItemNotification(){
+    
+}
+
 if(role==='eo'){
     pendingnewitemdata();
     setTimeout(() => {
@@ -525,7 +529,7 @@ editForm?.addEventListener('submit', (e) => {
     const instore = dataCache[currentEditKey]?.instore || 0;
     const newinstore = (parseInt(inputs.total.value, 10) || 0) - total + instore;
     const newservicable = newinstore - (dataCache[currentEditKey]?.unservicable || 0);
-   const updated = {
+    const updated = {
         ...dataCache[currentEditKey],
         name: inputs.name.value.trim(),
         authorized: parseInt(inputs.authorized.value, 10) || 0,

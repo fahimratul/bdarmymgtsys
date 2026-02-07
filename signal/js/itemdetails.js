@@ -337,6 +337,18 @@ function returnItemToStore(recordKey) {
         set(ref(db, 'clonotification'), true);
     loaditemhistory();
     loaditemsdetails();
+    if(role === 'mtnco' || role === 'mtjco'){
+        const notificationPath = `notification/so/${Date.now()}`;
+        set(ref(db, notificationPath), {
+            from: 'MT Inventory',
+            date: new Date().toLocaleString(),
+            msg: `Item returned: ${dataCache.name}, Quantity: ${quantity}, From Location: ${record.location}`,
+        }).then(() => {
+            // You can add any additional actions here if needed after the notification is set
+        }).catch((error) => {
+            console.error('Error sending notification to SO:', error);
+        });
+    }
 }
 
 
@@ -428,6 +440,7 @@ unsvcForm.addEventListener('submit', (e) => {
     loaditemhistory();
     loaditemunsvc();
     loaditemsdetails();
+    
 });
 
 
@@ -468,6 +481,18 @@ function markAsServicable(recordKey) {
     loaditemhistory();
     loaditemunsvc();
     loaditemsdetails();
+    if(role === 'mtnco' || role === 'mtjco'){
+        const notificationPath = `notification/so/${Date.now()}`;
+        set(ref(db, notificationPath), {
+            from: 'MT Inventory',
+            date: new Date().toLocaleString(),
+            msg: `Item  marked as servicable: ${dataCache.name}, Quantity: ${quantity}, From Location: ${record.location}`,
+        }).then(() => {
+            // You can add any additional actions here if needed after the notification is set
+        }).catch((error) => {
+            console.error('Error sending notification to SO:', error);
+        });
+    }
 }
 
 
