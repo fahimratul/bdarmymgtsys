@@ -310,7 +310,7 @@ function pendingnewtotalitemdata() {
     const newpendingtotalitem = document.getElementById('newpendingtotalitem');
     const newitemtotalTableBody = document.getElementById('newitemtotalTableBody');
 
-        onValue(dbRef, (snapshot) => {
+    onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
         newtotalitemCache = data || {};
         let html = '';

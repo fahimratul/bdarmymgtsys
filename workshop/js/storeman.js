@@ -99,12 +99,18 @@ function loaditemdata() {
 
     const loadingOverlay = document.getElementById('loadingOverlay');
 
-    get(dbRef).then((snapshot) => {
+    onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
         dataCache = data || {};
         let serial = 1;
         const tableBody = document.getElementById('itemTableBody');
-        
+        let datainfo={
+            total:0,
+            servicable:0,
+            unservicable:0,
+            issue:0,
+            instore:0
+        };
         if (!tableBody) {
             console.error('itemTableBody element not found');
             if (loadingOverlay) loadingOverlay.classList.add('hidden');
@@ -209,7 +215,7 @@ function loaditemdata() {
                 loadingOverlay.classList.add('hidden');
             }, 100);
         }
-    }).catch((error) => {
+    }, (error) => {
         console.error('Error loading data:', error);
         const tableBody = document.getElementById('itemTableBody');
         if (tableBody) {

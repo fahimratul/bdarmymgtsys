@@ -167,14 +167,14 @@ document.getElementById('notification_menu').addEventListener('click', () => {
 
 
 function loadvehicledata() {
-    let vehicleinfo = {
-         total: 0, alr: 0, asr: 0, inmaintenance: 0, grounded: 0 
-    };
 
     const dbRef = ref(db, `vehiclelist/`);
     const loadingOverlay = document.getElementById('loadingOverlay');
     onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
+        let vehicleinfo = {
+            total: 0, alr: 0, asr: 0, inmaintenance: 0, grounded: 0 
+        };
         if (data) {
             for (const key in data) {
                 vehicleinfo.total += 1;

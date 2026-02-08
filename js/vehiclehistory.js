@@ -77,7 +77,7 @@ function loadvehicledata() {
     vehicleKey = urlparams.get('key');
     const dbRef = ref(db, `vehiclelist/` + vehicleKey);
     const loadingOverlay = document.getElementById('loadingOverlay');
-    get(dbRef).then((snapshot) => {
+    onValue(dbRef, (snapshot) => {
         dataCache = snapshot.val();
         
         if (dataCache) {
@@ -111,13 +111,6 @@ function loadvehicledata() {
         } else {
             console.log('No vehicle data available');
         }      
-        if (loadingOverlay) {
-            setTimeout(() => {
-                loadingOverlay.classList.add('hidden');
-            }, 100);
-        }
-    }).catch((error) => {
-        console.error('Error loading data:', error);
         if (loadingOverlay) {
             setTimeout(() => {
                 loadingOverlay.classList.add('hidden');
@@ -164,7 +157,7 @@ function loadvehiclehistory() {
 
     const dbRef = ref(db, `vehiclelist/`+ vehicleKey +`/history`);
     const loadingOverlay = document.getElementById('loadingOverlay');
-    get(dbRef).then((snapshot) => {
+    onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
         vehiclehistoryCache = data || {};
         const tableBody = document.getElementById('history-tbody');
@@ -200,7 +193,7 @@ function loadvehiclehistory() {
                 loadingOverlay.classList.add('hidden');
             }, 100);
         }
-    }).catch((error) => {
+    }, (error) => {
         console.error('Error loading data:', error);
         const tableBody = document.getElementById('history-tbody');
         if (tableBody) {

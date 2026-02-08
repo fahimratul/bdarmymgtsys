@@ -99,12 +99,18 @@ function loaditemdata() {
 
     const loadingOverlay = document.getElementById('loadingOverlay');
 
-    get(dbRef).then((snapshot) => {
+    onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
         dataCache = data || {};
         let serial = 1;
         const tableBody = document.getElementById('itemTableBody');
-        
+        let datainfo={
+            total:0,
+            servicable:0,
+            unservicable:0,
+            issue:0,
+            instore:0
+        };
         if (!tableBody) {
             console.error('itemTableBody element not found');
             if (loadingOverlay) loadingOverlay.classList.add('hidden');
@@ -206,21 +212,10 @@ function loaditemdata() {
         
         // Update filter button states with counts
         updateFilterButtonStates();
-    }).catch((error) => {
-        console.error('Error loading data:', error);
-        const tableBody = document.getElementById('itemTableBody');
-        if (tableBody) {
-            tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem; color: #e53e3e;">Error loading data. Please refresh the page.</td></tr>';
-        }
-        // Hide loading overlay even on error
-        if (loadingOverlay) {
-            setTimeout(() => {
-                loadingOverlay.classList.add('hidden');
-            }, 100);
-        }
-        
-        // Update filter button states even on error
-        updateFilterButtonStates();
+    }, (error) => {
+        console.error('Error loading inventory data:', error);
+        if (loadingOverlay) loadingOverlay.classList.add('hidden');
+        showNotification("Failed to load inventory data. Please try again later.", "error", "Load Failed");
     });
 }
 
