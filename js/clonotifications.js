@@ -68,7 +68,7 @@ let notificationDataCache = {};
 function loadnotifactions() {
     let dbref = ref(db, `clo_cc_notification/`);
     const loadingOverlay = document.getElementById('loadingOverlay'); 
-    get(dbref).then((snapshot) => {
+    onValue(dbref, (snapshot) => {
         notificationDataCache = snapshot.val();
         let html = '';
         notificationbody.style.display='flex';
@@ -98,7 +98,7 @@ function loadnotifactions() {
             console.log("No Notifications Found");
             loadingOverlay.classList.add('hidden');
         } 
-    }).catch((error) => {
+    }, (error) => {
         console.error('Error loading notifications:', error);
         loadingOverlay.classList.add('hidden');
         showNotification("Failed to load notifications. Please try again later.", "error", "Load Failed");

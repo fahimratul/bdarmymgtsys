@@ -496,6 +496,7 @@ if(role==='so'){
     setTimeout(() => {
         pendingnewtotalitemdata();
     }, 1000);
+        newPendingItemNotification();
 }
 
 else{
