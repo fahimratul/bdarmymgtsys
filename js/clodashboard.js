@@ -102,7 +102,7 @@ function loaditemdata(type, path) {
     let totalItemsCount = 0;
     const loadingOverlay = document.getElementById('loadingOverlay');
 
-    get(dbRef).then((snapshot) => {
+    onValue(dbRef, (snapshot) => {
         if (snapshot.exists()) {
             totalItemsCount =snapshot.size;
             totalitemElement.textContent = totalItemsCount;
@@ -112,15 +112,6 @@ function loaditemdata(type, path) {
             console.log(`No data available in ${type} inventory.`);
         }   
             
-        if (loadingOverlay) {
-            setTimeout(() => {
-                loadingOverlay.classList.add('hidden');
-            }, 100);
-        }
-    }).catch((error) => {
-        console.error('Error loading data:', error);
-        showNotification("Error loading data. Please try again.", "error", "Load Failed");
-        // Hide loading overlay even on error
         if (loadingOverlay) {
             setTimeout(() => {
                 loadingOverlay.classList.add('hidden');
@@ -138,11 +129,6 @@ loaditemdata('bknco', 'bkncoinventory/main/');
 loaditemdata('bqms', 'bqmsinventory/main/');
 loaditemdata('workshop', 'workshop/main/');
 
-// Auto-reload page every 30 seconds
-setInterval(() => {
-    console.log('Auto-reloading page...');
-    window.location.reload();
-}, 30000); // 30 seconds = 30000 milliseconds
 
 const logoutButton = document.getElementById('logoutButton');
 
@@ -157,11 +143,11 @@ logoutButton?.addEventListener('click', () => {
 
 window.addEventListener('DOMContentLoaded', () => {
     if(role=== 'clo'){
-        get(ref(db, 'clonotification')).then((snapshot) => {
+        onValue(ref(db, 'clonotification'), (snapshot) => {
             if (snapshot.exists()) {
                 document.getElementById('notificationCount').style.display='block';
             }
-        }).catch((error) => {
+        }, (error) => {
             console.error(error);
         });
     }  
@@ -187,7 +173,7 @@ function loadvehicledata() {
 
     const dbRef = ref(db, `vehiclelist/`);
     const loadingOverlay = document.getElementById('loadingOverlay');
-    get(dbRef).then((snapshot) => {
+    onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
         if (data) {
             for (const key in data) {
@@ -220,16 +206,9 @@ function loadvehicledata() {
             document.getElementById('loadingOverlay').classList.add('hidden');
             }, 50);
         }
-    }).catch((error) => {
-        console.error('Error loading data:', error);
-        if (loadingOverlay) {
-            setTimeout(() => {
-
-            document.getElementById('loadingOverlay').classList.add('hidden');
-            }, 50);
-        }
     });
 }
+
 
 loadvehicledata();
 
