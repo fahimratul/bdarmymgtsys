@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
 
-import { getDatabase,set,  get, ref, update , remove} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getDatabase,set,  get, ref, update , remove, onValue} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
 
 const firebaseConfig = {
@@ -42,47 +42,11 @@ window.addEventListener('DOMContentLoaded', () => {
  
 
 
-import {showNotification} from './notification.js';
+import {showNotification} from './../../js/notification.js';
 console.log(" Script Loaded");
 
-let dataCache = {};
-let currentEditKey = null;
-const modal = document.getElementById('editModal');
-const modalCloseBtn = document.getElementById('modalCloseBtn');
-const cancelEditBtn = document.getElementById('cancelEditBtn');
-const editForm = document.getElementById('editForm');
-const inputs = {
-    name: document.getElementById('editName'),
-    authorized: document.getElementById('editAuthorized'),
-    total: document.getElementById('edittotal'),
-    servicable: document.getElementById('editServicable'),
-    unservicable: document.getElementById('editunservicable'),
-    issue: document.getElementById('editIssue'),
-    instore: document.getElementById('editInstore'),
-};
-
-
-
-inputs.issue.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (!currentEditKey) return;   
-    window.location.href = `itemdetails.html?key=${currentEditKey}&type=mtnco`;
-});
-
-inputs.unservicable.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (!currentEditKey) return;
-    window.location.href = `itemdetails.html?key=${currentEditKey}&type=mtnco`;
-});
 
 let ranklist ={
-    snk:"Sainik",
-    lcpl:"Lance Corporal",
-    cpl:"Corporal",
-    sgt:"Sergeant",
-    wo:"Warrant Officer",
-    swo:"Senior Warrant Officer",
-    mwo:"Master Warrant Officer",
     lt:"Lieutenant",
     capt:"Captain",
     major:"Major",
@@ -125,100 +89,14 @@ window.addEventListener('DOMContentLoaded', () => {
     const banumber=sessionStorage.getItem('baNumber');
     document.getElementById('username').textContent='Name: ' + username;
     document.getElementById('rank').textContent=ranklist[rank] ? 'Rank: ' + ranklist[rank] : 'Rank: ' + rank;
-    if(role === 'mtjco' || role === 'mtnco'){
-    document.getElementById('banumber').textContent='Army No: ' + banumber;
-    }
-    else
-    {
     document.getElementById('banumber').textContent='BA Number: ' + banumber;
-    }
 });
 
 
 
 let vehicleDataCache = {};
 
-    let vehicleinfoclass = { 
-        classA:{
-            total:0,
-            alr:0,
-            asr:0,
-            inmaintenance:0,
-            grounded:0
-        },
-        classB:{
-            total:0,
-            alr:0,
-            asr:0,
-            inmaintenance:0,
-            grounded:0
-        },
-        spl:{
-            total:0,
-            alr:0,
-            asr:0,
-            inmaintenance:0,
-            grounded:0
-        },
-        sp:{
-            total:0,
-            alr:0,
-            asr:0,
-            inmaintenance:0,
-            grounded:0
-        },
-        watertrailer:{
-            total:0,
-            alr:0,
-            asr:0,
-            inmaintenance:0,
-            grounded:0
-        },
-        lowbed:{
-            total:0,
-            alr:0,
-            asr:0,
-            inmaintenance:0,
-            grounded:0
-        }
-    };
-    let vehicleinfo = {
-        total:{
-            total:0,
-            alr:0,
-            asr:0,
-            inmaintenance:0,
-            grounded:0
-        },
-        bayoo:{
-            total:0,
-            alr:0,
-            asr:0,
-            inmaintenance:0,
-            grounded:0
-        },
-        drodro:{
-            total:0,
-            alr:0,
-            asr:0,
-            inmaintenance:0,
-            grounded:0
-        },
-        rhoo:{
-            total:0,
-            alr:0,
-            asr:0,
-            inmaintenance:0,
-            grounded:0
-        },
-        ndromo:{
-            total:0,
-            alr:0,
-            asr:0,
-            inmaintenance:0,
-            grounded:0
-        }
-    };
+
 
 
 function loadvehicledata() {
@@ -226,12 +104,92 @@ function loadvehicledata() {
 
     const dbRef = ref(db, `vehiclelist/`);
     const loadingOverlay = document.getElementById('loadingOverlay');
-    get(dbRef).then((snapshot) => {
+    onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
         vehicleDataCache = data || {};
         let serial = 1;
         const tableBody = document.getElementById('VehicleTableBody');
-        
+        let vehicleinfoclass = { 
+            classA:{
+                total:0,
+                alr:0,
+                asr:0,
+                inmaintenance:0,
+                grounded:0
+            },
+            classB:{
+                total:0,
+                alr:0,
+                asr:0,
+                inmaintenance:0,
+                grounded:0
+            },
+            spl:{
+                total:0,
+                alr:0,
+                asr:0,
+                inmaintenance:0,
+                grounded:0
+            },
+            sp:{
+                total:0,
+                alr:0,
+                asr:0,
+                inmaintenance:0,
+                grounded:0
+            },
+            watertrailer:{
+                total:0,
+                alr:0,
+                asr:0,
+                inmaintenance:0,
+                grounded:0
+            },
+            lowbed:{
+                total:0,
+                alr:0,
+                asr:0,
+                inmaintenance:0,
+                grounded:0
+            }
+        };
+        let vehicleinfo = {
+            total:{
+                total:0,
+                alr:0,
+                asr:0,
+                inmaintenance:0,
+                grounded:0
+            },
+            bayoo:{
+                total:0,
+                alr:0,
+                asr:0,
+                inmaintenance:0,
+                grounded:0
+            },
+            drodro:{
+                total:0,
+                alr:0,
+                asr:0,
+                inmaintenance:0,
+                grounded:0
+            },
+            rhoo:{
+                total:0,
+                alr:0,
+                asr:0,
+                inmaintenance:0,
+                grounded:0
+            },
+            ndromo:{
+                total:0,
+                alr:0,
+                asr:0,
+                inmaintenance:0,
+                grounded:0
+            }
+        };
         if (!tableBody) {
             console.error('VehicleTableBody element not found');
             if (loadingOverlay) loadingOverlay.classList.add('hidden');
@@ -314,7 +272,7 @@ function loadvehicledata() {
                 loadingOverlay.classList.add('hidden');
             }, 100);
         }
-    }).catch((error) => {
+    },(error) => {
         console.error('Error loading data:', error);
         const tableBody = document.getElementById('VehicleTableBody');
         if (tableBody) {
@@ -333,7 +291,7 @@ let notificationDataCache = {};
 const notificationbody = document.getElementById('officer_notification');
 function loadnotifactions() {
     const dbRef = ref(db, 'officernotification/mto/notifications');
-    get(dbRef).then((snapshot) => {
+    onValue(dbRef, (snapshot) => {
         notificationDataCache = snapshot.val();
         let html = '';
         notificationbody.style.display='flex';
@@ -341,7 +299,7 @@ function loadnotifactions() {
             for (const key in notificationDataCache) {
                 const notification = notificationDataCache[key];
                 const message = notification.msg || '';
-                html += `<div class="msg">
+                html += `<div class="msg" id="notification-${key}">
                         <p class="content">${message}<br><br> </p>
                         <button class="accept-btn" data-key="${key}">Accept</button>
                         <button class="reject-btn" data-key="${key}">Reject</button> 
@@ -367,14 +325,16 @@ function loadnotifactions() {
                 });
             });
         }
-    }).catch((error) => {
+    },(error) => {
         console.error('Error loading notifications:', error);
     });
 }
+
 let campchangeNotificationDataCache = {};
+
 function loadcampchangeNotifications() {
     const dbRef = ref(db, 'officerapproval/campchange/');
-    get(dbRef).then((snapshot) => {
+    onValue(dbRef, (snapshot) => {
         campchangeNotificationDataCache = snapshot.val();
         let html = '';
         notificationbody.style.display='flex';
@@ -382,7 +342,7 @@ function loadcampchangeNotifications() {
             for (const key in campchangeNotificationDataCache) {
                 const notification = campchangeNotificationDataCache[key];
                 const message = notification.msg || '';
-                html += `<div class="msg">
+                html += `<div class="msg" id="campchange-notification-${key}">
                         <p class="content">${message}<br><br> </p>
                         <button class="accept-btn" data-key="${key}">Accept</button>
                         <button class="reject-btn" data-key="${key}">Reject</button> 
@@ -408,7 +368,7 @@ function loadcampchangeNotifications() {
                 });
             });
         }
-    }).catch((error) => {
+    },(error) => {
         console.error('Error loading notifications:', error);
     });
 }
@@ -456,10 +416,7 @@ function acceptCampchange(key) {
         console.error('Error sending notification to CLOC:', error);
         });    
     set(ref(db, 'clonotification'), true);
-    setTimeout(() => {
-        window.location.reload();
-        showNotification('Camp change request accepted successfully.', 'success', 'Acceptance Successful');
-    }, 500);
+    document.getElementById('campchange-notification-'+key).remove();
 }
 function rejectCampchange(key) {
     const notificationKey = key;
@@ -474,9 +431,9 @@ function rejectCampchange(key) {
         console.error('Error removing notification:', error);
         showNotification('Failed to reject camp change request. Please try again later.', 'error', 'Rejection Failed');
     });
-
+    document.getElementById('campchange-notification-'+key).remove();
     setTimeout(() => {
-        window.location.reload();
+        loadcampchangeNotifications();
     }, 500);
 }        
 
@@ -521,6 +478,8 @@ function acceptNotificationMTO(key) {
     }   
     updateVehicleHistoryRecord(vehiclekey, event, details, date, key);
     const notificationData = {
+        from: 'MT',
+        date: new Date().toISOString,
         msg: 'Vehicle Number ' + vehiclekey + ' '+ msg + ' Details: ' + details,
     };
     update(dbref, notificationData)
@@ -539,10 +498,7 @@ function acceptNotificationMTO(key) {
         console.error('Error updating vehicle condition:', error);
     });
     loadvehicledata();
-    setTimeout(() => {
-        loadnotifactions();
-        showNotification('Vehicle history updated successfully.', 'success', 'Update Successful');
-    }, 500);
+    document.getElementById(`notification-${key}`).remove();
 }
 
 function rejectNotificationMTO(key) {
@@ -552,30 +508,11 @@ function rejectNotificationMTO(key) {
     }).catch((error) => {
         console.error('Error removing notification:', error);
     });
-    setTimeout(() => {
-        loadnotifactions();
-        showNotification('Notification rejected successfully.', 'success', 'Rejection Successful');
-    }, 500);
+    document.getElementById(`notification-${key}`).remove();
 }
 
 
 loadvehicledata();
-
-function searchItems() {
-    const searchInput = document.getElementById('searchInput');
-    const tableBody = document.getElementById('itemTableBody');
-    const rows = tableBody.getElementsByTagName('tr');
-    const searchTerm = searchInput.value.toLowerCase();
-
-    Array.from(rows).forEach(row => {
-        const itemName = row.getAttribute('id');
-        if (itemName && itemName.toLowerCase().includes(searchTerm)) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        } 
-    });
-}
 
 function searchVehicles() {
     const searchInput = document.getElementById('searchInputVehicle');
@@ -593,97 +530,14 @@ function searchVehicles() {
 }
 
 
- 
 document.getElementById('searchInputVehicle')?.addEventListener('keyup', searchVehicles);
 
-function openEditModal(key) {
-    const item = dataCache?.[key];
-    if (!item) return;
-    currentEditKey = key;
-
-    inputs.name.value = item.name || '';
-    inputs.authorized.value = item.authorized ?? 'NOS';
-    inputs.total.value = item.total ?? 0;
-    inputs.servicable.value = item.servicable ?? 0;
-    inputs.unservicable.value = item.unservicable ?? 0;
-    inputs.issue.value = item.issue ?? 0;
-    inputs.instore.value = item.instore ?? 0;
-    recalcModalTotals();
-
-    modal.classList.remove('hidden');
-}
-
-function closeEditModal() {
-    modal.classList.add('hidden');
-    currentEditKey = null;
-    editForm.reset();
-    inputs.total.value = '';
-    inputs.servicable.value = '';
-    inputs.unservicable.value = '';
-    inputs.issue.value = '';
-    inputs.instore.value = '';
-}
-
-function recalcModalTotals() {
-    if(Number(inputs.servicable.value) > Number(inputs.total.value)) {
-        showNotification('Servicable quantity cannot exceed Total quantity. Adjusting Servicable to match Total.', 'warning', 'Input Adjusted');
-        inputs.servicable.value = inputs.total.value;
-    }
-    if(Number(inputs.issue.value) > Number(inputs.servicable.value)) {
-        showNotification('Issued quantity cannot exceed Servicable quantity. Adjusting Issued to match Servicable.', 'warning', 'Input Adjusted');
-        inputs.issue.value = inputs.servicable.value;
-    }
-    const unservicable = (Number(inputs.total.value) || 0) - (Number(inputs.servicable.value) || 0);
-    const instore = (Number(inputs.total.value) || 0) - (Number(inputs.issue.value) || 0);
-    inputs.unservicable.value = Math.max(unservicable, 0);
-    inputs.instore.value = Math.max(instore, 0);
-}
-
-[inputs.total, inputs.servicable, inputs.issue].forEach(el => {
-    el.addEventListener('input', recalcModalTotals);
-});
-
-modalCloseBtn?.addEventListener('click', closeEditModal);
-cancelEditBtn?.addEventListener('click', closeEditModal);
-modal?.addEventListener('click', (e) => {
-    if (e.target === modal) closeEditModal();
-});
-
-editForm?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    if (!currentEditKey) return;
-
-    const updated = {
-        ...dataCache[currentEditKey],
-        name: inputs.name.value.trim(),
-        authorized: inputs.authorized.value,
-        total: Number(inputs.total.value) || 0,
-        servicable: Number(inputs.servicable.value) || 0,
-        issue: Number(inputs.issue.value) || 0,
-        unservicable: Number(inputs.unservicable.value) || 0,
-        instore: Number(inputs.instore.value) || 0
-    };
-    updated.unservicable = updated.total - updated.servicable;
-    updated.instore = Math.max(updated.total - updated.issue, 0);
-
-    console.table({ key: currentEditKey, updated });
-    update(ref(db, 'mtinventory/' + currentEditKey), updated)
-    .then(() => {
-        console.log('Data updated successfully');
-        showNotification('Inventory item updated successfully.', 'success', 'Update Successful');
-    })
-    .catch((error) => {
-        console.error('Error updating data:', error);
-    });
-
-    closeEditModal();
-});
 
 const logoutButton = document.getElementById('logoutButton');
 
 logoutButton?.addEventListener('click', () => {
     sessionStorage.removeItem('baNumber');
-    window.location.href = 'index.html';
+    window.location.href = './../index.html';
 });
 
 
@@ -691,7 +545,7 @@ function changePassword() {
     const baNumber = sessionStorage.getItem('baNumber');
     if (!baNumber) {
         console.error('BA Number not found in session storage.');
-        window.location.href = 'login.html';
+        window.location.href = './../login.html';
         return;
     }
     const currentPassword = document.getElementById('password').value;
@@ -717,7 +571,7 @@ function changePassword() {
                 .then(() => {
                     showNotification("Password changed successfully", "success", "Success");
                     sessionStorage.clear();
-                    window.location.href = 'index.html';
+                    window.location.href = './../index.html';
                 })
                 .catch((error) => {
                     console.error("Error updating password:", error);

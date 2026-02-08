@@ -98,7 +98,7 @@ function handlelogin() {
                             window.location.href = './bqms/officer_dashboard.html';
                         }
                         else if(role === 'mto'){
-                            window.location.href ='mt_dashboard.html';
+                            window.location.href ='./vehicle/mt_dashboard.html';
                         }
                         else if(role === 'eo'){
                             console.log("Redirecting to engineer dashboard");
@@ -146,7 +146,7 @@ function handlelogin() {
                     } 
                     else if (role_type === 'mtjconco'){
                         if(role === 'mtnco' || role === 'mtjco'){
-                            window.location.href ='./mt_dashboard_storeman.html';
+                            window.location.href ='./vehicle/mt_dashboard_storeman.html';
                             return;
                         }
                         else{

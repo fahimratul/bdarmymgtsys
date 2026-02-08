@@ -82,7 +82,7 @@ form.addEventListener('submit', (event) => {
 
 
 function checkInventoryItem(number) {
-    const dbRef = ref(db, `vehiclelist/` + number);
+    const dbRef = ref(db, `vehiclelist/main/` + number);
     return get(dbRef).then((snapshot) => {
         return snapshot.exists();
     }).catch((error) => {
@@ -98,7 +98,7 @@ function writeInventoryItem(baNumber, classtype, conditionValue, typeofvehicleVa
             console.log("Vehicle with this name already exists:", baNumber);
             showNotification(`Vehicle with ${baNumber} number already exists. Please choose a different number.`, "error", "Error");
         } else {    
-                set(ref(db, `vehiclelist/` + baNumber),{
+                set(ref(db, `vehiclelist/main/` + baNumber),{
                 vehicleNumber: baNumber,
                 unnumber: unnumberValue,
                 typeofvehicle: typeofvehicleValue,
@@ -116,3 +116,6 @@ function writeInventoryItem(baNumber, classtype, conditionValue, typeofvehicleVa
 }
 
 console.log("Add Vehicle Script Executed");
+
+
+

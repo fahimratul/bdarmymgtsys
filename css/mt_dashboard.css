@@ -170,12 +170,9 @@
     #transportTableContainer{
         flex-direction: column;
     }
-    .dashboard-card{
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        scrollbar-width: thin;
+    .card{
+        flex: 1 1 calc(50% - 2rem);
     }
-    
 }
 
 .hidden{
