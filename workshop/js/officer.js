@@ -104,13 +104,7 @@ const inputs = {
 };
 
 function loaditemdata() {
-    let datainfo={
-        total:0,
-        servicable:0,
-        unservicable:0,
-        issue:0,
-        instore:0
-    };
+     
     let dbRef =ref(db, 'workshop/main/');
 
     const loadingOverlay = document.getElementById('loadingOverlay');
@@ -121,7 +115,13 @@ function loaditemdata() {
             dataCache = data || {};
             let serial = 1;
             const tableBody = document.getElementById('itemTableBody');
-            
+            let datainfo={
+                total:0,
+                servicable:0,
+                unservicable:0,
+                issue:0,
+                instore:0
+            };
             if (!tableBody) {
                 console.error('itemTableBody element not found');
                 if (loadingOverlay) loadingOverlay.classList.add('hidden');
@@ -469,7 +469,7 @@ function newPendingItemNotification(){
             let html = fixedNotification.innerHTML;
             const id = Date.now();
             html += `<div class="notification-content" id="pending_${id}">
-            <p id="notificationMessage">You have a new Pending item From Workshop.</p>
+            <p id="notificationMessage"> You have a new <strong> Pending Issue item </strong>  From Workshop.</p>
             <button class="notification-close" onclick="hidefixedNotification('pending_${id}')" aria-label="Close">&times;</button>
             <button class="notification-view" id="viewPendingBtn" onclick="window.location.href='pendingIssue.html'">View</button>
         </div>`

@@ -94,23 +94,23 @@ const inputs = {
 };
 
 function loaditemdata() {
-    let datainfo={
-        total:0,
-        servicable:0,
-        unservicable:0,
-        issue:0,
-        instore:0
-    };
+     
     let dbRef =ref(db, 'workshop/main/');
 
     const loadingOverlay = document.getElementById('loadingOverlay');
 
-    get(dbRef).then((snapshot) => {
+    onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
         dataCache = data || {};
         let serial = 1;
         const tableBody = document.getElementById('itemTableBody');
-        
+        let datainfo={
+            total:0,
+            servicable:0,
+            unservicable:0,
+            issue:0,
+            instore:0
+        };
         if (!tableBody) {
             console.error('itemTableBody element not found');
             if (loadingOverlay) loadingOverlay.classList.add('hidden');
@@ -215,7 +215,7 @@ function loaditemdata() {
                 loadingOverlay.classList.add('hidden');
             }, 100);
         }
-    }).catch((error) => {
+    }, (error) => {
         console.error('Error loading data:', error);
         const tableBody = document.getElementById('itemTableBody');
         if (tableBody) {
@@ -868,7 +868,8 @@ function printReport(tableRows, title, summaryData) {
                     <tr>
                         <th>Serial</th>
                         <th>Nomenclature/Name</th>
-                        <th>Authorized Unit</th>
+                        <th>Measurement Unit</th>
+                        <th>Authorized</th>
                         <th>Held</th>
                         <th>Issued</th>
                         <th>In Store</th>
@@ -880,7 +881,6 @@ function printReport(tableRows, title, summaryData) {
                     ${tableRows}
                 </tbody>
             </table>
-            
             <div class="footer">
                 <p>BANRDB Store Management System - Workshop Inventory Report</p>
                 <p>This report was generated automatically on ${currentDate}</p>

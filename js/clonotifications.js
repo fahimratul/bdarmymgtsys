@@ -175,7 +175,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }).catch((error) => {
             console.error(error);
         });
-    }vv  
+    }
 });
 
 document.getElementById('notification_menu').addEventListener('click', () => {

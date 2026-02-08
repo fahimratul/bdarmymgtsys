@@ -104,23 +104,23 @@ const inputs = {
 };
 
 function loaditemdata() {
-    let datainfo={
-        total:0,
-        servicable:0,
-        unservicable:0,
-        issue:0,
-        instore:0
-    };
+     
     let dbRef =ref(db, 'bkncoinventory/main/');
 
     const loadingOverlay = document.getElementById('loadingOverlay');
 
-    onValue(dbRef, (snapshot) => {
+     onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
         dataCache = data || {};
         let serial = 1;
         const tableBody = document.getElementById('itemTableBody');
-        
+        let datainfo={
+            total:0,
+            servicable:0,
+            unservicable:0,
+            issue:0,
+            instore:0
+        };
         if (!tableBody) {
             console.error('itemTableBody element not found');
             if (loadingOverlay) loadingOverlay.classList.add('hidden');
@@ -474,7 +474,7 @@ function newPendingItemNotification(){
             let html = fixedNotification.innerHTML;
             const id = Date.now();
             html += `<div class="notification-content" id="pending_${id}">
-            <p id="notificationMessage">You have a new Pending item From BKNCO.</p>
+            <p id="notificationMessage"> You have a new <strong> Pending Issue item </strong>  From BKNCO.</p>
             <button class="notification-close" onclick="hidefixedNotification('pending_${id}')" aria-label="Close">&times;</button>
             <button class="notification-view" id="viewPendingBtn" onclick="window.location.href='pendingIssue.html'">View</button>
         </div>`
@@ -486,7 +486,7 @@ function newPendingItemNotification(){
             let html = fixedNotification.innerHTML;
             const id = Date.now();
             html += `<div class="notification-content" id="pending_${id}">
-            <p id="notificationMessage">You have a new Pending item to issue From Engr Inventory.</p>
+            <p id="notificationMessage"> You have a new <strong> Pending Issue item </strong>  to issue From Engr Inventory.</p>
             <button class="notification-close" onclick="hidefixedNotification('pending_${id}')" aria-label="Close">&times;</button>
             <button class="notification-view" id="viewPendingBtn" onclick="window.location.href='./../engr/pendingIssue.html'">View</button>
         </div>`
@@ -520,12 +520,48 @@ function newPendingItemNotification(){
     
 
 }
+
+function loadreturnnotification(){
+    const returnnotification = document.getElementById('returnnotification');
+    onValue(ref(db, 'notification/eo/'), (snapshot) => {
+        const notificationData = snapshot.val();
+        if(notificationData){
+            let html = '';
+            for(const key in notificationData){
+                const notification = notificationData[key];
+                const message = notification.msg || '';
+                const date = notification.date || '';
+                const form = notification.form || '';
+                html += `<div class="msgbody">
+                            <h2> ${form}</h2>
+                            <p> ${message}</p>
+                            <p> ${date}</p>
+                            <button class="ack-btn" onclick="acknowledgeNotification('${key}')"> Ack</button>
+                        </div>`;   
+            }
+            returnnotification.innerHTML = html;
+        }
+    });
+}
+function acknowledgeNotification(key){
+    remove(ref(db, `notification/eo/${key}`)).then(() => {
+        console.log('Notification acknowledged and removed.');
+        loadreturnnotification();
+    }).catch((error) => {
+        console.error('Error acknowledging notification:', error);
+    });
+}
+
+window.acknowledgeNotification = acknowledgeNotification;
+
+
 if(role==='eo'){
     pendingnewitemdata();
     setTimeout(() => {
         pendingnewtotalitemdata();
     }, 1000);
     newPendingItemNotification();
+    loadreturnnotification();
 }
 else{
     document.getElementById('newpendingitem').style.display='none';
@@ -946,6 +982,7 @@ function printAllTable() {
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 5].textContent}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 6].textContent}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 7].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 8].textContent}</td>
             </tr>
         `;
     }
@@ -1004,6 +1041,7 @@ function printSelectedRows() {
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 5].textContent}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 6].textContent}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 7].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 8].textContent}</td>
             </tr>
         `;
     });
@@ -1192,7 +1230,8 @@ function printReport(tableRows, title, summaryData) {
                     <tr>
                         <th>Serial</th>
                         <th>Nomenclature/Name</th>
-                        <th>Authorized Unit</th>
+                        <th>Measurement Unit</th>
+                        <th>Authorized</th>
                         <th>Held</th>
                         <th>Issued</th>
                         <th>In Store</th>
@@ -1204,7 +1243,6 @@ function printReport(tableRows, title, summaryData) {
                     ${tableRows}
                 </tbody>
             </table>
-            
             <div class="footer">
                 <p>BANRDB Store Management System - Engineering Inventory Report</p>
                 <p>This report was generated automatically on ${currentDate}</p>

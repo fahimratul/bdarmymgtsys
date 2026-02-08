@@ -94,23 +94,23 @@ const inputs = {
 };
 
 function loaditemdata() {
-    let datainfo={
-        total:0,
-        servicable:0,
-        unservicable:0,
-        issue:0,
-        instore:0
-    };
+     
     let dbRef =ref(db, 'bkncoinventory/main/');
 
     const loadingOverlay = document.getElementById('loadingOverlay');
 
-    get(dbRef).then((snapshot) => {
+    onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
         dataCache = data || {};
         let serial = 1;
         const tableBody = document.getElementById('itemTableBody');
-        
+        let datainfo={
+            total:0,
+            servicable:0,
+            unservicable:0,
+            issue:0,
+            instore:0
+        };
         if (!tableBody) {
             console.error('itemTableBody element not found');
             if (loadingOverlay) loadingOverlay.classList.add('hidden');
@@ -212,21 +212,10 @@ function loaditemdata() {
         
         // Update filter button states with counts
         updateFilterButtonStates();
-    }).catch((error) => {
-        console.error('Error loading data:', error);
-        const tableBody = document.getElementById('itemTableBody');
-        if (tableBody) {
-            tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem; color: #e53e3e;">Error loading data. Please refresh the page.</td></tr>';
-        }
-        // Hide loading overlay even on error
-        if (loadingOverlay) {
-            setTimeout(() => {
-                loadingOverlay.classList.add('hidden');
-            }, 100);
-        }
-        
-        // Update filter button states even on error
-        updateFilterButtonStates();
+    }, (error) => {
+        console.error('Error loading inventory data:', error);
+        if (loadingOverlay) loadingOverlay.classList.add('hidden');
+        showNotification("Failed to load inventory data. Please try again later.", "error", "Load Failed");
     });
 }
 
@@ -609,6 +598,7 @@ function printAllTable() {
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 5].textContent}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 6].textContent}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 7].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 8].textContent}</td>
             </tr>
         `;
     }
@@ -667,6 +657,7 @@ function printSelectedRows() {
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 5].textContent}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 6].textContent}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 7].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 8].textContent}</td>
             </tr>
         `;
     });
@@ -855,7 +846,8 @@ function printReport(tableRows, title, summaryData) {
                     <tr>
                         <th>Serial</th>
                         <th>Nomenclature/Name</th>
-                        <th>Authorized Unit</th>
+                        <th>Measurement Unit</th>
+                        <th>Authorized</th>
                         <th>Held</th>
                         <th>Issued</th>
                         <th>In Store</th>
@@ -867,7 +859,6 @@ function printReport(tableRows, title, summaryData) {
                     ${tableRows}
                 </tbody>
             </table>
-            
             <div class="footer">
                 <p>BANRDB Store Management System - BKNCO Inventory Report</p>
                 <p>This report was generated automatically on ${currentDate}</p>
