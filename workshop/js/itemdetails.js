@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
 
-import { getDatabase,set, get, ref, update } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getDatabase,set, get, ref, update , onValue} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
 
 const firebaseConfig = {
@@ -89,7 +89,7 @@ let itemhistoryCache = {};
 function loaditemhistory() {
     let dbRef = ref(db, `workshop/`+ itemKey + `/history`);
     const loadingOverlay = document.getElementById('loadingOverlay');
-    get(dbRef).then((snapshot) => {
+        onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
         itemhistoryCache = data || {};
         const tableBody = document.getElementById('history-tbody');
@@ -138,27 +138,16 @@ function loaditemhistory() {
                 loadingOverlay.classList.add('hidden');
             }, 100);
         }
-    }).catch((error) => {
-        console.error('Error loading data:', error);
-        const tableBody = document.getElementById('history-tbody');
-        if (tableBody) {
-            tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: #e53e3e;">Error loading data. Please refresh the page.</td></tr>';
-        }
-        // Hide loading overlay even on error
-        if (loadingOverlay) {
-            setTimeout(() => {
-                loadingOverlay.classList.add('hidden');
-            }, 100);
-        }
     });
 }
+
 
 loaditemhistory();
 let itemunsvccache = {};
 function loaditemunsvc() {
     let dbRef = ref(db, `workshop/`+ itemKey + `/unsvc`);
     const loadingOverlay = document.getElementById('loadingOverlay');
-    get(dbRef).then((snapshot) => {
+        onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
         itemunsvccache = data || {};
         const tableBody = document.getElementById('unsvc-history-tbody');
@@ -201,18 +190,6 @@ function loaditemunsvc() {
                 markAsServicable(recordKey);
             });
         });   
-        if (loadingOverlay) {
-            setTimeout(() => {
-                loadingOverlay.classList.add('hidden');
-            }, 100);
-        }
-    }).catch((error) => {
-        console.error('Error loading data:', error);
-        const tableBody = document.getElementById('unsvc-history-tbody');
-        if (tableBody) {
-            tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: #e53e3e;">Error loading data. Please refresh the page.</td></tr>';
-        }
-        // Hide loading overlay even on error
         if (loadingOverlay) {
             setTimeout(() => {
                 loadingOverlay.classList.add('hidden');
@@ -264,6 +241,18 @@ function returnItemToStore(recordKey) {
         set(ref(db, 'clonotification'), true);
     loaditemhistory();
     loaditemsdetails();
+    if(role === 'mtnco' || role === 'mtjco'){
+        const notificationPath = `notification/workshop/${Date.now()}`;
+        set(ref(db, notificationPath), {
+            from: 'MT Inventory',
+            date: new Date().toLocaleString(),
+            msg: `Item  returned to store: ${dataCache.name}, Quantity: ${quantity}, From Location: ${record.location}`,
+        }).then(() => {
+            // You can add any additional actions here if needed after the notification is set
+        }).catch((error) => {
+            console.error('Error sending notification to SO:', error);
+        });
+    }
 }
 
 
@@ -306,6 +295,19 @@ function markAsServicable(recordKey) {
     loaditemhistory();
     loaditemunsvc();
     loaditemsdetails();
+
+    if(role === 'mtnco' || role === 'mtjco'){
+        const notificationPath = `notification/workshop/${Date.now()}`;
+        set(ref(db, notificationPath), {
+            from: 'MT Inventory',
+            date: new Date().toLocaleString(),
+            msg: `Item  marked as servicable: ${dataCache.name}, Quantity: ${quantity}, From Location: ${record.location}`,
+        }).then(() => {
+            // You can add any additional actions here if needed after the notification is set
+        }).catch((error) => {
+            console.error('Error sending notification to SO:', error);
+        });
+    }
 }
 
 

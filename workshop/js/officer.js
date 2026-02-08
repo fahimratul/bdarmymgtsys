@@ -104,140 +104,135 @@ const inputs = {
 };
 
 function loaditemdata() {
-    let datainfo={
-        total:0,
-        servicable:0,
-        unservicable:0,
-        issue:0,
-        instore:0
-    };
+     
     let dbRef =ref(db, 'workshop/main/');
 
     const loadingOverlay = document.getElementById('loadingOverlay');
 
-    get(dbRef).then((snapshot) => {
-        const data = snapshot.val();
-        dataCache = data || {};
-        let serial = 1;
-        const tableBody = document.getElementById('itemTableBody');
-        
-        if (!tableBody) {
-            console.error('itemTableBody element not found');
-            if (loadingOverlay) loadingOverlay.classList.add('hidden');
-            return;
-        }
-        
-        let html = '';
-        
-        // Build table rows
-        if (data) {
-            for (const key in data) {
-                const item = data[key];
-                const sec= item.sec || '';
-                const partno= item.part_no || '';
-                const name = item.name || '';
-                const unit = item.unit || '';
-                const authorized = item.authorized ?? '';
-                const total = item.total ?? 0;
-                const servicable = item.servicable ?? 0;
-                const unservicable = item.unservicable ?? 0;
-                const issue = item.issue ?? 0;
-                const instore = item.instore ?? 0;
-                const lp = item.lp || '';
-                
-                html += `<tr class="row-data" id="${name}" data-key="${key}" style="cursor: pointer;">
-                            <td class="select-column" style="display: none;">
-                                <input type="checkbox" class="row-select" data-key="${key}">
-                            </td>
-                            <td>${serial}</td>
-                            <td>${sec}</td>
-                            <td>${partno}</td>
-                            <td>${name}</td>
-                            <td>${unit}</td>
-                            <td>${authorized}</td>
-                            <td>${lp}</td>
-                            <td>${total}</td>
-                            <td>${issue}</td>
-                            <td>${instore}</td>
-                            <td>${servicable}</td>
-                            <td>${unservicable}</td>
-                            <td>
-                            <button class="edit-btn" data-key='${key}'>Edit</button>
-                            </td>
-
-                        </tr>`;
-                serial += 1;
-                datainfo.total+=total;
-                datainfo.servicable+=servicable;
-                datainfo.unservicable+=unservicable;
-                datainfo.issue+=issue;
-                datainfo.instore+=instore;
+    
+        onValue(dbRef, (snapshot) => {
+            const data = snapshot.val();
+            dataCache = data || {};
+            let serial = 1;
+            const tableBody = document.getElementById('itemTableBody');
+            let datainfo={
+                total:0,
+                servicable:0,
+                unservicable:0,
+                issue:0,
+                instore:0
+            };
+            if (!tableBody) {
+                console.error('itemTableBody element not found');
+                if (loadingOverlay) loadingOverlay.classList.add('hidden');
+                return;
             }
-        } else {
-            html = '<tr><td colspan="9" style="text-align: center; padding: 2rem; color: #666;">No inventory data available</td></tr>';
-        }
-        
-        tableBody.innerHTML = html;
-        document.getElementById('serial').textContent = serial-1;
-        document.getElementById('totalItems').textContent = datainfo.total;
-        document.getElementById('servicableItems').textContent = datainfo.servicable;
-        document.getElementById('unservicableItems').textContent = datainfo.unservicable;
-        document.getElementById('issuedItems').textContent = datainfo.issue;
-        document.getElementById('inStoreItems').textContent = datainfo.instore;
             
-        // Attach edit handlers
-        tableBody.querySelectorAll('.edit-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const key = btn.dataset.key;
-                console.log("Edit button clicked for key:", key);
-                openEditModal(key);
-            });
-        });
-
-        tableBody.querySelectorAll('.row-data').forEach(row => {
-            row.addEventListener('click', (e) => {
-                if(isSelectionMode){
-                    const checkbox = row.querySelector('.row-select');
-                    if (checkbox) {
-                        checkbox.checked = !checkbox.checked;
-                        updateRowSelection(checkbox);
-                        updatePrintButtonStates();
-                    }
+            let html = '';
+            
+            // Build table rows
+            if (data) {
+                for (const key in data) {
+                    const item = data[key];
+                    const name = item.name || '';
+                    const unit = item.unit || '';
+                    const authorized = item.authorized ?? '';
+                    const total = item.total ?? 0;
+                    const servicable = item.servicable ?? 0;
+                    const unservicable = item.unservicable ?? 0;
+                    const issue = item.issue ?? 0;
+                    const instore = item.instore ?? 0;
+                    
+                    html += `<tr class="row-data" id="${name}" data-key="${key}" style="cursor: pointer;">
+                                <td class="select-column" style="display: none;">
+                                    <input type="checkbox" class="row-select" data-key="${key}">
+                                </td>
+                                <td>${serial}</td>
+                                <td>${name}</td>
+                                <td>${unit}</td>
+                                <td>${authorized}</td>
+                                <td>${total}</td>
+                                <td>${issue}</td>
+                                <td>${instore}</td>
+                                <td>${servicable}</td>
+                                <td>${unservicable}</td>
+                                <td>
+                                <button class="edit-btn" data-key='${key}'>Edit</button>
+                                </td>
+    
+                            </tr>`;
+                    serial += 1;
+                    datainfo.total+=total;
+                    datainfo.servicable+=servicable;
+                    datainfo.unservicable+=unservicable;
+                    datainfo.issue+=issue;
+                    datainfo.instore+=instore;
                 }
-                else{
-                    if (e.target.classList.contains('edit-btn')) {
-                        openEditModal(key);
-                    }
-                    if (e.target.classList.contains('row-select') || e.target.classList.contains('select-column')){
-                        return;
-                    }
-                    const key = row.dataset.key;
-                    console.log("Row clicked for key:", key);
-                    window.location.href = `itemdetails.html?key=${key}&type=engr`;    
-                }
+            } else {
+                html = '<tr><td colspan="9" style="text-align: center; padding: 2rem; color: #666;">No inventory data available</td></tr>';
+            }
+            
+            tableBody.innerHTML = html;
+            document.getElementById('serial').textContent = serial-1;
+            document.getElementById('totalItems').textContent = datainfo.total;
+            document.getElementById('servicableItems').textContent = datainfo.servicable;
+            document.getElementById('unservicableItems').textContent = datainfo.unservicable;
+            document.getElementById('issuedItems').textContent = datainfo.issue;
+            document.getElementById('inStoreItems').textContent = datainfo.instore;
+                
+            // Attach edit handlers
+            tableBody.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const key = btn.dataset.key;
+                    console.log("Edit button clicked for key:", key);
+                    openEditModal(key);
+                });
             });
+    
+            tableBody.querySelectorAll('.row-data').forEach(row => {
+                row.addEventListener('click', (e) => {
+                    if(isSelectionMode){
+                        const checkbox = row.querySelector('.row-select');
+                        if (checkbox) {
+                            checkbox.checked = !checkbox.checked;
+                            updateRowSelection(checkbox);
+                            updatePrintButtonStates();
+                        }
+                    }
+                    else{
+                        if (e.target.classList.contains('edit-btn')) {
+                            openEditModal(key);
+                        }
+                        if (e.target.classList.contains('row-select') || e.target.classList.contains('select-column')){
+                            return;
+                        }
+                        const key = row.dataset.key;
+                        console.log("Row clicked for key:", key);
+                        window.location.href = `itemdetails.html?key=${key}&type=engr`;    
+                    }
+                });
+            });
+    
+    
+            // Hide loading overlay after data is loaded
+            if (loadingOverlay) {
+                setTimeout(() => {
+                    loadingOverlay.classList.add('hidden');
+                }, 100);
+            }
+        }, (error) => {
+            console.error('Error loading data:', error);
+            const tableBody = document.getElementById('itemTableBody');
+            if (tableBody) {
+                tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem; color: #e53e3e;">Error loading data. Please refresh the page.</td></tr>';
+            }
+            // Hide loading overlay even on error
+            if (loadingOverlay) {
+                setTimeout(() => {
+                    loadingOverlay.classList.add('hidden');
+                }, 100);
+            }
         });
-
-
-        // Hide loading overlay after data is loaded
-        if (loadingOverlay) {
-            setTimeout(() => {
-                loadingOverlay.classList.add('hidden');
-            }, 100);
-        }
-    }).catch((error) => {
-        console.error('Error loading data:', error);
-        const tableBody = document.getElementById('itemTableBody');
-        if (tableBody) {
-            tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem; color: #e53e3e;">Error loading data. Please refresh the page.</td></tr>';
-        }
-        // Hide loading overlay even on error
-        if (loadingOverlay) {
-            setTimeout(() => {
-                loadingOverlay.classList.add('hidden');
-            }, 100);
-        }
-    });
 }
 
 
@@ -315,7 +310,7 @@ function pendingnewtotalitemdata() {
     const newpendingtotalitem = document.getElementById('newpendingtotalitem');
     const newitemtotalTableBody = document.getElementById('newitemtotalTableBody');
 
-    get(dbRef).then((snapshot) => {
+        onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
         newtotalitemCache = data || {};
         let html = '';
@@ -366,7 +361,7 @@ function pendingnewtotalitemdata() {
         });
 
 
-    }).catch((error) => {
+    },(error) => {
         console.error('Error loading pending new item data:', error);
     });
 } 
@@ -465,13 +460,42 @@ function rejectNewItem(key) {
         console.error('Error rejecting new item request:', error);
     });
 }
+function newPendingItemNotification(){
+    const fixedNotification = document.getElementById('fixednotification');
+    fixedNotification.style.display = 'flex';
 
+    onValue(ref(db, 'issuepending/workshop/'), (snapshot) => {
+        if(snapshot.exists()){
+            let html = fixedNotification.innerHTML;
+            const id = Date.now();
+            html += `<div class="notification-content" id="pending_${id}">
+            <p id="notificationMessage"> You have a new <strong> Pending Issue item </strong>  From Workshop.</p>
+            <button class="notification-close" onclick="hidefixedNotification('pending_${id}')" aria-label="Close">&times;</button>
+            <button class="notification-view" id="viewPendingBtn" onclick="window.location.href='pendingIssue.html'">View</button>
+        </div>`
+        fixedNotification.innerHTML = html;
+        }
+    });
+    onValue(ref(db, 'unservicable_storeman/workshop/'), (snapshot) => {
+        if(snapshot.exists()){
+            let html = fixedNotification.innerHTML;
+            const id = Date.now();
+            html += `<div class="notification-content" id="pending_${id}">
+            <p id="notificationMessage">You have a new <strong>Unservicable</strong> item From Workshop.</p>
+            <button class="notification-close" onclick="hidefixedNotification('pending_${id}')" aria-label="Close">&times;</button>
+            <button class="notification-view" id="viewPendingBtn" onclick="window.location.href='pendingunsvc.html'">View</button>
+        </div>`
+        fixedNotification.innerHTML = html;
+        }
+    });
+}
 
-if(role==='eo'){
+if(role==='workshop'){
     pendingnewitemdata();
     setTimeout(() => {
         pendingnewtotalitemdata();
     }, 1000);
+        newPendingItemNotification();
 }else{
     document.getElementById('newpendingitem').style.display='none';
     document.getElementById('newpendingtotalitem').style.display='none';
@@ -483,7 +507,14 @@ loaditemdata();
 
 
 
-function searchItems() {
+
+// Filter state
+let activeFilters = {
+    showWithIssues: false,
+    showWithUnserviceable: false
+};
+
+function filterItems(scrollToInput = true) {
     const searchInput = document.getElementById('searchInput');
     const tableBody = document.getElementById('itemTableBody');
     const rows = tableBody.getElementsByTagName('tr');
@@ -491,15 +522,176 @@ function searchItems() {
 
     Array.from(rows).forEach(row => {
         const itemName = row.getAttribute('id');
-        if (itemName && itemName.toLowerCase().includes(searchTerm)) {
+        const key = row.getAttribute('data-key');
+        
+        // Check search term
+        let matchesSearch = !searchTerm || (itemName && itemName.toLowerCase().includes(searchTerm));
+        
+        // Check filters if item exists in cache
+        let matchesFilters = true;
+        if (key && dataCache[key]) {
+            const item = dataCache[key];
+            const issue = item.issue ?? 0;
+            const unserviceable = item.unservicable ?? 0;
+            
+            // Apply issue filter
+            if (activeFilters.showWithIssues && issue <= 0) {
+                matchesFilters = false;
+            }
+            
+            // Apply unserviceable filter
+            if (activeFilters.showWithUnserviceable && unserviceable <= 0) {
+                matchesFilters = false;
+            }
+        }
+        
+        // Show/hide row based on search and filters
+        if (matchesSearch && matchesFilters) {
             row.style.display = '';
         } else {
             row.style.display = 'none';
-        } 
+        }
     });
+    
+    // Update filter button states
+    updateFilterButtonStates();
+    const targetElement = document.getElementById('searchInput');
+    if (targetElement && scrollToInput) {
+        targetElement.scrollIntoView({
+        behavior: 'smooth' // Makes the scroll transition smooth
+    });
+    }
 }
 
-document.getElementById('searchInput')?.addEventListener('keyup', searchItems);
+function updateFilterButtonStates() {
+    const issueBtn = document.getElementById('filterIssued');
+    const unserviceableBtn = document.getElementById('filterUnserviceable');
+    const clearBtn = document.getElementById('clearFilters');
+    const filterStatus = document.getElementById('filterStatus');
+    
+    // Count items
+    const counts = countFilteredItems();
+    const visibleCount = countVisibleItems();
+    
+    if (issueBtn) {
+        if (activeFilters.showWithIssues) {
+            issueBtn.classList.add('active');
+            issueBtn.style.backgroundColor = '#4CAF50';
+            issueBtn.style.color = 'white';
+        } else {
+            issueBtn.classList.remove('active');
+            issueBtn.style.backgroundColor = '';
+            issueBtn.style.color = '';
+        }
+    }
+    
+    if (unserviceableBtn) {
+        if (activeFilters.showWithUnserviceable) {
+            unserviceableBtn.classList.add('active');
+            unserviceableBtn.style.backgroundColor = '#f44336';
+            unserviceableBtn.style.color = 'white';
+        } else {
+            unserviceableBtn.classList.remove('active');
+            unserviceableBtn.style.backgroundColor = '';
+            unserviceableBtn.style.color = '';
+        }
+    }
+    
+    // Update filter status line
+    if (filterStatus) {
+        if (visibleCount === counts.total) {
+            filterStatus.textContent = `Showing all ${counts.total} items`;
+        } else {
+            filterStatus.textContent = `Showing ${visibleCount} items out of ${counts.total} total`;
+        }
+    }
+}
+
+function countFilteredItems() {
+    let total = 0;
+    let withIssues = 0;
+    let withUnserviceable = 0;
+    
+    // Count from dataCache to get accurate totals
+    if (dataCache) {
+        for (const key in dataCache) {
+            const item = dataCache[key];
+            total++;
+            
+            const issue = item.issue ?? 0;
+            const unserviceable = item.unservicable ?? 0;
+            
+            if (issue > 0) {
+                withIssues++;
+            }
+            
+            if (unserviceable > 0) {
+                withUnserviceable++;
+            }
+        }
+    }
+    
+    return {
+        total: total,
+        withIssues: withIssues,
+        withUnserviceable: withUnserviceable
+    };
+}
+
+function countVisibleItems() {
+    const tableBody = document.getElementById('itemTableBody');
+    const rows = tableBody.getElementsByTagName('tr');
+    let visibleCount = 0;
+    
+    Array.from(rows).forEach(row => {
+        if (row.style.display !== 'none') {
+            visibleCount++;
+        }
+    });
+    
+    return visibleCount;
+}
+
+function toggleIssueFilter() {
+    activeFilters.showWithIssues = !activeFilters.showWithIssues;
+    filterItems();
+
+}
+
+function toggleUnserviceableFilter() {
+    activeFilters.showWithUnserviceable = !activeFilters.showWithUnserviceable;
+    filterItems();
+}
+
+function clearAllFilters() {
+    activeFilters.showWithIssues = false;
+    activeFilters.showWithUnserviceable = false;
+    document.getElementById('searchInput').value = '';
+    filterItems();
+}
+function unservicableleFilter() {
+    clearAllFilters();
+    activeFilters.showWithUnserviceable = true;
+    filterItems();
+}
+function issueFilter() {
+    clearAllFilters();
+    activeFilters.showWithIssues = true;
+    filterItems();
+}
+
+// Event listeners
+document.getElementById('searchInput')?.addEventListener('keyup', () => filterItems(false));
+document.getElementById('filterIssued')?.addEventListener('click', toggleIssueFilter);
+document.getElementById('filterUnserviceable')?.addEventListener('click', toggleUnserviceableFilter);
+document.getElementById('clearFilters')?.addEventListener('click', clearAllFilters);
+document.getElementById('totalItemsDiv')?.addEventListener('click', clearAllFilters);
+document.getElementById('unservicableitemsDiv')?.addEventListener('click', unservicableleFilter);
+document.getElementById('issuedItemsDiv')?.addEventListener('click', issueFilter);
+
+
+
+ 
 
 function openEditModal(key) {
     const item = dataCache?.[key];

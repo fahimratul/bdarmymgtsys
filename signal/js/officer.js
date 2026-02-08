@@ -104,23 +104,24 @@ const inputs = {
 };
 
 function loaditemdata() {
-    let datainfo={
-        total:0,
-        servicable:0,
-        unservicable:0,
-        issue:0,
-        instore:0
-    };
+     
     let dbRef =ref(db, 'siginventory/main/');
 
     const loadingOverlay = document.getElementById('loadingOverlay');
 
-    get(dbRef).then((snapshot) => {
+
+     onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
         dataCache = data || {};
         let serial = 1;
         const tableBody = document.getElementById('itemTableBody');
-        
+        let datainfo={
+            total:0,
+            servicable:0,
+            unservicable:0,
+            issue:0,
+            instore:0
+        };
         if (!tableBody) {
             console.error('itemTableBody element not found');
             if (loadingOverlay) loadingOverlay.classList.add('hidden');
@@ -219,7 +220,7 @@ function loaditemdata() {
                 loadingOverlay.classList.add('hidden');
             }, 100);
         }
-    }).catch((error) => {
+    }, (error) => {
         console.error('Error loading data:', error);
         const tableBody = document.getElementById('itemTableBody');
         if (tableBody) {
@@ -309,7 +310,7 @@ function pendingnewtotalitemdata() {
     const newpendingtotalitem = document.getElementById('newpendingtotalitem');
     const newitemtotalTableBody = document.getElementById('newitemtotalTableBody');
 
-    get(dbRef).then((snapshot) => {
+    onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
         newtotalitemCache = data || {};
         let html = '';
@@ -360,7 +361,7 @@ function pendingnewtotalitemdata() {
         });
 
 
-    }).catch((error) => {
+    },(error) => {
         console.error('Error loading pending new item data:', error);
     });
 } 
@@ -460,11 +461,42 @@ function rejectNewItem(key) {
 }
 
 
+function newPendingItemNotification(){
+    const fixedNotification = document.getElementById('fixednotification');
+    fixedNotification.style.display = 'flex';
+
+    onValue(ref(db, 'issuepending/so/'), (snapshot) => {
+        if(snapshot.exists()){
+            let html = fixedNotification.innerHTML;
+            const id = Date.now();
+            html += `<div class="notification-content" id="pending_${id}">
+            <p id="notificationMessage"> You have a new <strong> Pending Issue item </strong>  for issue.</p>
+            <button class="notification-close" onclick="hidefixedNotification('pending_${id}')" aria-label="Close">&times;</button>
+            <button class="notification-view" id="viewPendingBtn" onclick="window.location.href='pendingIssue.html'">View</button>
+        </div>`
+        fixedNotification.innerHTML = html;
+        }
+    });
+    onValue(ref(db, 'unservicable_storeman/so/'), (snapshot) => {
+        if(snapshot.exists()){
+            let html = fixedNotification.innerHTML;
+            const id = Date.now();
+            html += `<div class="notification-content" id="pending_${id}">
+            <p id="notificationMessage">You have a new <strong>Unservicable</strong> item.</p>
+            <button class="notification-close" onclick="hidefixedNotification('pending_${id}')" aria-label="Close">&times;</button>
+            <button class="notification-view" id="viewPendingBtn" onclick="window.location.href='pendingunsvc.html'">View</button>
+        </div>`
+        fixedNotification.innerHTML = html;
+        }
+    });
+}
+
 if(role==='so'){
     pendingnewitemdata();
     setTimeout(() => {
         pendingnewtotalitemdata();
     }, 1000);
+        newPendingItemNotification();
 }
 
 else{
@@ -478,7 +510,14 @@ loaditemdata();
 
 
 
-function searchItems() {
+
+// Filter state
+let activeFilters = {
+    showWithIssues: false,
+    showWithUnserviceable: false
+};
+
+function filterItems(scrollToInput = true) {
     const searchInput = document.getElementById('searchInput');
     const tableBody = document.getElementById('itemTableBody');
     const rows = tableBody.getElementsByTagName('tr');
@@ -486,15 +525,176 @@ function searchItems() {
 
     Array.from(rows).forEach(row => {
         const itemName = row.getAttribute('id');
-        if (itemName && itemName.toLowerCase().includes(searchTerm)) {
+        const key = row.getAttribute('data-key');
+        
+        // Check search term
+        let matchesSearch = !searchTerm || (itemName && itemName.toLowerCase().includes(searchTerm));
+        
+        // Check filters if item exists in cache
+        let matchesFilters = true;
+        if (key && dataCache[key]) {
+            const item = dataCache[key];
+            const issue = item.issue ?? 0;
+            const unserviceable = item.unservicable ?? 0;
+            
+            // Apply issue filter
+            if (activeFilters.showWithIssues && issue <= 0) {
+                matchesFilters = false;
+            }
+            
+            // Apply unserviceable filter
+            if (activeFilters.showWithUnserviceable && unserviceable <= 0) {
+                matchesFilters = false;
+            }
+        }
+        
+        // Show/hide row based on search and filters
+        if (matchesSearch && matchesFilters) {
             row.style.display = '';
         } else {
             row.style.display = 'none';
-        } 
+        }
     });
+    
+    // Update filter button states
+    updateFilterButtonStates();
+    const targetElement = document.getElementById('searchInput');
+    if (targetElement && scrollToInput) {
+        targetElement.scrollIntoView({
+        behavior: 'smooth' // Makes the scroll transition smooth
+    });
+    }
 }
 
-document.getElementById('searchInput')?.addEventListener('keyup', searchItems);
+function updateFilterButtonStates() {
+    const issueBtn = document.getElementById('filterIssued');
+    const unserviceableBtn = document.getElementById('filterUnserviceable');
+    const clearBtn = document.getElementById('clearFilters');
+    const filterStatus = document.getElementById('filterStatus');
+    
+    // Count items
+    const counts = countFilteredItems();
+    const visibleCount = countVisibleItems();
+    
+    if (issueBtn) {
+        if (activeFilters.showWithIssues) {
+            issueBtn.classList.add('active');
+            issueBtn.style.backgroundColor = '#4CAF50';
+            issueBtn.style.color = 'white';
+        } else {
+            issueBtn.classList.remove('active');
+            issueBtn.style.backgroundColor = '';
+            issueBtn.style.color = '';
+        }
+    }
+    
+    if (unserviceableBtn) {
+        if (activeFilters.showWithUnserviceable) {
+            unserviceableBtn.classList.add('active');
+            unserviceableBtn.style.backgroundColor = '#f44336';
+            unserviceableBtn.style.color = 'white';
+        } else {
+            unserviceableBtn.classList.remove('active');
+            unserviceableBtn.style.backgroundColor = '';
+            unserviceableBtn.style.color = '';
+        }
+    }
+    
+    // Update filter status line
+    if (filterStatus) {
+        if (visibleCount === counts.total) {
+            filterStatus.textContent = `Showing all ${counts.total} items`;
+        } else {
+            filterStatus.textContent = `Showing ${visibleCount} items out of ${counts.total} total`;
+        }
+    }
+}
+
+function countFilteredItems() {
+    let total = 0;
+    let withIssues = 0;
+    let withUnserviceable = 0;
+    
+    // Count from dataCache to get accurate totals
+    if (dataCache) {
+        for (const key in dataCache) {
+            const item = dataCache[key];
+            total++;
+            
+            const issue = item.issue ?? 0;
+            const unserviceable = item.unservicable ?? 0;
+            
+            if (issue > 0) {
+                withIssues++;
+            }
+            
+            if (unserviceable > 0) {
+                withUnserviceable++;
+            }
+        }
+    }
+    
+    return {
+        total: total,
+        withIssues: withIssues,
+        withUnserviceable: withUnserviceable
+    };
+}
+
+function countVisibleItems() {
+    const tableBody = document.getElementById('itemTableBody');
+    const rows = tableBody.getElementsByTagName('tr');
+    let visibleCount = 0;
+    
+    Array.from(rows).forEach(row => {
+        if (row.style.display !== 'none') {
+            visibleCount++;
+        }
+    });
+    
+    return visibleCount;
+}
+
+function toggleIssueFilter() {
+    activeFilters.showWithIssues = !activeFilters.showWithIssues;
+    filterItems();
+
+}
+
+function toggleUnserviceableFilter() {
+    activeFilters.showWithUnserviceable = !activeFilters.showWithUnserviceable;
+    filterItems();
+}
+
+function clearAllFilters() {
+    activeFilters.showWithIssues = false;
+    activeFilters.showWithUnserviceable = false;
+    document.getElementById('searchInput').value = '';
+    filterItems();
+}
+function unservicableleFilter() {
+    clearAllFilters();
+    activeFilters.showWithUnserviceable = true;
+    filterItems();
+}
+function issueFilter() {
+    clearAllFilters();
+    activeFilters.showWithIssues = true;
+    filterItems();
+}
+
+// Event listeners
+document.getElementById('searchInput')?.addEventListener('keyup', () => filterItems(false));
+document.getElementById('filterIssued')?.addEventListener('click', toggleIssueFilter);
+document.getElementById('filterUnserviceable')?.addEventListener('click', toggleUnserviceableFilter);
+document.getElementById('clearFilters')?.addEventListener('click', clearAllFilters);
+document.getElementById('totalItemsDiv')?.addEventListener('click', clearAllFilters);
+document.getElementById('unservicableitemsDiv')?.addEventListener('click', unservicableleFilter);
+document.getElementById('issuedItemsDiv')?.addEventListener('click', issueFilter);
+
+
+
+ 
 
 function openEditModal(key) {
     const item = dataCache?.[key];
@@ -720,6 +920,7 @@ function printAllTable() {
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 5].textContent}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 6].textContent}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 7].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 8].textContent}</td>
             </tr>
         `;
     }
@@ -778,6 +979,7 @@ function printSelectedRows() {
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 5].textContent}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 6].textContent}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 7].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 8].textContent}</td>
             </tr>
         `;
     });
@@ -966,7 +1168,8 @@ function printReport(tableRows, title, summaryData) {
                     <tr>
                         <th>Serial</th>
                         <th>Nomenclature/Name</th>
-                        <th>Authorized Unit</th>
+                        <th>Measurement Unit</th>
+                        <th>Authorized</th>
                         <th>Held</th>
                         <th>Issued</th>
                         <th>In Store</th>
@@ -978,7 +1181,6 @@ function printReport(tableRows, title, summaryData) {
                     ${tableRows}
                 </tbody>
             </table>
-            
             <div class="footer">
                 <p>BANRDB Store Management System - Signal Inventory Report</p>
                 <p>This report was generated automatically on ${currentDate}</p>

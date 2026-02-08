@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
 
-import { getDatabase,set, get, ref, update } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getDatabase,set, get, ref, update , onValue} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
 
 const firebaseConfig = {
@@ -47,7 +47,7 @@ function loaditemsdetails() {
     console.log('Type Key:', typeKey);
     let dbRef = ref(db, `engrinventory/main/`+ itemKey);
     const loadingOverlay = document.getElementById('loadingOverlay');
-    get(dbRef).then((snapshot) => {
+    onValue(dbRef, (snapshot) => {
         dataCache = snapshot.val();
         
         if (dataCache) {
@@ -68,13 +68,6 @@ function loaditemsdetails() {
                 loadingOverlay.classList.add('hidden');
             }, 100);
         }
-    }).catch((error) => {
-        console.error('Error loading data:', error);
-        if (loadingOverlay) {
-            setTimeout(() => {
-                loadingOverlay.classList.add('hidden');
-            }, 100);
-        }
     });
 }
 
@@ -86,7 +79,7 @@ let itemhistoryCache = {};
 function loaditemhistory() {
     let dbRef = ref(db, `engrinventory/`+ itemKey + `/history`);
     const loadingOverlay = document.getElementById('loadingOverlay');
-    get(dbRef).then((snapshot) => {
+        onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
         itemhistoryCache = data || {};
         const tableBody = document.getElementById('history-tbody');
@@ -135,27 +128,16 @@ function loaditemhistory() {
                 loadingOverlay.classList.add('hidden');
             }, 100);
         }
-    }).catch((error) => {
-        console.error('Error loading data:', error);
-        const tableBody = document.getElementById('history-tbody');
-        if (tableBody) {
-            tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: #e53e3e;">Error loading data. Please refresh the page.</td></tr>';
-        }
-        // Hide loading overlay even on error
-        if (loadingOverlay) {
-            setTimeout(() => {
-                loadingOverlay.classList.add('hidden');
-            }, 100);
-        }
     });
 }
+
 
 loaditemhistory();
 let itemunsvccache = {};
 function loaditemunsvc() {
     let dbRef = ref(db, `engrinventory/`+ itemKey + `/unsvc`);
     const loadingOverlay = document.getElementById('loadingOverlay');
-    get(dbRef).then((snapshot) => {
+        onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
         itemunsvccache = data || {};
         const tableBody = document.getElementById('unsvc-history-tbody');
@@ -198,18 +180,6 @@ function loaditemunsvc() {
                 markAsServicable(recordKey);
             });
         });   
-        if (loadingOverlay) {
-            setTimeout(() => {
-                loadingOverlay.classList.add('hidden');
-            }, 100);
-        }
-    }).catch((error) => {
-        console.error('Error loading data:', error);
-        const tableBody = document.getElementById('unsvc-history-tbody');
-        if (tableBody) {
-            tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: #e53e3e;">Error loading data. Please refresh the page.</td></tr>';
-        }
-        // Hide loading overlay even on error
         if (loadingOverlay) {
             setTimeout(() => {
                 loadingOverlay.classList.add('hidden');
@@ -258,9 +228,21 @@ function returnItemToStore(recordKey) {
         msg: `Item Returned to Store: ${dataCache.name}, Quantity: ${quantity}  Location: ${record.location}`,
     });
     
-        set(ref(db, 'clonotification'), true);
+    set(ref(db, 'clonotification'), true);
     loaditemhistory();
     loaditemsdetails();
+    if(role === 'engrnco'){
+        const notificationPath = `notification/eo/${Date.now()}`;
+        set(ref(db, notificationPath), {
+            from: 'Engineering Inventory',
+            date: new Date().toLocaleString(),
+            msg: `Item  marked as servicable: ${dataCache.name}, Quantity: ${quantity}, From Location: ${record.location}`,
+        }).then(() => {
+            // You can add any additional actions here if needed after the notification is set
+        }).catch((error) => {
+            console.error('Error sending notification to EO:', error);
+        });
+    }
 }
 
 
@@ -301,6 +283,18 @@ function markAsServicable(recordKey) {
     loaditemhistory();
     loaditemunsvc();
     loaditemsdetails();
+    if(role === 'engrnco'){
+        const notificationPath = `notification/eo/${Date.now()}`;
+        set(ref(db, notificationPath), {
+            from: 'Engineering Inventory',
+            date: new Date().toLocaleString(),
+            msg: `Item  marked as servicable: ${dataCache.name}, Quantity: ${quantity}, From Location: ${record.location}`,
+        }).then(() => {
+            // You can add any additional actions here if needed after the notification is set
+        }).catch((error) => {
+            console.error('Error sending notification to EO:', error);
+        });
+    }
 }
 
 
