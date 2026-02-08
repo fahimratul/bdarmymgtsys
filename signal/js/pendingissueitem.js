@@ -64,11 +64,11 @@ function pendingitems(){
                     <div class="recipient-form">
                         <div class="form-group">
                             <label for="recipientLocation">Person/Location</label>
-                            <input type="text" id="recipientLocation-${key}" name="recipientLocation" value="${pendingrequest.location}" disabled>
+                            <input type="text" id="recipientLocation-${key}" name="recipientLocation" value="${pendingrequest.location}" >
                         </div>
                         <div class="form-group">
                             <label for="issuedate">Date</label>
-                            <input type="date" id="issuedate-${key}" name="date" value="${pendingrequest.date}" disabled>
+                            <input type="date" id="issuedate-${key}" name="date" value="${pendingrequest.date}" >
                         </div>
                         <div class="form-group">
                             <label for="voucherNumber">Voucher Number</label>

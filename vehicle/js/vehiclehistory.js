@@ -48,7 +48,6 @@ import {showNotification} from './../../js/notification.js';
 console.log("Script Loaded");
 
 let dataCache = {};
-let currentEditKey = null;
 
 let conditionlist={
     alr:"A LR",
@@ -152,14 +151,12 @@ document.getElementById('campSelect').addEventListener('change', (e) => {
 
 loadvehicledata();
 
-let vehiclehistoryCache = {};
 function loadvehiclehistory() {
 
     const dbRef = ref(db, `vehiclelist/`+ vehicleKey +`/history`);
     const loadingOverlay = document.getElementById('loadingOverlay');
     onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
-        vehiclehistoryCache = data || {};
         const tableBody = document.getElementById('history-tbody');
         
         if (!tableBody) {
