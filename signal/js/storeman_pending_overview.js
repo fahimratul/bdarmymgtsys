@@ -64,7 +64,7 @@ async function loadAllPendingData() {
 
 async function loadPendingIssues() {
     try {
-        const dbRef = ref(db, 'issuepending/bknco/');
+        const dbRef = ref(db, 'issuepending/so/');
         const snapshot = await get(dbRef);
         pendingIssuesData = snapshot.val() || {};
         console.log('Pending Issues loaded:', pendingIssuesData);
@@ -77,7 +77,7 @@ async function loadPendingIssues() {
 
 async function loadUnserviceableItems() {
     try {
-        const dbRef = ref(db, 'unservicable_storeman/bknco/');
+        const dbRef = ref(db, 'unservicable_storeman/so/');
         const snapshot = await get(dbRef);
         unserviceableData = snapshot.val() || {};
         console.log('Unserviceable items loaded:', unserviceableData);
@@ -89,7 +89,7 @@ async function loadUnserviceableItems() {
 }
 
 function pendingnewitemdata() {
-    let dbRef =ref(db, 'officerapproval/new/bkncoinventory/');
+    let dbRef =ref(db, 'officerapproval/new/siginventory/');
     const newpendingitembody = document.getElementById('newpendingitem');
     const newitemTableBody = document.getElementById('newitemTableBody');
     onValue(dbRef, (snapshot) => {
@@ -279,7 +279,7 @@ window.viewPendingRequest = function(requestId) {
 
 window.rejectRequest = function(requestId) {
     if (confirm('Are you sure you want to reject this request?')) {
-        const dbRef = ref(db, 'issuepending/bknco/' + requestId);
+        const dbRef = ref(db, 'issuepending/so/' + requestId);
         remove(dbRef)
             .then(() => {
                 showNotification('Request rejected successfully.', 'success');
@@ -299,7 +299,7 @@ window.viewUnserviceableItem = function(itemId) {
 
 window.markAsDisposed = function(itemId) {
     if (confirm('Are you sure you want to cancel this unserviceable item request?')) {
-        const dbRef = ref(db, 'unservicable_storeman/bknco/' + itemId);
+        const dbRef = ref(db, 'unservicable_storeman/so/' + itemId);
         remove(dbRef)
             .then(() => {
                 showNotification('Unserviceable item request cancelled successfully.', 'success');  

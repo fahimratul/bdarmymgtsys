@@ -81,7 +81,7 @@ document.getElementById('cancelRequestBtn').addEventListener('click', () => {
             .then(() => {
                 showNotification('Request cancelled successfully.', 'success');
                 setTimeout(() => {
-                    window.location.href = 'storeman_pendingissueitems.html';
+                    window.location.href = 'storeman_pending_overview.html';
                 }, 1500);
             }
             )
