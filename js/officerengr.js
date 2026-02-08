@@ -123,13 +123,7 @@ inputs.unservicable.addEventListener('click', (e) => {
 
 
 function loaditemdata() {
-    let datainfo={
-        total:0,
-        servicable:0,
-        unservicable:0,
-        issue:0,
-        instore:0
-    };
+     
     let dbRef;
     if(typeKey === 'engr') {
         dbRef = ref(db, 'engrinventory/');

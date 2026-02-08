@@ -94,13 +94,7 @@ const inputs = {
 };
 
 function loaditemdata() {
-    let datainfo={
-        total:0,
-        servicable:0,
-        unservicable:0,
-        issue:0,
-        instore:0
-    };
+     
     let dbRef =ref(db, 'siginventory/main/');
 
     const loadingOverlay = document.getElementById('loadingOverlay');

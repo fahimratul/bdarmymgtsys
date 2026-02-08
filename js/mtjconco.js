@@ -141,13 +141,7 @@ function loaditemdata() {
 
     const dbRef = ref(db, 'mtinventory/');
     const loadingOverlay = document.getElementById('loadingOverlay');
-    let datainfo={
-        total:0,
-        servicable:0,
-        unservicable:0,
-        issue:0,
-        instore:0
-    };
+     
 
 
     get(dbRef).then((snapshot) => {
