@@ -104,7 +104,13 @@ function loaditemdata() {
         dataCache = data || {};
         let serial = 1;
         const tableBody = document.getElementById('itemTableBody');
-        
+        let datainfo = {
+            total: 0,
+            servicable: 0,
+            unservicable: 0,
+            issue: 0,
+            instore: 0
+        };
         if (!tableBody) {
             console.error('itemTableBody element not found');
             if (loadingOverlay) loadingOverlay.classList.add('hidden');

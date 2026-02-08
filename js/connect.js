@@ -139,22 +139,18 @@ function handlelogin() {
                             window.location.href ='./workshop/storeman_dashboard.html';
                             return;
                         }
-                        else {
-                            showNotification("Invalid role in database", "error", "Login Failed");
-                            console.log("Invalid role in database");
+                        else{
+                            showNotification("Invalid role for BQMS", "error", "Login Failed");
                             return;
-                        }
-
-                    
+                        } 
                     } 
                     else if (role_type === 'mtjconco'){
                         if(role === 'mtnco' || role === 'mtjco'){
                             window.location.href ='./mt_dashboard_storeman.html';
                             return;
                         }
-                        else {
-                            showNotification("Invalid role in database", "error", "Login Failed");
-                            console.log("Invalid role in database");
+                        else{
+                            showNotification("Invalid role for MT JCO/NCO", "error", "Login Failed");
                             return;
                         }
                     } 
