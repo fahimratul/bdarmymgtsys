@@ -44,7 +44,7 @@ window.addEventListener('DOMContentLoaded', () => {
  
 
 
-import {showNotification} from './notification.js';
+import {showNotification} from './../../js/notification.js';
 console.log("Script Loaded");
 
 let dataCache = {};

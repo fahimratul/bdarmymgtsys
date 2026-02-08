@@ -138,13 +138,12 @@
 .officernotification {
     background: transparent;
     display: none;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: flex-start;
     align-items: center;
     gap: 12px;
     width: 100%;
     white-space: nowrap;
-    overflow-x:auto;
     padding: 12px;
 }
 .officernotification.clo{
@@ -156,13 +155,13 @@
 }
 .officernotification .msg {
     display: inline-flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: space-between;
     gap: 8px;
     padding: 12px 16px;
     background: rgb(255, 255, 255);
     border-radius: 12px;
-    min-width: 95vw;
+    width: 95vw;
     border: 1px solid #3b82f6;
     border-left: 8px solid #3b82f6;
     white-space: normal;
@@ -180,14 +179,15 @@
     align-self: flex-start;
 }
 .officernotification .msg button {
-    padding: 8px 16px;
+    padding: 8px 12px;
     border: none;
     border-radius: 6px;
-    font-size: 14px;
+    font-size: 12px;
+    font-weight: 600;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    max-height: 40px;
-    max-width: 80px;
+    height: 40px;
+    width: 60px;
 }
 .officernotification .msg button:first-of-type {
     background-color: #10b981;
