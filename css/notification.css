@@ -263,3 +263,49 @@
 .notification-view:hover {
     background-color: #2563eb;
 }
+
+.returnnotification{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: transparent;  
+    z-index: 9000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 500px;
+    height: 210px;
+    overflow: scroll;
+}
+.returnnotification::-webkit-scrollbar {
+    display: none;
+}
+.msgbody {
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.657);
+    border-radius: 8px;
+    backdrop-filter: blur(20px);
+    font-size: 14px;
+    color: #333333;
+    padding: 10px 16px;
+    width: 100%;
+    min-height: 100px;
+    border: 1px solid rgba(135, 189, 255, 0.762);    
+    justify-content: space-between;
+}
+
+
+.ack-btn {
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    background-color: #3b82f6;
+    width: 50px;
+}
+.ack-btn:hover {
+    background-color: #2563eb;
+}

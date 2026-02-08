@@ -890,6 +890,7 @@ function printAllTable() {
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 5].textContent}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 6].textContent}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 7].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 8].textContent}</td>
             </tr>
         `;
     }
@@ -948,6 +949,7 @@ function printSelectedRows() {
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 5].textContent}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 6].textContent}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 7].textContent}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">${cells[startIndex + 8].textContent}</td>
             </tr>
         `;
     });
@@ -1136,7 +1138,8 @@ function printReport(tableRows, title, summaryData) {
                     <tr>
                         <th>Serial</th>
                         <th>Nomenclature/Name</th>
-                        <th>Authorized Unit</th>
+                        <th>Measurement Unit</th>
+                        <th>Authorized</th>
                         <th>Held</th>
                         <th>Issued</th>
                         <th>In Store</th>
@@ -1148,7 +1151,6 @@ function printReport(tableRows, title, summaryData) {
                     ${tableRows}
                 </tbody>
             </table>
-            
             <div class="footer">
                 <p>BANRDB Store Management System - Engineering Inventory Report</p>
                 <p>This report was generated automatically on ${currentDate}</p>

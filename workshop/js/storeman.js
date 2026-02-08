@@ -868,7 +868,8 @@ function printReport(tableRows, title, summaryData) {
                     <tr>
                         <th>Serial</th>
                         <th>Nomenclature/Name</th>
-                        <th>Authorized Unit</th>
+                        <th>Measurement Unit</th>
+                        <th>Authorized</th>
                         <th>Held</th>
                         <th>Issued</th>
                         <th>In Store</th>
@@ -880,7 +881,6 @@ function printReport(tableRows, title, summaryData) {
                     ${tableRows}
                 </tbody>
             </table>
-            
             <div class="footer">
                 <p>BANRDB Store Management System - Workshop Inventory Report</p>
                 <p>This report was generated automatically on ${currentDate}</p>
