@@ -139,15 +139,24 @@ function handlelogin() {
                             window.location.href ='./workshop/storeman_dashboard.html';
                             return;
                         }
-                        else if(role === 'mtnco' || role === 'mtjco'){
-                            window.location.href ='./mt_dashboard_storeman.html';
+                        else {
+                            showNotification("Invalid role in database", "error", "Login Failed");
+                            console.log("Invalid role in database");
                             return;
                         }
-                        window.location.href ='engrnco.html';
+
                     
                     } 
                     else if (role_type === 'mtjconco'){
-                        window.location.href ='mt_dashboard.html';
+                        if(role === 'mtnco' || role === 'mtjco'){
+                            window.location.href ='./mt_dashboard_storeman.html';
+                            return;
+                        }
+                        else {
+                            showNotification("Invalid role in database", "error", "Login Failed");
+                            console.log("Invalid role in database");
+                            return;
+                        }
                     } 
                     else if (role_type === 'clo' || role_type === 'cc'){
                         window.location.href ='clodashboard.html';
