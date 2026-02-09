@@ -34,7 +34,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
     
     console.log('Logged in as Storeman, BA Number:', baNumber);
-    
+    loadtotalitemdata();
     // Load all data
     loadAllPendingData();
     pendingnewitemdata();
@@ -105,6 +105,19 @@ async function loadUnserviceableItems() {
         populateUnserviceableTable();
     }
 }
+let dataCache = {};
+function loadtotalitemdata() {
+    let dbref =ref(db, 'bkncoinventory/main/');
+    onValue(dbref, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            dataCache = data; // Cache the data for later use
+        }
+    },(error) => {
+        console.error('Error loading total item data:', error);
+    });
+}
+
 
 function pendingnewitemdata() {
     let dbRef =ref(db, 'officerapproval/new/bkncoinventory/');

@@ -35,7 +35,7 @@ window.addEventListener('DOMContentLoaded', () => {
     
     console.log('Logged in as Storeman, BA Number:', baNumber);
     
-
+    loadtotalitemdata();
     loadAllPendingData();
     pendingnewitemdata();
     pendingnewtotalitemdata();
@@ -146,10 +146,22 @@ function pendingnewitemdata() {
         console.error('Error loading pending new item data:', error);
     });
 } 
+let dataCache = {};
+function loadtotalitemdata() {
+    let dbref =ref(db, 'bqmsinventory/main/');
+    onValue(dbref, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            dataCache = data; // Cache the data for later use
+        }
+    },(error) => {
+        console.error('Error loading total item data:', error);
+    });
+}
+
 
 function pendingnewtotalitemdata() {
     let dbRef =ref(db, 'officerapproval/newtotal/bqmsinventory/');
-    const newpendingtotalitem = document.getElementById('newpendingtotalitem');
     const newitemtotalTableBody = document.getElementById('newitemtotalTableBody');
 
     onValue(dbRef, (snapshot) => {
