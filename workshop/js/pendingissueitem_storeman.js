@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getDatabase, get, ref, set, push, update, remove } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getDatabase, get, ref, set, push, update, remove, onValue } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 import { showNotification } from '../../js/notification.js';
 
 const firebaseConfig = {

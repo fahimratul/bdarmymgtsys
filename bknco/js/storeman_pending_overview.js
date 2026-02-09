@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getDatabase, get, ref, set, push, update, remove } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getDatabase, get, ref, set, push, update, remove, onValue } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 import { showNotification } from '../../js/notification.js';
 
 const firebaseConfig = {
@@ -112,12 +112,10 @@ function pendingnewitemdata() {
     const newitemTableBody = document.getElementById('newitemTableBody');
     onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
-        newitemCache = data || {};
         let html = '';
         if (data) {
             document.getElementById('newpendingitemEmpty').style.display='none';
             let serial = 1;
-            newpendingitembody.style.display='flex';
             for (const key in data) {
                 const item = data[key];
                 const name = item.name || '';
@@ -156,12 +154,10 @@ function pendingnewtotalitemdata() {
 
     onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
-        newtotalitemCache = data || {};
         let html = '';
         if (data) {
             document.getElementById('newpendingtotalitemEmpty').style.display='none';
             let serial = 1;
-            newpendingtotalitem.style.display='flex';
             for (const key in data) {
                 console.log(key);
                 const item = data[key];

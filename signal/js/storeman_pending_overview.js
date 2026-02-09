@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getDatabase, get, ref, set, push, update, remove } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getDatabase, get, ref, set, push, update, remove, onValue } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 import { showNotification } from '../../js/notification.js';
 
 const firebaseConfig = {
@@ -107,17 +107,15 @@ async function loadUnserviceableItems() {
 }
 
 function pendingnewitemdata() {
-    let dbRef =ref(db, 'officerapproval/new/bkncoinventory/');
+    let dbRef =ref(db, 'officerapproval/new/siginventory/');
     const newpendingitembody = document.getElementById('newpendingitem');
     const newitemTableBody = document.getElementById('newitemTableBody');
     onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
-        newitemCache = data || {};
         let html = '';
         if (data) {
             document.getElementById('newpendingitemEmpty').style.display='none';
             let serial = 1;
-            newpendingitembody.style.display='flex';
             for (const key in data) {
                 const item = data[key];
                 const name = item.name || '';
@@ -150,18 +148,16 @@ function pendingnewitemdata() {
 } 
 
 function pendingnewtotalitemdata() {
-    let dbRef =ref(db, 'officerapproval/newtotal/bkncoinventory/');
+    let dbRef =ref(db, 'officerapproval/newtotal/siginventory/');
     const newpendingtotalitem = document.getElementById('newpendingtotalitem');
     const newitemtotalTableBody = document.getElementById('newitemtotalTableBody');
 
     onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
-        newtotalitemCache = data || {};
         let html = '';
         if (data) {
             document.getElementById('newpendingtotalitemEmpty').style.display='none';
             let serial = 1;
-            newpendingtotalitem.style.display='flex';
             for (const key in data) {
                 console.log(key);
                 const item = data[key];
@@ -187,71 +183,7 @@ function pendingnewtotalitemdata() {
     });
 }
 
-function pendingnewitemdata() {
-    let dbRef =ref(db, 'officerapproval/new/siginventory/');
-    const newpendingitembody = document.getElementById('newpendingitem');
-    const newitemTableBody = document.getElementById('newitemTableBody');
-    onValue(dbRef, (snapshot) => {
-        const data = snapshot.val();
-        newitemCache = data || {};
-        let html = '';
-        if (data) {
-            let serial = 1;
-            newpendingitembody.style.display='flex';
-            for (const key in data) {
-                const item = data[key];
-                const name = item.name || '';
-                const authorized = item.authorized ?? '';
-                const unit = item.unit || '';
-                const total = item.total ?? 0;
-                const servicable = item.servicable ?? 0;
-                const unservicable = item.unservicable ?? 0;
-                const issue = item.issue ?? 0;
-                const instore = item.instore ?? 0;
-                
-                html += `<tr class="row-data" id="${name}" data-key="${key}" style="cursor: pointer;">
-                            <td>${serial}</td>
-                            <td>${name}</td>
-                            <td>${unit}</td>
-                            <td>${authorized}</td>
-                            <td>${total}</td>
-                            <td>${issue}</td>
-                            <td>${instore}</td>
-                            <td>${servicable}</td>
-                            <td>${unservicable}</td>
-                            <td>
-                            <button class="reject-btn" data-key='${key}'>Cancel Change</button>
-                            </td>
-                        </tr>`;
-                serial += 1;
-            }
-
-        }
-        else {
-            newpendingitembody.style.display='none';
-        }
-        newitemTableBody.innerHTML = html;
-
-        newitemTableBody.querySelectorAll('.approve-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const key = btn.dataset.key;
-                console.log('Approved new item with key:', key);
-                approveNewItem(key); 
-            });
-        });
-        newitemTableBody.querySelectorAll('.reject-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const key = btn.dataset.key;
-                console.log('Rejected new item with key:', key);
-                rejectNewItem(key);
-            });
-        });
-
-
-    },(error) => {
-        console.error('Error loading pending new item data:', error);
-    });
-} 
+ 
 
 
 function populatePendingIssuesTable() {
