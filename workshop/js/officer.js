@@ -28,19 +28,19 @@ window.addEventListener('DOMContentLoaded', () => {
     if (!role_type) { 
         console.error('Role type not found in session storage.');
         alert('Session expired or unauthorized access. Please log in again.');
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
         return;
     }
     if( role_type !== 'officer' && role_type !== 'clo' && role_type !== 'cc'){ 
         console.error('Unauthorized role type:', role_type);
         alert('Unauthorized access. Please log in with the correct credentials.');
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
         return;
     }
     if (!baNumber) {
         console.error('BA Number not found in local storage.');
         alert('Session expired. Please log in again.');
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
         return;
     }
     console.log('Logged in as BA Number:', baNumber);
@@ -789,9 +789,55 @@ logoutButton?.addEventListener('click', () => {
     window.location.href = './../index.html';
 });
 
+function changePassword() {
+    const baNumber = sessionStorage.getItem('baNumber');
+    if (!baNumber) {
+        console.error('BA Number not found in session storage.');
+        window.location.href = 'index.html';return;
+    }
+    const currentPassword = document.getElementById('password').value;
+    const newPassword = document.getElementById('new-password').value;    
+    const confirmPassword = document.getElementById('confirm-password').value;
+    if (newPassword !== confirmPassword) {
+        showNotification("New passwords do not match", "error", "Validation Error");
+        return;
+    }
+    if (newPassword.length < 6) {
+        showNotification("New password must be at least 6 characters long", "error", "Validation Error");
+        return;
+    }
+    const userRef = ref(db, 'users/' + baNumber);
+    get(userRef).then((snapshot) => {
+        const userData = snapshot.val();
+        if (userData) {
+            if (userData.password !== currentPassword) {
+                showNotification("Current password is incorrect", "error", "Validation Error");
+                return;
+            }
+            update(userRef, { password: newPassword })
+                .then(() => {
+                    showNotification("Password changed successfully", "success", "Success");
+                    sessionStorage.clear();
+                    window.location.href = '../index.html';
+                })
+                .catch((error) => {
+                    console.error("Error updating password:", error);
+                    showNotification("Error updating password", "error", "Update Failed");
+                });
+        } else {
+            showNotification("User data not found", "error", "Error");
+        }
+    }).catch((error) => {
+        console.error("Error fetching user data:", error);
+        showNotification("Error fetching user data", "error", "Error");
+    });
+}
 
-// PDF Functionality
+document.getElementById('passwordChangeSubmitBtn')?.addEventListener('click', changePassword);
+
+
 let isSelectionMode = false;
+
 
 function initializePDFButtons() {
     const printAllBtn = document.getElementById('printAllTable');

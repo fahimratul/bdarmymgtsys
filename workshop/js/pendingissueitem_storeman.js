@@ -26,7 +26,7 @@ window.addEventListener('DOMContentLoaded', () => {
     
     if (!role_type || !baNumber) {
         alert('Session expired. Please log in again.');
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
         return;
     }
     

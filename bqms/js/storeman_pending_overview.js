@@ -35,10 +35,28 @@ window.addEventListener('DOMContentLoaded', () => {
     
     console.log('Logged in as Storeman, BA Number:', baNumber);
     
-    // Load all data
-    loadAllPendingData();
-});
 
+    loadAllPendingData();
+    pendingnewitemdata();
+    pendingnewtotalitemdata();
+});
+let ranklist ={
+    snk:"Sainik",
+    lcpl:"Lance Corporal",
+    cpl:"Corporal",
+    sgt:"Sergeant",
+    wo:"Warrant Officer",
+    swo:"Senior Warrant Officer",
+    mwo:"Master Warrant Officer",
+};
+window.addEventListener('DOMContentLoaded', () => {
+    const username=sessionStorage.getItem('username');
+    const rank=sessionStorage.getItem('rank');
+    const banumber=sessionStorage.getItem('baNumber');
+    document.getElementById('username').textContent='Name: ' + username;
+    document.getElementById('rank').textContent=ranklist[rank] ? 'Rank: ' + ranklist[rank] : 'Rank: ' + rank;
+    document.getElementById('banumber').textContent='Army No: ' + banumber;
+});
 // Make this function globally available
 window.loadAllPendingData = loadAllPendingData;
 
@@ -82,10 +100,91 @@ async function loadUnserviceableItems() {
         unserviceableData = snapshot.val() || {};
         console.log('Unserviceable items loaded:', unserviceableData);
         populateUnserviceableTable();
-    } catch (error) {
+    }catch (error) {
         console.error('Error loading unserviceable items:', error);
         populateUnserviceableTable();
     }
+}
+
+function pendingnewitemdata() {
+    let dbRef =ref(db, 'officerapproval/new/bkncoinventory/');
+    const newpendingitembody = document.getElementById('newpendingitem');
+    const newitemTableBody = document.getElementById('newitemTableBody');
+    onValue(dbRef, (snapshot) => {
+        const data = snapshot.val();
+        newitemCache = data || {};
+        let html = '';
+        if (data) {
+            document.getElementById('newpendingitemEmpty').style.display='none';
+            let serial = 1;
+            newpendingitembody.style.display='flex';
+            for (const key in data) {
+                const item = data[key];
+                const name = item.name || '';
+                const authorized = item.authorized ?? '';
+                const unit = item.unit || '';
+                const total = item.total ?? 0;
+                const servicable = item.servicable ?? 0;
+                const unservicable = item.unservicable ?? 0;
+                const issue = item.issue ?? 0;
+                const instore = item.instore ?? 0;
+                
+                html += `<tr class="row-data" id="${name}" data-key="${key}" style="cursor: pointer;">
+                            <td>${serial}</td>
+                            <td>${name}</td>
+                            <td>${unit}</td>
+                            <td>${authorized}</td>
+                            <td>${total}</td>
+                            <td>${issue}</td>
+                            <td>${instore}</td>
+                            <td>${servicable}</td>
+                            <td>${unservicable}</td>
+                        </tr>`;
+                serial += 1;
+            }
+            newitemTableBody.innerHTML = html;
+        }
+    },(error) => {
+        console.error('Error loading pending new item data:', error);
+    });
+} 
+
+function pendingnewtotalitemdata() {
+    let dbRef =ref(db, 'officerapproval/newtotal/bkncoinventory/');
+    const newpendingtotalitem = document.getElementById('newpendingtotalitem');
+    const newitemtotalTableBody = document.getElementById('newitemtotalTableBody');
+
+    onValue(dbRef, (snapshot) => {
+        const data = snapshot.val();
+        newtotalitemCache = data || {};
+        let html = '';
+        if (data) {
+            document.getElementById('newpendingtotalitemEmpty').style.display='none';
+            let serial = 1;
+            newpendingtotalitem.style.display='flex';
+            for (const key in data) {
+                console.log(key);
+                const item = data[key];
+                const name = item.name || '';
+                const unit = item.unit || '';
+                const authorized = item.authorized ?? '';
+                const oldtotal = dataCache[key]?.total ?? 0;
+                const newtotal = item.total ?? 0;
+                html += `<tr class="row-data" id="${name}" data-key="${key}" style="cursor: pointer;">
+                            <td>${serial}</td>
+                            <td>${name}</td>
+                            <td>${unit}</td>
+                            <td>${authorized}</td>
+                            <td>${oldtotal}</td>
+                            <td>${newtotal}</td>
+                        </tr>`;
+                serial += 1;
+            }
+            newitemtotalTableBody.innerHTML = html;
+        }
+    },(error) => {
+        console.error('Error loading pending new item data:', error);
+    });
 }
 
 function pendingnewitemdata() {
@@ -271,6 +370,53 @@ function formatDate(dateString) {
         year: 'numeric'
     });
 }
+function changePassword() {
+    const baNumber = sessionStorage.getItem('baNumber');
+    if (!baNumber) {
+        console.error('BA Number not found in session storage.');
+        window.location.href = 'index.html';return;
+    }
+    const currentPassword = document.getElementById('password').value;
+    const newPassword = document.getElementById('new-password').value;    
+    const confirmPassword = document.getElementById('confirm-password').value;
+    if (newPassword !== confirmPassword) {
+        showNotification("New passwords do not match", "error", "Validation Error");
+        return;
+    }
+    if (newPassword.length < 6) {
+        showNotification("New password must be at least 6 characters long", "error", "Validation Error");
+        return;
+    }
+    const userRef = ref(db, 'users/' + baNumber);
+    get(userRef).then((snapshot) => {
+        const userData = snapshot.val();
+        if (userData) {
+            if (userData.password !== currentPassword) {
+                showNotification("Current password is incorrect", "error", "Validation Error");
+                return;
+            }
+            update(userRef, { password: newPassword })
+                .then(() => {
+                    showNotification("Password changed successfully", "success", "Success");
+                    sessionStorage.clear();
+                    window.location.href = '../index.html';
+                })
+                .catch((error) => {
+                    console.error("Error updating password:", error);
+                    showNotification("Error updating password", "error", "Update Failed");
+                });
+        } else {
+            showNotification("User data not found", "error", "Error");
+        }
+    }).catch((error) => {
+        console.error("Error fetching user data:", error);
+        showNotification("Error fetching user data", "error", "Error");
+    });
+}
+
+document.getElementById('passwordChangeSubmitBtn')?.addEventListener('click', changePassword);
+
+
 
 window.viewPendingRequest = function(requestId) {
     // Navigate to the detailed pending issue page

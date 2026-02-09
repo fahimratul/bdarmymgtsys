@@ -101,7 +101,7 @@ function checkInventoryItem(name) {
             console.error('Invalid LO add item role:', loAddItemRole);
             showNotification("Invalid role. Cannot check inventory item.", "error", "Check Failed");
             setTimeout(() => {    
-                window.location.href = 'login.html';
+                window.location.href = 'index.html';
             }, 500);
             return;
         }
@@ -110,7 +110,7 @@ function checkInventoryItem(name) {
         console.error('Invalid role:', role);
         showNotification("Invalid role. Cannot check inventory item.", "error", "Check Failed");
         setTimeout(() => {    
-            window.location.href = 'login.html';
+            window.location.href = 'index.html';
         }, 500);
         return;
     }
@@ -268,7 +268,7 @@ function writeInventoryItem(name, data) {
             else {
                 console.error('Invalid role:', role);
                 showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
-                window.location.href = 'login.html';
+                window.location.href = 'index.html';
                 return;
             }
             console.log("Inventory item added:", newname);

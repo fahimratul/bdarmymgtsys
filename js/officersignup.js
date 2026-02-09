@@ -80,7 +80,7 @@ addUserForm.addEventListener('submit', async (e) => {
         showNotification("Account created successfully and pending approval", "success", "Success");
         setTimeout(() => {        
             addUserForm.reset();
-            window.location.href = 'login.html';
+            window.location.href = 'index.html';
         }, 750);
     } catch (error) {
         console.error("Error adding user:", error);
