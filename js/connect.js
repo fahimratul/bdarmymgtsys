@@ -38,7 +38,22 @@ let ranklist={
     bqms:["snk","lcpl","cpl","sgt","wo","swo","mwo"],
     mtjconco:["snk","lcpl","cpl","sgt","wo","swo","mwo"]
 }
-    
+
+// Handle Enter key press in BA number field to move to password field
+document.getElementById('ba-number').addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        document.getElementById('password').focus();
+    }
+});
+
+// Handle Enter key press in password field to trigger login
+document.getElementById('password').addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        handlelogin();
+    }
+});
 
 function handlelogin() {
     console.log("Login button clicked");
