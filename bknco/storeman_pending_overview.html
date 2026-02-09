@@ -255,7 +255,52 @@
                 <div class="stat-label">Total Pending</div>
             </div>
         </div>
+        <div class="pending-section" id="newpendingtotalitem">
+            <h2>Pending New Held of Items</h2>
+            <table class="pending-table">
+            <thead>
+                <tr>
+                    <th>serial</th>
+                    <th>Nomenclature/Name</th>
+                    <th>Measurement Unit</th>
+                    <th>Authorized</th>
+                    <th>Previous Held</th>
+                    <th>Upcoming</th>
+                </tr>
+            </thead>
+            <tbody id="newitemtotalTableBody">
 
+            </tbody>
+            </table>
+            <div class="empty-state" id="newpendingtotalitemEmpty">
+                <p>No new pending total items reported</p>
+            </div>
+        </div>
+    <!--pending new item-->
+    <div class="pending-section" id="newpendingitem">
+        <h2>Pending New Items</h2>
+        <table class="pending-table">
+        <thead>
+            <tr>
+                <th>serial</th>
+                <th>Nomenclature/Name</th>
+                <th>Authorized</th>
+                <th>Measurement Unit</th>
+                <th>Held</th>
+                <th>Issued</th>
+                <th>In store</th>
+                <th>Servicable</th>
+                <th>Unservicable</th>
+            </tr>
+        </thead>
+        <tbody id="newitemTableBody">
+            <!-- Inventory items will be dynamically inserted here -->
+        </tbody>
+        </table>
+        <div class="empty-state" id="newpendingitemEmpty">
+            <p>No new pending items reported</p>
+        </div>
+    </div>
         <!-- Pending Issues Section -->
         <div class="pending-section">
             <div class="section-header">
@@ -313,37 +358,8 @@
             </div>
         </div>
 
-        <!-- Pending Changes Section -->
-        <div class="pending-section">
-            <div class="section-header">
-                <i data-lucide="edit" class="section-icon"></i>
-                <h2 class="section-title">Pending Inventory Changes</h2>
-            </div>
-            <div id="changesContainer">
-                <table class="pending-table" id="changesTable" style="display: none;">
-                    <thead>
-                        <tr>
-                            <th>Change Type</th>
-                            <th>Item Name</th>
-                            <th>Old Value</th>
-                            <th>New Value</th>
-                            <th>Requested By</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="changesTableBody">
-                        <!-- Pending changes will be populated here -->
-                    </tbody>
-                </table>
-                <div class="empty-state" id="changesEmpty">
-                    <p>No pending inventory changes</p>
-                </div>
-            </div>
-        </div>
     </div>
-        <div id="changePasswordModal" class="modal hidden">
+    <div id="changePasswordModal" class="modal hidden">
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Change Password</h2>

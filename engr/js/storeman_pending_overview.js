@@ -35,8 +35,10 @@ window.addEventListener('DOMContentLoaded', () => {
     
     console.log('Logged in as Storeman, BA Number:', baNumber);
     
-    // Load all data
+
     loadAllPendingData();
+    pendingnewitemdata();
+    pendingnewtotalitemdata();
 });
 let ranklist ={
     snk:"Sainik",
@@ -98,10 +100,91 @@ async function loadUnserviceableItems() {
         unserviceableData = snapshot.val() || {};
         console.log('Unserviceable items loaded:', unserviceableData);
         populateUnserviceableTable();
-    } catch (error) {
+    }catch (error) {
         console.error('Error loading unserviceable items:', error);
         populateUnserviceableTable();
     }
+}
+
+function pendingnewitemdata() {
+    let dbRef =ref(db, 'officerapproval/new/bkncoinventory/');
+    const newpendingitembody = document.getElementById('newpendingitem');
+    const newitemTableBody = document.getElementById('newitemTableBody');
+    onValue(dbRef, (snapshot) => {
+        const data = snapshot.val();
+        newitemCache = data || {};
+        let html = '';
+        if (data) {
+            document.getElementById('newpendingitemEmpty').style.display='none';
+            let serial = 1;
+            newpendingitembody.style.display='flex';
+            for (const key in data) {
+                const item = data[key];
+                const name = item.name || '';
+                const authorized = item.authorized ?? '';
+                const unit = item.unit || '';
+                const total = item.total ?? 0;
+                const servicable = item.servicable ?? 0;
+                const unservicable = item.unservicable ?? 0;
+                const issue = item.issue ?? 0;
+                const instore = item.instore ?? 0;
+                
+                html += `<tr class="row-data" id="${name}" data-key="${key}" style="cursor: pointer;">
+                            <td>${serial}</td>
+                            <td>${name}</td>
+                            <td>${unit}</td>
+                            <td>${authorized}</td>
+                            <td>${total}</td>
+                            <td>${issue}</td>
+                            <td>${instore}</td>
+                            <td>${servicable}</td>
+                            <td>${unservicable}</td>
+                        </tr>`;
+                serial += 1;
+            }
+            newitemTableBody.innerHTML = html;
+        }
+    },(error) => {
+        console.error('Error loading pending new item data:', error);
+    });
+} 
+
+function pendingnewtotalitemdata() {
+    let dbRef =ref(db, 'officerapproval/newtotal/bkncoinventory/');
+    const newpendingtotalitem = document.getElementById('newpendingtotalitem');
+    const newitemtotalTableBody = document.getElementById('newitemtotalTableBody');
+
+    onValue(dbRef, (snapshot) => {
+        const data = snapshot.val();
+        newtotalitemCache = data || {};
+        let html = '';
+        if (data) {
+            document.getElementById('newpendingtotalitemEmpty').style.display='none';
+            let serial = 1;
+            newpendingtotalitem.style.display='flex';
+            for (const key in data) {
+                console.log(key);
+                const item = data[key];
+                const name = item.name || '';
+                const unit = item.unit || '';
+                const authorized = item.authorized ?? '';
+                const oldtotal = dataCache[key]?.total ?? 0;
+                const newtotal = item.total ?? 0;
+                html += `<tr class="row-data" id="${name}" data-key="${key}" style="cursor: pointer;">
+                            <td>${serial}</td>
+                            <td>${name}</td>
+                            <td>${unit}</td>
+                            <td>${authorized}</td>
+                            <td>${oldtotal}</td>
+                            <td>${newtotal}</td>
+                        </tr>`;
+                serial += 1;
+            }
+            newitemtotalTableBody.innerHTML = html;
+        }
+    },(error) => {
+        console.error('Error loading pending new item data:', error);
+    });
 }
 
 function pendingnewitemdata() {
