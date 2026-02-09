@@ -429,8 +429,7 @@ function changePassword() {
     const baNumber = sessionStorage.getItem('baNumber');
     if (!baNumber) {
         console.error('BA Number not found in session storage.');
-        window.location.href = 'login.html';
-        return;
+        window.location.href = 'lindex.html';return;
     }
     const currentPassword = document.getElementById('password').value;
     const newPassword = document.getElementById('new-password').value;    

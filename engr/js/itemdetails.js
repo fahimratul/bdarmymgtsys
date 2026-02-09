@@ -29,7 +29,7 @@ window.addEventListener('DOMContentLoaded', () => {
     let baNumber = sessionStorage.getItem('baNumber');
     if (!baNumber) {
         console.error('BA Number not found in local storage.');
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
         return;
     }
 });

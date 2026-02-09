@@ -28,19 +28,19 @@ window.addEventListener('DOMContentLoaded', () => {
     if (!role_type) { 
         console.error('Role type not found in session storage.');
         alert('Session expired or unauthorized access. Please log in again.');
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
         return;
     }
     if( role_type !== 'officer' && role_type !== 'clo' && role_type !== 'cc'){ 
         console.error('Unauthorized role type:', role_type);
         alert('Unauthorized access. Please log in with the correct credentials.');
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
         return;
     }
     if (!baNumber) {
         console.error('BA Number not found in local storage.');
         alert('Session expired. Please log in again.');
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
         return;
     }
     console.log('Logged in as BA Number:', baNumber);
