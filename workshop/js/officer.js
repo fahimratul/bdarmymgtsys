@@ -136,6 +136,9 @@ function loaditemdata() {
                     const item = data[key];
                     const name = item.name || '';
                     const unit = item.unit || '';
+                    const sec = item.sec || '';
+                    const part_no = item.part_no || '';
+                    const lp = item.lp || '';
                     const authorized = item.authorized ?? '';
                     const total = item.total ?? 0;
                     const servicable = item.servicable ?? 0;
@@ -148,9 +151,12 @@ function loaditemdata() {
                                     <input type="checkbox" class="row-select" data-key="${key}">
                                 </td>
                                 <td>${serial}</td>
+                                <td>${sec}</td>
+                                <td>${part_no}</td>
                                 <td>${name}</td>
                                 <td>${unit}</td>
                                 <td>${authorized}</td>
+                                <td>${lp}</td>
                                 <td>${total}</td>
                                 <td>${issue}</td>
                                 <td>${instore}</td>

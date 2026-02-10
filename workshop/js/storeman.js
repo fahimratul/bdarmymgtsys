@@ -124,7 +124,7 @@ function loaditemdata() {
             for (const key in data) {
                 const item = data[key];
                 const sec = item.sec || '';
-                const partno = item.part_no || '';
+                const part_no = item.part_no || '';
                 const name = item.name || '';
                 const authorized = item.authorized ?? '';
                 const total = item.total ?? 0;
@@ -141,7 +141,7 @@ function loaditemdata() {
                             </td>
                             <td>${serial}</td>
                             <td>${sec}</td>
-                            <td>${partno}</td>
+                            <td>${part_no}</td>
                             <td>${name}</td>
                             <td>${unit}</td>
                             <td>${authorized}</td>

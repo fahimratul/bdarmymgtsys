@@ -535,6 +535,64 @@ th {
     min-height: 92vh;
     max-height: 95vh;
 }
+
+
+
+/* Filter Buttons */
+.filter-container {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+/* Filter Status Line */
+.filter-status {
+    margin: 0.75rem 0;
+    text-align: center;
+    padding: 0.5rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #495057;
+    font-weight: 500;
+}
+
+.filter-btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+    color: white;
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+    white-space: nowrap;
+}
+
+.filter-btn:hover {
+    background: linear-gradient(135deg, #5a6268 0%, #495057 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
+}
+
+.filter-btn.active {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.4);
+}
+
+.filter-btn.active:hover {
+    background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.5);
+}
+
+.filter-btn i {
+    width: 16px;
+    height: 16px;
+}
+
 /* Responsive */
 @media (max-width: 900px) {
     body {
