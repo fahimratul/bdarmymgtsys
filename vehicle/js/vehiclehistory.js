@@ -74,7 +74,7 @@ let camplist={
 function loadvehicledata() {
     const urlparams = new URLSearchParams(window.location.search);
     vehicleKey = urlparams.get('key');
-    const dbRef = ref(db, `vehiclelist/` + vehicleKey);
+    const dbRef = ref(db, `vehiclelist/main/` + vehicleKey);
     const loadingOverlay = document.getElementById('loadingOverlay');
     onValue(dbRef, (snapshot) => {
         dataCache = snapshot.val();
@@ -135,7 +135,7 @@ document.getElementById('campSelect').addEventListener('change', (e) => {
         });    
 } else {
     const newCamp = e.target.value;
-    const dbRef = ref(db, `vehiclelist/` + vehicleKey);
+    const dbRef = ref(db, `vehiclelist/main/` + vehicleKey);
     update(dbRef, {camp: newCamp})
     .then(() => {
         showNotification('Camp updated successfully.');
@@ -306,7 +306,7 @@ function updaterecord(event, details, date, msg) {
             
                 set(ref(db, 'clonotification'), true);
         }
-        const dbref = ref(db, `vehiclelist/`+vehicleKey);
+        const dbref = ref(db, `vehiclelist/main/`+vehicleKey);
         update(dbref, {condition: event === 'Maintenance' ? 'inmaintenance' : event === 'Grounded' ? 'grounded' : event === 'Marking as A LR' ? 'alr' : event === 'Marking as A SR' ? 'asr' : dataCache.condition})
         .then(() => {
             loadvehicledata();

@@ -102,7 +102,7 @@ let vehicleDataCache = {};
 function loadvehicledata() {
 
 
-    const dbRef = ref(db, `vehiclelist/`);
+    const dbRef = ref(db, `vehiclelist/main/`);
     const loadingOverlay = document.getElementById('loadingOverlay');
     onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
@@ -385,7 +385,7 @@ function acceptCampchange(key) {
     }
     const vehiclekey = key;
     const newCamp = notification.camp;
-    const dbRef = ref(db, `vehiclelist/` + vehiclekey);
+    const dbRef = ref(db, `vehiclelist/main/` + vehiclekey);
     update(dbRef, {camp: newCamp})
     .then(() => {
         console.log('Vehicle camp updated successfully.');
@@ -489,7 +489,7 @@ function acceptNotificationMTO(key) {
     .catch((error) => {
         console.error('Error sending notification to CLOC:', error);
     });
-    dbref = ref(db, `vehiclelist/`+vehiclekey);
+    dbref = ref(db, `vehiclelist/main/`+vehiclekey);
     update(dbref, {condition: event === 'Maintenance' ? 'inmaintenance' : event === 'Grounded' ? 'grounded' : event === 'Marking as A LR' ? 'alr' : event === 'Marking as A SR' ? 'asr' : dataCache.condition})
     .then(() => {
         console.log('Vehicle condition updated to In Maintenance.');
