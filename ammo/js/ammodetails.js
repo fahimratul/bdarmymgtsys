@@ -140,6 +140,7 @@ function loadammodata() {
                         <td>${ammo.drodroquantity}</td>
                         <td>${ammo.rhooquantity}</td>
                         <td>${ammo.bayooquantity + ammo.drodroquantity + ammo.rhooquantity}</td>
+                        <td><button class='delete-btn' onclick="deleteAmmo('${key}')" style="padding: 4px 8px; background-color: #e53e3e; color: white; border: none; border-radius: 4px; cursor: pointer;">Delete</button></td>
                     </tr>
                 `;
                 console.log(ammo);
@@ -213,6 +214,23 @@ function loadammodata() {
 
 
 loadammodata();
+
+function deleteAmmo(lotnokey) {
+    if (confirm("Are you sure you want to delete this ammo lot? This action cannot be undone.")) {
+        const ammoRef = ref(db, 'ammoindex/' + ammokey + '/' + lotnokey);
+        remove(ammoRef)
+            .then(() => {
+                showNotification("Ammo lot deleted successfully", "success", "Deleted");
+                loadammodata();
+            })
+            .catch((error) => {
+                console.error("Error deleting ammo lot:", error);
+                showNotification("Error deleting ammo lot", "error", "Error");
+            });
+    }
+}
+
+window.deleteAmmo = deleteAmmo; // Make the function accessible globally for inline onclick
 
 const logoutButton = document.getElementById('logoutButton');
 

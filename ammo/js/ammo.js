@@ -105,13 +105,14 @@ function loadammodata() {
                     <tr class="ammo-row" id="${ammo.name}" data-key="${key}" style="cursor: pointer;">
                         <td>${serial}</td>
                         <td>${ammo.name} <span style="background-color: yellow;"> (${ammo.type})</span></td>
+                        <td><button class='delete-btn' onclick="deleteAmmoType('${key}')" style="padding: 4px 8px; background-color: #e53e3e; color: white; border: none; border-radius: 4px; cursor: pointer;">Delete</button></td>
                     </tr>
                 `;
                 serial++;
             }
         }
         else{
-            html = '<tr><td colspan="2">No ammo data found.</td></tr>';
+            html = '<tr><td colspan="3">No ammo data found.</td></tr>';
         }
         tableBody.innerHTML = html;
         console.log("Ammo Data Loaded");
@@ -145,7 +146,29 @@ function loadammodata() {
 }   
 
 
+function deleteAmmoType(ammoKey) {
+    if (confirm("Are you sure you want to delete this type of ammo? This action cannot be undone.")) {
+        const ammoRef = ref(db, 'ammoindex/typesofammo/' + ammoKey);
+        remove(ammoRef)
+            .then(() => {
+                remove(ref(db, 'ammoindex/' + ammoKey));
+                showNotification("Type of Ammo deleted successfully", "success", "Deleted");
+                loadammodata();
+            })
+            .catch((error) => {
+                console.error("Error deleting Type of Ammo:", error);
+                showNotification("Error deleting Type of Ammo", "error", "Delete Failed");
+            }
+        );
+    }
+}
+
+
+
 loadammodata();
+
+window.deleteAmmoType = deleteAmmoType;
+
 
 document.getElementById('searchInput')?.addEventListener('keyup', searchammo);
 function searchammo() {
