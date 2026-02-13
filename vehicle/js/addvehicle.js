@@ -20,7 +20,7 @@ const analytics = getAnalytics(app);
 const db = getDatabase(app);
 console.log("Firebase Initialized");
 
-import {showNotification} from './notification.js';
+import {showNotification} from './../../js/notification.js';
 
 console.log("Add Item Script Loaded");
 
@@ -75,7 +75,7 @@ form.addEventListener('submit', (event) => {
         camp: campValue
     });
     showNotification("Adding vehicle...", "info", "Please wait");
-    writeInventoryItem(number,classtypeValue, conditionValue, typeofvehicleValue, unnumberValue, campValue);
+    writeInventoryItem(classtypeValue, number, unnumberValue, typeofvehicleValue, campValue, conditionValue);
     form.reset();
     vehicleNumber.focus();
 });
@@ -92,7 +92,7 @@ function checkInventoryItem(number) {
 }
 
 
-function writeInventoryItem(baNumber, classtype, conditionValue, typeofvehicleValue, unnumberValue, campValue) {
+function writeInventoryItem(classtype, baNumber, unnumberValue,  typeofvehicleValue,  campValue, conditionValue="alr") {
     checkInventoryItem(baNumber).then((exists) => {
         if (exists) {
             console.log("Vehicle with this name already exists:", baNumber);
@@ -116,6 +116,3 @@ function writeInventoryItem(baNumber, classtype, conditionValue, typeofvehicleVa
 }
 
 console.log("Add Vehicle Script Executed");
-
-
-
