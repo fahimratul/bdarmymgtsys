@@ -47,103 +47,15 @@
         <button class="btn primary" id="changePasswordBtn" onclick="passwordChangeModal()">Change Password</button>
         <button class="btn secondary" id="logoutButton" onclick="logout()">Logout</button>        
     </div>
-
-
-    <div class="table-container" id="inventoryTableContainer" style="display: none;">
-
-        <div class="dashboard-card">
-            <div class="card">
-                <div class="card-icon">
-                    <i data-lucide="box"></i>
-                </div>
-                <div class="card-info">
-                    <h2 id="totalItems">0</h2>
-                    <p>Total Items</p>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-icon">
-                    <i data-lucide="check-circle"></i>
-                </div>
-                <div class="card-info">
-                    <h2 id="servicableItems">0</h2>
-                    <p>Servicable Items</p>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-icon">
-                    <i data-lucide="x-circle"></i>
-                </div>
-                <div class="card-info">
-                    <h2 id="unservicableItems">0</h2>
-                    <p>Unservicable Items</p>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-icon">
-                    <i data-lucide="truck"></i>
-                </div>
-                <div class="card-info">
-                    <h2 id="issuedItems">0</h2>
-                    <p>Issued Items</p>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-icon">
-                    <i data-lucide="archive"></i>
-                </div>
-                <div class="card-info">
-                    <h2 id="inStoreItems">0</h2>
-                    <p>In Store Items</p>
-                </div>
-            </div>
-            <div class="card" onclick="window.location.href='additem.html'" style="cursor: pointer;">
-                <div class="card-icon">
-                    <i data-lucide="plus-circle"></i>
-                </div>
-                <div class="card-info">
-                    <h2 id="addItems">Add Items</h2>
-                    <p></p>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="search-container">
-            <div class="library-search-container">
-                <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                </svg>
-                <input type="text" id="searchInput" class="library-search-input" placeholder="Search Item...">
-            </div>  
-        </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>serial</th>
-                    <th>Nomenclature/Name</th>
-                    <th>Authorized Unit</th>
-                    <th>Total Items</th>
-                    <th>Servicable</th>
-                    <th>Unservicable</th>
-                    <th>Issued</th>
-                    <th>In store</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="itemTableBody">
-                <!-- Inventory items will be dynamically inserted here -->
-            </tbody>
-        </table>
-    </div>
-
-
-
+    
+    <div id ='vehicledeletenotification' class="officernotification"></div>
     <div id="officer_notification" class="officernotification"></div>
     <div id="campchange_notification" class="officernotification"></div>
+
+
     <div class="table-container" id="transportTableContainer" >
 
-        <div class="dashboard-card">
+    <div class="dashboard-card">
         <div class="card mt" id="Allvehicles">
             <div class="card-icon">
                 <i data-lucide="truck"></i>
@@ -364,7 +276,7 @@
                 <th>Class</th>
                 <th>Condition</th>
                 <th>Camp</th>
-                <th>Actions</th>
+                <th colspan="2">Actions</th>
             </tr>
         </thead>
         <tbody id="VehicleTableBody">

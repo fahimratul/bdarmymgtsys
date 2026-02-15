@@ -218,6 +218,7 @@ function loadvehicledata() {
                             <td>${conditionlist[condition] || condition}</td>
                             <td>${camplist[camp] || camp}</td>
                             <td><button class="edit-btn" data-key='${key}'>Take Action</button></td>
+                            <td><button class="delete-btn" data-key='${key}'>Delete</button></td>
                         </tr>`;
                 serial += 1;
                 vehicleinfo.total.total+=1;
@@ -264,6 +265,23 @@ function loadvehicledata() {
                 vehiclehistoryload(key);
             });
         });
+        tableBody.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.dataset.key;
+                if (confirm('Are you sure you want to delete this vehicle?')) {
+                    set(ref(db, 'vehicledeleted/' + key), {
+                        msg: 'Vehicle Number ' + vehicleDataCache[key].vehicleNumber + ' , Type  ' + vehicleDataCache[key].typeofvehicle + ', Class ' + classlist[vehicleDataCache[key].classtype] + ', Condition ' + conditionlist[vehicleDataCache[key].condition] + ', Camp ' + camplist[vehicleDataCache[key].camp]
+                    }).then(() => {
+                        showNotification('Vehicle deleted successfully.');
+                        loadvehicledata(); // Reload data to reflect changes
+                    }).catch((error) => {
+                        console.error('Error deleting vehicle:', error);
+                        showNotification('Error deleting vehicle.', 'error');
+                    });
+                }
+            });
+        });
+        
         
         // Hide loading overlay after data is loaded
         if (loadingOverlay) {

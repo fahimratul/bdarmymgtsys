@@ -267,6 +267,9 @@ function updateVehicleHistoryRecord(event, details, date) {
 
 function updaterecord(event, details, date, msg) {
     const voucherNo = Date.now().toString();
+    const name = document.getElementById('typeofvehicle').value;
+    const classtype = document.getElementById('classtype').value;
+
     if(role==='mtjco' || role==='mtnco'){
         const baNumber = sessionStorage.getItem('baNumber');
         let dbref = ref(db, `officernotification/mto/notifications/${voucherNo}`);
@@ -275,7 +278,7 @@ function updaterecord(event, details, date, msg) {
             event: event,
             details: details,
             date: date,
-            msg: 'Vehicle Number ' + vehicleKey + ' '+ msg + ' Details: ' + details,
+            msg: 'Vehicle Number ' + vehicleKey + ' , Type  ' + name + ', Class ' + classtype + ',  '+ msg + ' Details: ' + details,
         };
         update(dbref, notificationData)
         .then(() => {
@@ -294,7 +297,7 @@ function updaterecord(event, details, date, msg) {
             const notificationData = {
                 from: 'MTO',
                 date: new Date().toISOString(),
-                msg: 'Vehicle Number ' + vehicleKey + ' '+ msg + ' Details: ' + details,
+                msg: 'Vehicle Number ' + vehicleKey + ' , Type  ' + name + ', Class ' + classtype + ',  '+ msg + ' Details: ' + details,
             };
             update(dbref, notificationData)
             .then(() => {

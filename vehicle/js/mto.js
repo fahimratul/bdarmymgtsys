@@ -219,6 +219,7 @@ function loadvehicledata() {
                             <td>${conditionlist[condition] || condition}</td>
                             <td>${camplist[camp] || camp}</td>
                             <td><button class="edit-btn" data-key='${key}'>Take Action</button></td>
+                            <td><button class="delete-btn" data-key='${key}'>Delete</button></td>
                         </tr>`;
                 serial += 1;
                 vehicleinfo.total.total+=1;
@@ -265,6 +266,27 @@ function loadvehicledata() {
                 vehiclehistoryload(key);
             });
         });
+        tableBody.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.dataset.key;
+                if (confirm('Are you sure you want to delete this vehicle?')) {
+                    const dbRef = ref(db, `vehiclelist/main/` + key);
+                    remove(dbRef).then(() => {
+                        remove(ref(db, `vehiclelist/` + key)).catch((error) => {
+                            console.error('Error removing vehicle from list:', error);
+                        });
+                        console.log('Vehicle deleted successfully');
+                        showNotification('Vehicle deleted successfully', 'success', 'Deletion Successful');
+                        loadvehicledata();
+                    }).catch((error) => {
+                        console.error('Error deleting vehicle:', error);
+                        showNotification('Error deleting vehicle', 'error', 'Deletion Failed');
+                    });
+                }
+            });
+        });
+
+
         
         // Hide loading overlay after data is loaded
         if (loadingOverlay) {
@@ -330,6 +352,77 @@ function loadnotifactions() {
     });
 }
 
+
+let vehicledeletenotificationDataCache = {};
+function loadvehicledeletenotifications() {
+    const dbRef = ref(db, 'vehicledeleted');
+    onValue(dbRef, (snapshot) => {
+        vehicledeletenotificationDataCache = snapshot.val();
+        let html = '';
+        document.getElementById('vehicledeletenotification').style.display='flex';
+        if(vehicledeletenotificationDataCache) {
+            for (const key in vehicledeletenotificationDataCache) {
+                const notification = vehicledeletenotificationDataCache[key];
+                const message = notification.msg || '';
+                html+=`<div class="msg" id="vehicledelete-notification-${key}">
+                        <p class="content">${message}<br><br> </p>
+                        <button class="accept-btn" onclick="acceptVehicleDelete('${key}')">Delete</button>
+                        <button class="reject-btn" onclick="rejectVehicleDelete('${key}')">Cancel</button> 
+                    </div>`;
+            }
+            document.getElementById('vehicledeletenotification').innerHTML = html;
+        }
+    },(error) => {
+        console.error('Error loading vehicle delete notifications:', error);
+    });
+}
+
+function acceptVehicleDelete(key) {
+    const dbRef = ref(db, `vehiclelist/main/` + key);
+                    remove(dbRef).then(() => {
+                        remove(ref(db, `vehiclelist/` + key)).catch((error) => {
+                            console.error('Error removing vehicle from list:', error);
+                        });
+                        console.log('Vehicle deleted successfully');
+                        showNotification('Vehicle deleted successfully', 'success', 'Deletion Successful');
+                        loadvehicledata();
+                    }).catch((error) => {
+                        console.error('Error deleting vehicle:', error);
+                        showNotification('Error deleting vehicle', 'error', 'Deletion Failed');
+                    });
+    const dbref = ref(db, 'vehicledeleted/' + key);
+    remove(dbref)
+    .then(() => {
+        console.log('Vehicle delete notification removed successfully after acceptance.');
+    })
+    .catch((error) => {
+        console.error('Error removing vehicle delete notification:', error);
+    });
+    document.getElementById('vehicledelete-notification-'+key).remove();
+}
+
+function rejectVehicleDelete(key) {
+    const dbref = ref(db, 'vehicledeleted/' + key);
+    remove(dbref)
+    .then(() => {
+        console.log('Vehicle delete notification removed successfully after rejection.');
+        showNotification('Vehicle delete request rejected successfully.', 'success', 'Rejection Successful');
+        loadvehicledeletenotifications();
+    })
+    .catch((error) => {
+        console.error('Error removing vehicle delete notification:', error);
+        showNotification('Failed to reject vehicle delete request. Please try again later.', 'error', 'Rejection Failed');
+    });
+    document.getElementById('vehicledelete-notification-'+key).remove();
+}
+
+
+window.acceptVehicleDelete = acceptVehicleDelete;
+window.rejectVehicleDelete = rejectVehicleDelete;
+
+
+
+
 let campchangeNotificationDataCache = {};
 
 function loadcampchangeNotifications() {
@@ -337,7 +430,7 @@ function loadcampchangeNotifications() {
     onValue(dbRef, (snapshot) => {
         campchangeNotificationDataCache = snapshot.val();
         let html = '';
-        notificationbody.style.display='flex';
+        document.getElementById('campchange_notification').style.display='flex';
         if (campchangeNotificationDataCache) {
             for (const key in campchangeNotificationDataCache) {
                 const notification = campchangeNotificationDataCache[key];
@@ -376,6 +469,7 @@ function loadcampchangeNotifications() {
 if(role==='mto'){
     loadnotifactions();
     loadcampchangeNotifications();
+    loadvehicledeletenotifications();
 }
 function acceptCampchange(key) {
     const notification = campchangeNotificationDataCache?.[key];

@@ -168,7 +168,7 @@ document.getElementById('notification_menu').addEventListener('click', () => {
 
 function loadvehicledata() {
 
-    const dbRef = ref(db, `vehiclelist/`);
+    const dbRef = ref(db, `vehiclelist/main/`);
     const loadingOverlay = document.getElementById('loadingOverlay');
     onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
