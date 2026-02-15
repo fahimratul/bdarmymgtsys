@@ -38,8 +38,9 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 const role = sessionStorage.getItem('role');
-const loAddItemRole = sessionStorage.getItem('lo_add_item_role');
-
+console.log('User Role:', role);
+const addItemFrom = sessionStorage.getItem('addItemFrom');
+console.log('Add Item From:', addItemFrom);
 
 const form = document.getElementById('addItemForm');
 const total = document.getElementById('total');
@@ -75,7 +76,7 @@ form.addEventListener('submit', (event) => {
 function checkInventoryItem(name) {
     const newname = name.replace(/[^a-zA-Z0-9]+/g, '_').toLowerCase();
     let dbRef;
-    if(role === 'engrnco' || role === 'eo') {
+    if(role === 'engrnco') {
         dbRef = ref(db, 'engrinventory/main/' + newname);
     }
     else if(role === 'signco' || role === 'so') {
@@ -84,23 +85,26 @@ function checkInventoryItem(name) {
     else if(role === 'mtnco' || role === 'mtjco' || role === 'mto') {
         dbRef = ref(db, 'mtinventory/main/' + newname);
     }
-    else if(role === 'bqms') {
+    else if(role === 'bqms' || role=== 'lo') {
         dbRef = ref(db, 'bqmsinventory/main/' + newname);
     }
     else if(role === 'bknco') {
         dbRef = ref(db, 'bkncoinventory/main/' + newname);
     }
-    else if(role === 'lo') {
-        if(loAddItemRole === 'bqms') {
-            dbRef = ref(db, 'bqmsinventory/main/' + newname);
+    else if(role === 'workshop' || role === 'workshopnco') {
+        dbRef = ref(db, 'workshop/main/' + newname);
+    }
+    else if(role === 'eo') {
+        if(addItemFrom === 'engr') {
+            dbRef = ref(db, 'engrinventory/main/' + newname);
         }
-        else if(loAddItemRole === 'bknco') {
+        else  if(addItemFrom ==="bknco") {
             dbRef = ref(db, 'bkncoinventory/main/' + newname);
         }
-        else {
-            console.error('Invalid LO add item role:', loAddItemRole);
-            showNotification("Invalid role. Cannot check inventory item.", "error", "Check Failed");
-            setTimeout(() => {    
+        else{
+            console.error('Invalid add item source for EO:', addItemFrom);
+            showNotification("Invalid source for adding item. Cannot check inventory item.", "error", "Check Failed");
+            setTimeout(() => {
                 window.location.href = 'index.html';
             }, 500);
             return;
@@ -187,8 +191,8 @@ function writeInventoryItem(name, data) {
                     instore: data.instore
                 });
             }
-            else if(role === 'eo') {
-                set(ref(db, 'engrinventory/main/' + newname),{
+            else if(role === 'workshopnoc') {
+                set(ref(db, 'officerapproval/new/workshop/' + newname),{
                     name: name,
                     unit: data.unit,
                     authorized: data.authorized,
@@ -198,10 +202,44 @@ function writeInventoryItem(name, data) {
                     issue: data.issue,
                     instore: data.instore
                 });
-                
-                set(ref(db, 'clo_cc_notifications/' + Date.now()),{
-                    msg: `New inventory item "${name}" has been added by Engineer Officer.`
-                });
+            }
+            else if(role === 'eo') {
+                if(addItemFrom === 'engr') {
+                    set(ref(db, 'engrinventory/main/' + newname),{
+                        name: name,
+                        unit: data.unit,
+                        authorized: data.authorized,
+                        total: data.total,
+                        servicable: data.servicable,
+                        unservicable: data.unservicable,
+                        issue: data.issue,
+                        instore: data.instore
+                    });
+                    
+                    set(ref(db, 'clo_cc_notifications/' + Date.now()),{
+                        from: 'Engineering Inventory',
+                        date: new Date().toISOString(),
+                        msg: `New inventory item "${name}" has been added by Engineer Officer.`
+                    });
+                }
+                else if(addItemFrom === "bknco"){
+                    set(ref(db, 'bkncoinventory/main/' + newname),{
+                        name: name,
+                        unit: data.unit,
+                        authorized: data.authorized,
+                        total: data.total,
+                        servicable: data.servicable,
+                        unservicable: data.unservicable,
+                        issue: data.issue,
+                        instore: data.instore
+                    });
+                    set(ref(db, 'clo_cc_notifications/' + Date.now()),{
+                        from: 'BKNCO Inventory',
+                        date: new Date().toISOString(),
+                        msg: `New inventory item "${name}" has been added by BKNCO Officer.`
+                    });
+                }
+
             }
             else if(role === 'so') {
                 set(ref(db, 'siginventory/main/' + newname),{
@@ -215,6 +253,8 @@ function writeInventoryItem(name, data) {
                     instore: data.instore
                 });
                 set(ref(db, 'clo_cc_notifications/' + Date.now()),{
+                    from: 'Signal Inventory',
+                    date: new Date().toISOString(),
                     msg: `New inventory item "${name}" has been added by Signal Officer.`
                 });
             }
@@ -230,40 +270,44 @@ function writeInventoryItem(name, data) {
                     instore: data.instore
                 });
                 set(ref(db, 'clo_cc_notifications/' + Date.now()),{
-                        msg: `New inventory item "${name}" has been added by  Logistics Officer.`
+                    from: 'MT Inventory',
+                    date: new Date().toISOString(),
+                    msg: `New inventory item "${name}" has been added by  MT Officer.`
                 });
             }
             else if(role === 'lo') {
-                if(loAddItemRole === 'bqms') {
-                    set(ref(db, 'bqmsinventory/main/' + newname),{
-                        name: name,
-                        unit: data.unit,
-                        authorized: data.authorized,
-                        total: data.total,
-                        servicable: data.servicable,
-                        unservicable: data.unservicable,
-                        issue: data.issue,
-                        instore: data.instore
-                    });
-                    set(ref(db, 'clo_cc_notifications/' + Date.now()),{
-                        msg: `New inventory item "${name}" has been added by  Logistics Officer.`
-                    });
-                }
-                else if(loAddItemRole === 'bknco') {
-                    set(ref(db, 'bkncoinventory/main/' + newname),{
-                        name: name,
-                        unit: data.unit,
-                        authorized: data.authorized,
-                        total: data.total,
-                        servicable: data.servicable,
-                        unservicable: data.unservicable,
-                        issue: data.issue,
-                        instore: data.instore
-                    });
-                    set(ref(db, 'clo_cc_notifications/' + Date.now()),{
-                        msg: `New inventory item "${name}" has been added by Central Logistics Officer.`
-                    });
-                }
+                set(ref(db, 'bqmsinventory/main/' + newname),{
+                    name: name,
+                    unit: data.unit,
+                    authorized: data.authorized,
+                    total: data.total,
+                    servicable: data.servicable,
+                    unservicable: data.unservicable,
+                    issue: data.issue,
+                    instore: data.instore
+                });
+                set(ref(db, 'clo_cc_notifications/' + Date.now()),{
+                    from: 'BQMS Inventory',
+                    date: new Date().toISOString(),
+                    msg: `New inventory item "${name}" has been added by  Logistics Officer.`
+                });
+            }
+            else if(role === 'workshop') {
+                set(ref(db, 'workshopinventory/main/' + newname),{
+                    name: name,
+                    unit: data.unit,
+                    authorized: data.authorized,
+                    total: data.total,
+                    servicable: data.servicable,
+                    unservicable: data.unservicable,
+                    issue: data.issue,
+                    instore: data.instore
+                });
+                set(ref(db, 'clo_cc_notifications/' + Date.now()),{
+                    from: 'Workshop Inventory',
+                    date: new Date().toISOString(),
+                    msg: `New inventory item "${name}" has been added by Workshop Officer.`
+                });
             }
             else {
                 console.error('Invalid role:', role);

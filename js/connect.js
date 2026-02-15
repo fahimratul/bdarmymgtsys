@@ -123,9 +123,13 @@ function handlelogin() {
                             console.log("Redirecting to workshop dashboard");
                             window.location.href = './workshop/officer_dashboard.html';
                         }
-                        else {
+                        else if (role === 'so'){
                             console.log("Redirecting to officer dashboard");
                             window.location.href = './signal/officer_so_dashboard.html';
+                        }
+                        else{
+                            showNotification("Invalid role for Officer", "error", "Login Failed");
+                            return;
                         }
                         
                     } 
@@ -155,7 +159,7 @@ function handlelogin() {
                             return;
                         }
                         else{
-                            showNotification("Invalid role for BQMS", "error", "Login Failed");
+                            showNotification("Invalid role for Storeman", "error", "Login Failed");
                             return;
                         } 
                     } 

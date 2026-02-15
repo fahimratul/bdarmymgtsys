@@ -152,7 +152,7 @@
                 <p>In Store Items</p>
             </div>
         </div>
-            <div class="card" onclick="window.location.href='../additem.html'" style="cursor: pointer;">
+            <div class="card" onclick="additem()" style="cursor: pointer;">
                 <div class="card-icon">
                     <i data-lucide="plus-circle"></i>
                 </div>
@@ -379,6 +379,11 @@
         function hidefixedNotification(notificationId){
             const fixedNotification = document.getElementById(notificationId);
             fixedNotification.style.display = 'none';
+        }
+        
+        function additem(){
+            sessionStorage.setItem('addItemFrom', 'bknco');
+            window.location.href='../additem.html';
         }
     </script>
 
