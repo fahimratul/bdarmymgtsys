@@ -17,7 +17,7 @@
 <body>
     <nav id="notforclo">
         <ul>
-            <li><a href="../bqms/officer_dashboard.html">Go To BQMS Inventory</a></li>
+            <li><a href="../lodashboard.html">Home</a></li>
             <li><a href="ammodashboard.html"  class="active">Ammo Inventory</a></li>
             <li><a href="ammo_change.html">Pending Changes</a></li>
             <li><a href="../user_management.html">User Management</a></li>
@@ -182,7 +182,7 @@
                 </div>
                 <div class="form-group">
                     <label for="lotdetailsyearofmfr" class="form-label">Year of Mfr *</label>
-                    <input type="number" id="lotdetailsyearofmfr" class="form-input" disabled>
+                    <input type="number" id="lotdetailsyearofmfr" class="form-input" >
                 </div>
                 <div class="form-group">
                     <label for="lotdetailsexpiryyear" class="form-label">Expiry Year *</label>
@@ -196,10 +196,14 @@
                     <label for="lotdetailsunsvcquantity" class="form-label">Un Svc Quantity *</label>
                     <input type="number" id="lotdetailsunsvcquantity" class="form-input" min="0" placeholder="Enter Un Svc Quantity" >
                 </div>   
-                <div class="form-group" >
-                    <label for="lotdetailsexpenditure" class="form-label">Total Svc Quantity *</label>
-                    <input type="number" id="lotdetailsexpenditure" class="form-input" min="0" placeholder="Enter Total Svc Quantity" disabled >
-                </div> 
+                <div class="form-group">
+                    <label for="lotdetailsinsvcquantity" class="form-label">In Svc Quantity *</label>
+                    <input type="number" id="lotdetailsinsvcquantity" class="form-input" min="0" placeholder="Enter In Svc Quantity" >
+                </div>
+                <div class="form-group">
+                    <label for="lotdetailsinmagquantity" class="form-label">In Mag Quantity *</label>
+                    <input type="number" id="lotdetailsinmagquantity" class="form-input" min="0" placeholder="Enter In Mag Quantity" >
+                </div>  
             </div>
             <h3>Kote Distribution</h3>
             <div class="modal-grid">
@@ -274,7 +278,11 @@
                     <input type="number" id="expenditurerhoo" class="form-input" min="0" placeholder="Enter Expenditure Quantity" >
                 </div>    
             </div>
-
+            <h3>Total Expenditure</h3>
+            <div class="form-group" >
+                    <label for="lotdetailsexpenditure" class="form-label">Total Expenditure *</label>
+                    <input type="number" id="lotdetailsexpenditure" class="form-input" min="0" placeholder="Enter Total Expenditure" disabled >
+            </div> 
             <div class="modal-actions">
                 <button type="button" class="btn secondary" id="addLotCloseBtn">Cancel</button>
                 <button id="addLotSubmitBtn" class="btn primary">Update</button>

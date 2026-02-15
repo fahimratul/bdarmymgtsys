@@ -38,9 +38,6 @@
         <button class="btn secondary" id="logoutButton" onclick="logout()">Logout</button>        
     </div>
 
-
-
-
     <div class="dashboard-card">
         <div class="card mt" id="Allvehicles">
             <div class="card-icon">
@@ -163,6 +160,19 @@
 
     <h2>Camp Wise Vehicle Overview</h2>
     <div class="dashboard-card">
+                <div class="card nohover" style="flex: 1 1 calc(100% - 2rem);">
+            <div class="card-icon">
+                <i data-lucide="car"></i>
+                <h3>NDROMO TOB</h3>
+            </div>
+            <div class="card-info mt">
+                <h4 id="totalVehiclesndromo">0</h4>
+                <h4 id="ALRVehiclesndromo">0</h4>
+                <h4 id="ASRVehiclesndromo">0</h4>
+                <h4 id="inMaintenanceVehiclesndromo">0</h4>
+                <h4 id="groundedVehiclesndromo">0</h4>
+            </div>
+        </div>
         <div class="card nohover" style="flex: 1 1 calc(50% - 2rem);">
             <div class="card-icon">
                 <i data-lucide="car"></i>
@@ -202,19 +212,7 @@
                 <h4 id="groundedVehiclesrhoo">0</h4>
             </div>
         </div>
-        <div class="card nohover" style="flex: 1 1 calc(50% - 2rem);">
-            <div class="card-icon">
-                <i data-lucide="car"></i>
-                <h3>NDROMO TOB</h3>
-            </div>
-            <div class="card-info mt">
-                <h4 id="totalVehiclesndromo">0</h4>
-                <h4 id="ALRVehiclesndromo">0</h4>
-                <h4 id="ASRVehiclesndromo">0</h4>
-                <h4 id="inMaintenanceVehiclesndromo">0</h4>
-                <h4 id="groundedVehiclesndromo">0</h4>
-            </div>
-        </div>
+
     </div>
 
     <div class="search-container">

@@ -311,8 +311,6 @@ function addAmmo() {
 document.getElementById('addAmmoSubmitBtn')?.addEventListener('click', addAmmo);
 
 
-
-
 function showlotdetails(lotnokeyvalue) {
     const ammoData = ammodetails[lotnokeyvalue];
     if (!ammoData) {
@@ -325,6 +323,8 @@ function showlotdetails(lotnokeyvalue) {
     document.getElementById('lotdetailsexpiryyear').value = ammoData.expiryyear;
     document.getElementById('lotdetailstotalquantity').value = ammoData.totalquantity;
     document.getElementById('lotdetailsunsvcquantity').value = ammoData.unsvcquantity;
+    document.getElementById('lotdetailsinsvcquantity').value = ammoData.insvcquantity;
+    document.getElementById('lotdetailsinmagquantity').value = ammoData.inmagquantity;
     document.getElementById('lotdetailsexpenditure').value = ammoData.expenditure || 0;
     document.getElementById('lotdetailsinf1quantity').value = ammoData.inf1quantity;
     document.getElementById('lotdetailsinf2quantity').value = ammoData.inf2quantity;
@@ -337,6 +337,108 @@ function showlotdetails(lotnokeyvalue) {
     const lotDetailsModal = document.getElementById('lotdetailsmodal');
     lotDetailsModal.classList.remove('hidden');
 }
+document.getElementById('lotdetailsunsvcquantity')?.addEventListener('input', () => {
+    const totalquantity = parseInt(document.getElementById('lotdetailstotalquantity').value.trim(), 10) || 0;
+    const unsvcquantity = parseInt(document.getElementById('lotdetailsunsvcquantity').value.trim(), 10) || 0;
+    const insvcquantity = totalquantity - unsvcquantity;
+    if (insvcquantity < 0) {
+        showNotification("Un Svc Quantity cannot be greater than Total Quantity", "error", "Validation Error");
+        document.getElementById('lotdetailsunsvcquantity').value = totalquantity;
+        document.getElementById('lotdetailsinsvcquantity').value = 0;
+    } else {
+        document.getElementById('lotdetailsinsvcquantity').value = insvcquantity;
+    }
+});
+
+document.getElementById('lotdetailsinsvcquantity')?.addEventListener('input', () => {
+    const totalquantity = parseInt(document.getElementById('lotdetailstotalquantity').value.trim(), 10) || 0;
+    const insvcquantity = parseInt(document.getElementById('lotdetailsinsvcquantity').value.trim(), 10) || 0;
+    const unsvcquantity = totalquantity - insvcquantity;
+    if (unsvcquantity < 0) {
+        showNotification("In Svc Quantity cannot be greater than Total Quantity", "error", "Validation Error");
+        document.getElementById('lotdetailsinsvcquantity').value = totalquantity;
+        document.getElementById('lotdetailsunsvcquantity').value = 0;
+    } else {
+        document.getElementById('lotdetailsunsvcquantity').value = unsvcquantity;
+    }
+});
+
+document.getElementById('lotdetailstotalquantity')?.addEventListener('input', () => {
+    const totalquantity = parseInt(document.getElementById('lotdetailstotalquantity').value.trim(), 10) || 0;   
+    const unsvcquantity = parseInt(document.getElementById('lotdetailsunsvcquantity').value.trim(), 10) || 0;
+    const insvcquantity = totalquantity - unsvcquantity;
+    if (insvcquantity < 0) {
+        showNotification("Total Quantity cannot be less than Un Svc Quantity", "error", "Validation Error");
+        document.getElementById('lotdetailstotalquantity').value = unsvcquantity;
+        document.getElementById('lotdetailsinsvcquantity').value = 0;
+    } else {
+        document.getElementById('lotdetailsinsvcquantity').value = insvcquantity;
+    }
+});
+
+function calculatetotalexpenditure() {
+    const expenditureinf1 = parseInt(document.getElementById('expenditureinf1').value.trim(), 10) || 0;
+    const expenditureinf2 = parseInt(document.getElementById('expenditureinf2').value.trim(), 10) || 0;
+    const expenditureinf3 = parseInt(document.getElementById('expenditureinf3').value.trim(), 10) || 0;
+    const expenditureinf4 = parseInt(document.getElementById('expenditureinf4').value.trim(), 10) || 0;
+    const expendituresp = parseInt(document.getElementById('expendituresp').value.trim(), 10) || 0;
+    const expenditurebayoo = parseInt(document.getElementById('expenditurebayoo').value.trim(), 10) || 0;
+    const expendituredrodro = parseInt(document.getElementById('expendituredrodro').value.trim(), 10) || 0;
+    const expenditurerhoo = parseInt(document.getElementById('expenditurerhoo').value.trim(), 10) || 0;
+    const totalexpenditure = expenditureinf1 + expenditureinf2 + expenditureinf3 + expenditureinf4 + expendituresp + expenditurebayoo + expendituredrodro + expenditurerhoo;
+    document.getElementById('lotdetailsexpenditure').value = totalexpenditure;
+}
+
+
+function checkTotalValidity() {
+    const totalquantity = parseInt(document.getElementById('lotdetailstotalquantity').value.trim(), 10) || 0;
+    const inf1quantity = parseInt(document.getElementById('lotdetailsinf1quantity').value.trim(), 10) || 0;
+    const inf2quantity = parseInt(document.getElementById('lotdetailsinf2quantity').value.trim(), 10) || 0;
+    const inf3quantity = parseInt(document.getElementById('lotdetailsinf3quantity').value.trim(), 10) || 0;
+    const inf4quantity = parseInt(document.getElementById('lotdetailsinf4quantity').value.trim(), 10) || 0;
+    const spqquantity = parseInt(document.getElementById('lotdetailsspquantity').value.trim(), 10) || 0;
+    const bayooquantity = parseInt(document.getElementById('lotdetailsbayooquantity').value.trim(), 10) || 0;
+    const drodroquantity = parseInt(document.getElementById('lotdetailsdrodroquantity').value.trim(), 10) || 0;
+    const rhooquantity = parseInt(document.getElementById('lotdetailsrhooquantity').value.trim(), 10) || 0;
+    const inmagquantity = parseInt(document.getElementById('lotdetailsinmagquantity').value.trim(), 10) || 0;
+    const insvcquantity = parseInt(document.getElementById('lotdetailsinsvcquantity').value.trim(), 10) || 0;
+    const unsvcquantity = parseInt(document.getElementById('lotdetailsunsvcquantity').value.trim(), 10) || 0;
+    console.log("Validating total quantity", {
+        totalquantity,
+        inf1quantity,
+        inf2quantity,
+        inf3quantity,
+        inf4quantity,
+        spqquantity,
+        bayooquantity,
+        drodroquantity,
+        rhooquantity,
+        inmagquantity,
+        insvcquantity,
+        unsvcquantity
+    });
+
+    const calculatedTotal = inf1quantity + inf2quantity + inf3quantity + inf4quantity + spqquantity + bayooquantity + drodroquantity + rhooquantity + inmagquantity + unsvcquantity;
+    console.log("Calculated total quantity", calculatedTotal);
+    if (calculatedTotal !== totalquantity) {
+        showNotification("The sum of all quantities must equal Total Quantity", "error", "Validation Error");
+        return false;
+    }
+    if(totalquantity !== (insvcquantity + unsvcquantity)){
+        showNotification("Total Quantity must be equal to the sum of In Svc Quantity and Un Svc Quantity", "error", "Validation Error");
+        return false;
+    }
+    return true;
+}
+
+document.getElementById('expenditureinf1')?.addEventListener('input', calculatetotalexpenditure);
+document.getElementById('expenditureinf2')?.addEventListener('input', calculatetotalexpenditure);
+document.getElementById('expenditureinf3')?.addEventListener('input', calculatetotalexpenditure);
+document.getElementById('expenditureinf4')?.addEventListener('input', calculatetotalexpenditure);
+document.getElementById('expendituresp')?.addEventListener('input', calculatetotalexpenditure);
+document.getElementById('expenditurebayoo')?.addEventListener('input', calculatetotalexpenditure);
+document.getElementById('expendituredrodro')?.addEventListener('input', calculatetotalexpenditure);
+document.getElementById('expenditurerhoo')?.addEventListener('input', calculatetotalexpenditure);
 
 function closelotdetailsmodal() {
     const lotDetailsModal = document.getElementById('lotdetailsmodal');
@@ -347,6 +449,7 @@ function closelotdetailsmodal() {
     document.getElementById('lotdetailstotalquantity').value = '';
     document.getElementById('lotdetailsunsvcquantity').value = '';
     document.getElementById('lotdetailsexpenditure').value = '';
+    document.getElementById('lotdetailsinsvcquantity').value = '';
     document.getElementById('lotdetailsinf1quantity').value = '';
     document.getElementById('lotdetailsinf2quantity').value = '';
     document.getElementById('lotdetailsinf3quantity').value = '';
@@ -355,6 +458,15 @@ function closelotdetailsmodal() {
     document.getElementById('lotdetailsbayooquantity').value = '';
     document.getElementById('lotdetailsdrodroquantity').value = '';
     document.getElementById('lotdetailsrhooquantity').value = '';
+    document.getElementById('expenditureinf1').value = '';
+    document.getElementById('expenditureinf2').value = '';
+    document.getElementById('expenditureinf3').value = '';
+    document.getElementById('expenditureinf4').value = '';
+    document.getElementById('expendituresp').value = '';
+    document.getElementById('expenditurebayoo').value = '';
+    document.getElementById('expendituredrodro').value = '';
+    document.getElementById('expenditurerhoo').value = '';
+    document.getElementById('lotdetailsexpenditure').value = '';
     lotDetailsModal.classList.add('hidden');
 }
 
@@ -373,34 +485,23 @@ function updatelotdetails() {
     const expiryyear = document.getElementById('lotdetailsexpiryyear').value.trim();
     const totalquantity = parseInt(document.getElementById('lotdetailstotalquantity').value.trim(), 10);
     const unsvcquantity = parseInt(document.getElementById('lotdetailsunsvcquantity').value.trim(), 10);
-    const insvcquantity = totalquantity - unsvcquantity;
-    const expenditureinf1 = parseInt(document.getElementById('expenditureinf1').value.trim(), 10) || 0;
-    const expenditureinf2 = parseInt(document.getElementById('expenditureinf2').value.trim(), 10) || 0;
-    const expenditureinf3 = parseInt(document.getElementById('expenditureinf3').value.trim(), 10) || 0;
-    const expenditureinf4 = parseInt(document.getElementById('expenditureinf4').value.trim(), 10) || 0;
-    const expendituresp = parseInt(document.getElementById('expendituresp').value.trim(), 10) || 0;
-    const expenditurebayoo = parseInt(document.getElementById('expenditurebayoo').value.trim(), 10) || 0;
-    const expendituredrodro = parseInt(document.getElementById('expendituredrodro').value.trim(), 10) || 0;
-    const expenditurerhoo = parseInt(document.getElementById('expenditurerhoo').value.trim(), 10) || 0;
-    
+    const insvcquantity = parseInt(document.getElementById('lotdetailsinsvcquantity').value.trim(), 10);
+    const inmagquantity = parseInt(document.getElementById('lotdetailsinmagquantity').value.trim(), 10) || 0;
     const expenditure = parseInt(document.getElementById('lotdetailsexpenditure').value.trim(), 10) || 0;
-
-
-    const inf1quantity = parseInt(document.getElementById('lotdetailsinf1quantity').value.trim(), 10) - expenditureinf1 || 0;
-    const inf2quantity = parseInt(document.getElementById('lotdetailsinf2quantity').value.trim(), 10) - expenditureinf2 || 0;
-    const inf3quantity = parseInt(document.getElementById('lotdetailsinf3quantity').value.trim(), 10) - expenditureinf3 || 0;
-    const inf4quantity = parseInt(document.getElementById('lotdetailsinf4quantity').value.trim(), 10) - expenditureinf4 || 0;
-    const spqquantity = parseInt(document.getElementById('lotdetailsspquantity').value.trim(), 10) - expendituresp || 0;
-    const bayooquantity = parseInt(document.getElementById('lotdetailsbayooquantity').value.trim(), 10) - expenditurebayoo || 0;
-    const drodroquantity = parseInt(document.getElementById('lotdetailsdrodroquantity').value.trim(), 10) - expendituredrodro || 0;
-    const rhooquantity = parseInt(document.getElementById('lotdetailsrhooquantity').value.trim(), 10) - expenditurerhoo || 0;
+    const inf1quantity = parseInt(document.getElementById('lotdetailsinf1quantity').value.trim(), 10);
+    const inf2quantity = parseInt(document.getElementById('lotdetailsinf2quantity').value.trim(), 10);
+    const inf3quantity = parseInt(document.getElementById('lotdetailsinf3quantity').value.trim(), 10);
+    const inf4quantity = parseInt(document.getElementById('lotdetailsinf4quantity').value.trim(), 10);
+    const spqquantity = parseInt(document.getElementById('lotdetailsspquantity').value.trim(), 10);
+    const bayooquantity = parseInt(document.getElementById('lotdetailsbayooquantity').value.trim(), 10) ;
+    const drodroquantity = parseInt(document.getElementById('lotdetailsdrodroquantity').value.trim(), 10);
+    const rhooquantity = parseInt(document.getElementById('lotdetailsrhooquantity').value.trim(), 10);
     
-    
-    const totalexpenditure = expenditureinf1 + expenditureinf2 + expenditureinf3 + expenditureinf4 + expendituresp + expenditurebayoo + expendituredrodro + expenditurerhoo +  expenditure;
-    console.log("Total Expenditure Calculated: " + totalexpenditure);
+    if (!checkTotalValidity()) {
+        return;
+    }
 
     console.log("Calculating inmagquantity", totalquantity);
-    const inmagquantity = totalquantity - ( inf1quantity + inf2quantity + inf3quantity + inf4quantity + spqquantity + bayooquantity + drodroquantity + rhooquantity);
     if (inmagquantity < 0) {
         showNotification("Invalid quantities: In Mag Quantity cannot be negative", "error", "Validation Error");
         return;
@@ -414,6 +515,7 @@ function updatelotdetails() {
         unsvcquantity,
         insvcquantity,
         inmagquantity,
+        expenditure,
         inf1quantity,
         inf2quantity,
         inf3quantity,
@@ -432,7 +534,7 @@ function updatelotdetails() {
         unsvcquantity: unsvcquantity,
         insvcquantity: insvcquantity,
         inmagquantity: inmagquantity,
-        expenditure: totalexpenditure,
+        expenditure: expenditure,
         inf1quantity: inf1quantity,
         inf2quantity: inf2quantity,
         inf3quantity: inf3quantity,

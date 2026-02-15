@@ -110,14 +110,14 @@ function handlelogin() {
                     if (role_type === 'officer'){
                         if (role === 'lo'){
                             console.log("Redirecting to LO dashboard");
-                            window.location.href = './bqms/officer_dashboard.html';
+                            window.location.href = './lodashboard.html';
                         }
                         else if(role === 'mto'){
                             window.location.href ='./vehicle/mt_dashboard.html';
                         }
                         else if(role === 'eo'){
                             console.log("Redirecting to engineer dashboard");
-                            window.location.href = './engr/officer_dashboard.html';
+                            window.location.href = './eodashboard.html';
                         }
                         else if(role === 'workshop'){
                             console.log("Redirecting to workshop dashboard");
