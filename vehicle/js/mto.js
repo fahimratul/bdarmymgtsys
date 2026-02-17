@@ -573,7 +573,7 @@ function acceptNotificationMTO(key) {
     updateVehicleHistoryRecord(vehiclekey, event, details, date, key);
     const notificationData = {
         from: 'MT',
-        date: new Date().toISOString,
+        date: new Date().toISOString(),
         msg: 'Vehicle Number ' + vehiclekey + ' '+ msg + ' Details: ' + details,
     };
     update(dbref, notificationData)
