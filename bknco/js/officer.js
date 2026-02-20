@@ -532,7 +532,7 @@ function loadreturnnotification(){
                 const message = notification.msg || '';
                 const date = notification.date || '';
                 const form = notification.form || '';
-                html += `<div class="msgbody">
+                html += `<div class="msgbody" id="notification_${key}">
                             <h2> ${form}</h2>
                             <p> ${message}</p>
                             <p> ${date}</p>
@@ -546,7 +546,7 @@ function loadreturnnotification(){
 function acknowledgeNotification(key){
     remove(ref(db, `notification/eo/${key}`)).then(() => {
         console.log('Notification acknowledged and removed.');
-        loadreturnnotification();
+        document.getElementById(`notification_${key}`).remove();
     }).catch((error) => {
         console.error('Error acknowledging notification:', error);
     });

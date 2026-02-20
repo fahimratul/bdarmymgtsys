@@ -234,7 +234,7 @@ function processIssueRequest(key) {
         });
     }
 
-    printIssueRequest(pendingItemsDataCaches[key], Object.values(pendingItemsDataCaches[key].items), voucherNumber, issueDate, recipientLocation);
+    printIssueRequest(pendingItemsDataCaches[key], Object.values(pendingItemsDataCaches[key].items), voucherNumber, issueDate, recipientLocation, pendingItemsDataCaches[key].issuedBy);
     remove(ref(db, `issuepending/bknco/${key}`))
     .then(() => {
         console.log('Pending issue request removed from database.');
@@ -281,7 +281,7 @@ function rejectIssueRequest(key) {
 }
 
 
-function printIssueRequest(issueRequest, itemsToIssue, voucherNo, issueDate, location) {
+function printIssueRequest(issueRequest, itemsToIssue, voucherNo, issueDate, location, issuedByInformation = {}) {
     const currentDate = new Date().toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
@@ -466,10 +466,18 @@ function printIssueRequest(issueRequest, itemsToIssue, voucherNo, issueDate, loc
                 
                 .signature-line {
                     border-bottom: 1px solid #333;
-                    height: 50px;
+                    height: 80px;
                     margin-bottom: 5px;
                 }
-                
+                .signature-line2 {
+                    border-bottom: 1px solid #333;
+                    height: 5px;
+                    margin-bottom: 5px;
+                }
+                .signature-username {
+                    font-size: 14px;
+                    margin: 0 0 2px 0;
+                }
                 .signature-note {
                     margin: 0;
                     font-size: 12px;
@@ -563,12 +571,18 @@ function printIssueRequest(issueRequest, itemsToIssue, voucherNo, issueDate, loc
                 <div class="signature-grid">
                     <div class="signature-field">
                         <p class="signature-label">Approved By:</p>
-                        <div class="signature-line"></div>
+                        <p class="signature-username"><strong>${sessionStorage.getItem('username')}</strong></p>
+                        <p  class="signature-username">${sessionStorage.getItem('rank_proper')}</p>
+                        <p class="signature-username">BA No-${sessionStorage.getItem('baNumber')}</p>
+                        <div class="signature-line2"></div>
                         <p class="signature-note">Signature & Date</p>
                     </div>
                     <div class="signature-field">
                         <p class="signature-label">Issued By:</p>
-                        <div class="signature-line"></div>
+                        <p class="signature-username"><strong>${issuedByInformation.username}</strong></p>
+                        <p  class="signature-username">${issuedByInformation.rank}</p>
+                        <p class="signature-username">Army No-${issuedByInformation.baNumber}</p>
+                        <div class="signature-line2"></div>
                         <p class="signature-note">Signature & Date</p>
                     </div>
                 </div>

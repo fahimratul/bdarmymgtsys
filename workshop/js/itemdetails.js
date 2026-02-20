@@ -238,13 +238,13 @@ function returnItemToStore(recordKey) {
         msg: `Item Returned to Store: ${dataCache.name}, Quantity: ${quantity}  Location: ${record.location}`,
     });
     
-        set(ref(db, 'clonotification'), true);
+    set(ref(db, 'clonotification'), true);
     loaditemhistory();
     loaditemsdetails();
-    if(role === 'mtnco' || role === 'mtjco'){
+    if(role === 'workshopnco'){
         const notificationPath = `notification/workshop/${Date.now()}`;
         set(ref(db, notificationPath), {
-            from: 'MT Inventory',
+            from: 'Workshop Inventory',
             date: new Date().toLocaleString(),
             msg: `Item  returned to store: ${dataCache.name}, Quantity: ${quantity}, From Location: ${record.location}`,
         }).then(() => {
@@ -296,10 +296,10 @@ function markAsServicable(recordKey) {
     loaditemunsvc();
     loaditemsdetails();
 
-    if(role === 'mtnco' || role === 'mtjco'){
+    if(role === 'workshopnco'){
         const notificationPath = `notification/workshop/${Date.now()}`;
         set(ref(db, notificationPath), {
-            from: 'MT Inventory',
+            from: 'Workshop Inventory',
             date: new Date().toLocaleString(),
             msg: `Item  marked as servicable: ${dataCache.name}, Quantity: ${quantity}, From Location: ${record.location}`,
         }).then(() => {

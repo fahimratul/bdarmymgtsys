@@ -234,7 +234,7 @@ function processIssueRequest(key) {
         });
     }
 
-    printIssueRequest(pendingItemsDataCaches[key], Object.values(pendingItemsDataCaches[key].items), voucherNumber, issueDate, recipientLocation);
+    printIssueRequest(pendingItemsDataCaches[key], Object.values(pendingItemsDataCaches[key].items), voucherNumber, issueDate, recipientLocation, pendingItemsDataCaches[key].issuedBy);
     remove(ref(db, `issuepending/eo/${key}`))
     .then(() => {
         console.log('Pending issue request removed from database.');
@@ -281,7 +281,8 @@ function rejectIssueRequest(key) {
 }
 
 
-function printIssueRequest(issueRequest, itemsToIssue, voucherNo, issueDate, location) {
+
+function printIssueRequest(issueRequest, itemsToIssue, voucherNo, issueDate, location, issuedByInformation = {}) {
     const currentDate = new Date().toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',

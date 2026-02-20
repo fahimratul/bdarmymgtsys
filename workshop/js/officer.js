@@ -496,12 +496,49 @@ function newPendingItemNotification(){
     });
 }
 
+
+function loadreturnnotification(){
+    const returnnotification = document.getElementById('returnnotification');
+    onValue(ref(db, 'notification/workshop/'), (snapshot) => {
+        const notificationData = snapshot.val();
+        if(notificationData){
+            let html = '';
+            for(const key in notificationData){
+                const notification = notificationData[key];
+                const message = notification.msg || '';
+                const date = notification.date || '';
+                const form = notification.form || '';
+                html += `<div class="msgbody" id="notification_${key}">
+                            <h2> ${form}</h2>
+                            <p> ${message}</p>
+                            <p> ${date}</p>
+                            <button class="ack-btn" onclick="acknowledgeNotification('${key}')"> Ack</button>
+                        </div>`;   
+            }
+            returnnotification.innerHTML = html;
+        }
+    });
+}
+function acknowledgeNotification(key){
+    remove(ref(db, `notification/workshop/${key}`)).then(() => {
+        console.log('Notification acknowledged and removed.');
+        document.getElementById(`notification_${key}`).remove();
+    }).catch((error) => {
+        console.error('Error acknowledging notification:', error);
+    });
+}
+
+window.acknowledgeNotification = acknowledgeNotification;
+
+
+
 if(role==='workshop'){
     pendingnewitemdata();
     setTimeout(() => {
         pendingnewtotalitemdata();
     }, 1000);
         newPendingItemNotification();
+        loadreturnnotification();
 }else{
     document.getElementById('newpendingitem').style.display='none';
     document.getElementById('newpendingtotalitem').style.display='none';

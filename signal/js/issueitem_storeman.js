@@ -247,14 +247,19 @@ function processIssueRequest() {
         showNotification('Please add at least one item to issue.', 'error', 'No Items Selected');
         return;
     }
-    
     // Create issue request
     const issueRequest = {
         items: itemsToIssue,
         location: recipientLocation,
         voucherNumber,
-        date: issueDate
+        date: issueDate,
+        issuedBy: {
+            username: sessionStorage.getItem('username'),
+            rank: sessionStorage.getItem('rank_proper'),
+            baNumber: sessionStorage.getItem('baNumber')
+        }
     };
+    
     
     // Save issue request to database
     const issueRef = ref(db, 'issuepending/so/'+voucherNumber);

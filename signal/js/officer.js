@@ -491,12 +491,49 @@ function newPendingItemNotification(){
     });
 }
 
+function loadreturnnotification(){
+    const returnnotification = document.getElementById('returnnotification');
+    onValue(ref(db, 'notification/so/'), (snapshot) => {
+        const notificationData = snapshot.val();
+        if(notificationData){
+            let html = '';
+            for(const key in notificationData){
+                const notification = notificationData[key];
+                const message = notification.msg || '';
+                const date = notification.date || '';
+                const form = notification.form || '';
+                html += `<div class="msgbody" id="notification_${key}">
+                            <h2> ${form}</h2>
+                            <p> ${message}</p>
+                            <p> ${date}</p>
+                            <button class="ack-btn" onclick="acknowledgeNotification('${key}')"> Ack</button>
+                        </div>`;   
+            }
+            returnnotification.innerHTML = html;
+        }
+    });
+}
+function acknowledgeNotification(key){
+    remove(ref(db, `notification/so/${key}`)).then(() => {
+        console.log('Notification acknowledged and removed.');
+        document.getElementById(`notification_${key}`).remove();
+    }).catch((error) => {
+        console.error('Error acknowledging notification:', error);
+    });
+}
+
+window.acknowledgeNotification = acknowledgeNotification;
+
+
+
+
 if(role==='so'){
     pendingnewitemdata();
     setTimeout(() => {
         pendingnewtotalitemdata();
     }, 1000);
         newPendingItemNotification();
+        loadreturnnotification();
 }
 
 else{

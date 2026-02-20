@@ -459,6 +459,39 @@ function rejectNewItem(key) {
         console.error('Error rejecting new item request:', error);
     });
 }
+function loadreturnnotification(){
+    const returnnotification = document.getElementById('returnnotification');
+    onValue(ref(db, 'notification/lo/'), (snapshot) => {
+        const notificationData = snapshot.val();
+        if(notificationData){
+            let html = '';
+            for(const key in notificationData){
+                const notification = notificationData[key];
+                const message = notification.msg || '';
+                const date = notification.date || '';
+                const form = notification.form || '';
+                html += `<div class="msgbody" id="notification_${key}">
+                            <h2> ${form}</h2>
+                            <p> ${message}</p>
+                            <p> ${date}</p>
+                            <button class="ack-btn" onclick="acknowledgeNotification('${key}')"> Ack</button>
+                        </div>`;   
+            }
+            returnnotification.innerHTML = html;
+        }
+    });
+}
+function acknowledgeNotification(key){
+    remove(ref(db, `notification/lo/${key}`)).then(() => {
+        console.log('Notification acknowledged and removed.');
+        document.getElementById(`notification_${key}`).remove();
+    }).catch((error) => {
+        console.error('Error acknowledging notification:', error);
+    });
+}
+
+window.acknowledgeNotification = acknowledgeNotification;
+
 
 
 if(role==='lo'){
@@ -466,6 +499,7 @@ if(role==='lo'){
     setTimeout(() => {
         pendingnewtotalitemdata();
     }, 1000);
+    loadreturnnotification();
 }
 else{
     document.getElementById('newpendingitem').style.display='none';

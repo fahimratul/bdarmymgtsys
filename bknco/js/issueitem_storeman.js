@@ -253,7 +253,12 @@ function processIssueRequest() {
         items: itemsToIssue,
         location: recipientLocation,
         voucherNumber,
-        date: issueDate
+        date: issueDate,
+        issuedBy: {
+            username: sessionStorage.getItem('username'),
+            rank: sessionStorage.getItem('rank_proper'),
+            baNumber: sessionStorage.getItem('baNumber')
+        }
     };
     
     // Save issue request to database
@@ -591,7 +596,7 @@ function printIssueRequest(issueRequest, itemsToIssue, voucherNo, issueDate, loc
                         <p class="signature-label">Issued By:</p>
                         <p class="signature-username"><strong>${sessionStorage.getItem('username')}</strong></p>
                         <p  class="signature-username">${sessionStorage.getItem('rank_proper')}</p>
-                        <p class="signature-username">${sessionStorage.getItem('baNumber')}</p>
+                        <p class="signature-username">Army No-${sessionStorage.getItem('baNumber')}</p>
                         <div class="signature-line2"></div>
                         <p class="signature-note">Signature & Date</p>
                     </div>
