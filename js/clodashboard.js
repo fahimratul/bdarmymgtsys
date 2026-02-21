@@ -128,6 +128,9 @@ loaditemdata('mt', 'mtinventory/main/');
 loaditemdata('bknco', 'bkncoinventory/main/');
 loaditemdata('bqms', 'bqmsinventory/main/');
 loaditemdata('workshop', 'workshop/main/');
+loaditemdata('medical', 'medical/main/');
+loaditemdata('cimic', 'cimic/main/');
+loaditemdata('stationary', 'stationary/main/');
 
 
 const logoutButton = document.getElementById('logoutButton');
