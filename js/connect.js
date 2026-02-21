@@ -127,6 +127,18 @@ function handlelogin() {
                             console.log("Redirecting to officer dashboard");
                             window.location.href = './signal/officer_so_dashboard.html';
                         }
+                        else if(role === 'cimic'){
+                            console.log("Redirecting to cimic officer dashboard");
+                            window.location.href = './cimic/officer_dashboard.html';
+                        }
+                        else if(role === 'stationary'){
+                            console.log("Redirecting to stationary officer dashboard");
+                            window.location.href = './stationary/officer_dashboard.html';
+                        }
+                        else if(role === 'medical'){
+                            console.log("Redirecting to medical officer dashboard");
+                            window.location.href = './medical/officer_dashboard.html';
+                        }
                         else{
                             showNotification("Invalid role for Officer", "error", "Login Failed");
                             return;
@@ -156,6 +168,18 @@ function handlelogin() {
                         }
                         else if( role === 'workshopnco'){
                             window.location.href ='./workshop/storeman_dashboard.html';
+                            return;
+                        }
+                        else if(role === 'cimicnco'){
+                            window.location.href ='./cimic/storeman_dashboard.html';
+                            return;
+                        }
+                        else if(role === 'stationarynco'){
+                            window.location.href ='./stationary/storeman_dashboard.html';
+                            return;
+                        }
+                        else if(role === 'medicalnco'){
+                            window.location.href ='./medical/storeman_dashboard.html';
                             return;
                         }
                         else{
