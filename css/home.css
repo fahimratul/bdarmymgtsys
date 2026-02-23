@@ -37,6 +37,12 @@ body {
     align-items: center;
     justify-content: center;
 }
+.main-container>div img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+}
 
 @keyframes slideUp {
     from {
