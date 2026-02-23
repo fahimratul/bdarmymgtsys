@@ -227,20 +227,15 @@ function loadPendingLots() {
                 for (const lotKey in data[key]) {
                     const ammo = data[key][lotKey];
                     html += `<tr class="ammo-row" data-key="${key}">
-                            <td>${ammo.lotno}</td>
-                            <td>${ammo.yearofmfr}</td>
-                            <td>${ammo.expiryyear}</td>
+                            <td>${ammo.auth}</td>
                             <td>${ammo.totalquantity}</td>
-                            <td>${ammo.unsvcquantity}</td>
-                            <td>${ammo.insvcquantity}</td>
-                            <td>${ammo.inmagquantity}</td>
-                            <td>${ammo.expenditure || 0}</td>
                             <td>${ammo.inf1quantity}</td>
                             <td>${ammo.inf2quantity}</td>
                             <td>${ammo.inf3quantity}</td>
                             <td>${ammo.inf4quantity}</td>
                             <td>${ammo.spqquantity}</td>
-                            <td>${ammo.inf1quantity + ammo.inf2quantity + ammo.inf3quantity + ammo.inf4quantity+ammo.spqquantity}</td>
+                            <td>${ammo.bnhqquantity}</td>
+                            <td>${ammo.inf1quantity + ammo.inf2quantity + ammo.inf3quantity + ammo.inf4quantity + ammo.spqquantity + ammo.bnhqquantity}</td>
                             <td>${ammo.bayooquantity}</td>
                             <td>${ammo.drodroquantity}</td>
                             <td>${ammo.rhooquantity}</td>
@@ -334,20 +329,15 @@ function loadLotUpdates(){
                 for (const lotKey in data[key]) {
                     const ammo = data[key][lotKey];
                     html += `<tr class="ammo-row" data-key="${key}">
-                            <td>${ammo.lotno}</td>
-                            <td>${ammo.yearofmfr}</td>
-                            <td>${ammo.expiryyear}</td>
+                            <td>${ammo.auth}</td>
                             <td>${ammo.totalquantity}</td>
-                            <td>${ammo.unsvcquantity}</td>
-                            <td>${ammo.insvcquantity}</td>
-                            <td>${ammo.inmagquantity}</td>
-                            <td>${ammo.expenditure || 0}</td>
                             <td>${ammo.inf1quantity}</td>
                             <td>${ammo.inf2quantity}</td>
                             <td>${ammo.inf3quantity}</td>
                             <td>${ammo.inf4quantity}</td>
                             <td>${ammo.spqquantity}</td>
-                            <td>${ammo.inf1quantity + ammo.inf2quantity + ammo.inf3quantity + ammo.inf4quantity+ammo.spqquantity}</td>
+                            <td>${ammo.bnhqquantity}</td>
+                            <td>${ammo.inf1quantity + ammo.inf2quantity + ammo.inf3quantity + ammo.inf4quantity + ammo.spqquantity + ammo.bnhqquantity}</td>
                             <td>${ammo.bayooquantity}</td>
                             <td>${ammo.drodroquantity}</td>
                             <td>${ammo.rhooquantity}</td>
