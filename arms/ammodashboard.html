@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="../css/adduser.css">
+    <link rel="stylesheet" href="../css/card.css">
+    <link rel="stylesheet" href="../css/engrnco.css">
+    <link rel="stylesheet" href="../css/notification.css">
+    <link rel="stylesheet" href="../css/piechart.css">
+    <script src ="https://unpkg.com/lucide@latest" ></script>
+    <link rel='icon' href='../static/logo_small.png' type='image/x-icon' />
+    <title>arms Inventory</title>
+</head>
+<body>
+    
+    <nav id="notforclo">
+        <ul>
+            <li><a href="../lodashboard.html">Home</a></li>
+            <li><a href="ammodashboard.html" class="active">arms Inventory</a></li>
+            <li><a href="ammo_change.html" >Pending Changes</a></li>
+            <li><a href="../user_management.html">User Management</a></li>
+            <li><a href="#" onclick="popupmenu()"> User ▼ </a></li>
+        </ul>
+    </nav>
+     <nav id="forclo">
+        <ul>
+            <li><a href="../clodashboard.html" class="active">Home</a></li>
+            <li><a href="../user_management.html">User Management</a></li>
+            <li><a href="../notifications.html">Notifications</a></li>       
+        </ul>
+    </nav>
+
+    <div id="notification-toast" class="notification-toast"></div>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Loading Inventory Data</div>
+        <div class="loading-subtext">Please wait...</div>
+    </div>
+    <h1>arms Inventory</h1>
+    <div class="topdown-container" id="userInfoContainer" style="display: none;">
+        <h3 id ="username"></h3>
+        <h4 id ="rank"></h4>
+        <h4 id ="banumber"></h4>
+        <button class="btn primary" id="changePasswordBtn" onclick="passwordChangeModal()">Change Password</button>
+        <button class="btn secondary" id="logoutButton" onclick="logout()">Logout</button>        
+    </div>
+
+    
+        <div class="search-container">
+            <div class="library-search-container">
+                <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <input type="text" id="searchInput" class="library-search-input" placeholder="Search Type of arms...">
+            </div>
+            <button class="btn secondary" id="addammobtn">Add</button>   
+        </div>
+
+
+
+    <table>
+        <thead>
+            <tr>
+                <th>serial</th>
+                <th>type</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="AmmoTableBody">
+            <!-- ammo items will be dynamically inserted here -->
+        </tbody>
+    </table>
+
+    <div id="addAmmoModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add arms Type</h2>
+                <button class="modal-close" id="closeaddmodal" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-grid">
+                <div class="form-group">
+                    <label for="ammo-type" class="form-label">Type of arms *</label>
+                    <input type="text" id="ammo-type" class="form-input" placeholder="Enter Type of arms" >
+                </div>
+                <div class="form-group">
+                    <label for="ammo-typeclass" class="form-label">arms Serial Number *</label>
+                    <input type="text" id="ammo-typeclass" class="form-input" placeholder="e.g: C-5, C-14 & 21" >
+                </div>  
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn secondary" id="addAmmoCloseBtn">Cancel</button>
+                <button id="addAmmoSubmitBtn" class="btn primary">Add arms Type</button>
+            </div>  
+        </div>
+    </div>
+
+    <div id="changePasswordModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Change Password</h2>
+                <button class="modal-close" onclick="closeModal()"  aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-grid">
+                <div class="form-group pass">
+                    <label for="password" class="form-label"> Current Password *</label>
+                    <input type="password" id="password" class="form-input" placeholder="Enter password" >
+                    <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+                <div class="form-group pass">
+                    <label for="new-password" class="form-label">New Password *</label>
+                    <input type="password" id="new-password" class="form-input" placeholder="Enter password" >
+                    <button type="button" class="password-toggle" onclick="togglePassword('new-password')">
+                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="form-group pass">
+                    <label for="confirm-password" class="form-label">Confirm Password *</label>
+                    <input type="password" id="confirm-password" class="form-input" placeholder="Confirm password">
+                    <button type="button" class="password-toggle" onclick="togglePassword('confirm-password')">
+                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn secondary" onclick="closeModal()">Cancel</button>
+                <button id="passwordChangeSubmitBtn" class="btn primary">Change Password</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+        lucide.createIcons();
+        function hideNotification() {
+            const toast = document.getElementById("notification-toast");
+            toast.classList.remove("show");
+        }
+        function popupmenu() {
+            const userInfoContainer = document.getElementById('userInfoContainer');
+            if (userInfoContainer.style.display === 'none' || userInfoContainer.style.display === '') {
+                userInfoContainer.style.display = 'flex';
+            } else {
+                userInfoContainer.style.display = 'none';
+            }
+        }
+        function togglePassword(inputId) {
+            const passwordInput = document.getElementById(inputId);
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+        }
+
+        function closeModal() {
+            const changePasswordModal = document.getElementById('changePasswordModal'); 
+            changePasswordModal.classList.add('hidden');
+        }
+        function passwordChangeModal() {
+            const changePasswordModal = document.getElementById('changePasswordModal');
+            changePasswordModal.classList.remove('hidden');
+            const userInfoContainer = document.getElementById('userInfoContainer');
+            userInfoContainer.style.display = 'none';
+            console.log('Password Change Modal Opened');
+        }
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            const role=sessionStorage.getItem('role');
+            if(role==='ammonco'){
+                document.getElementById('notforclo').style.display='none';
+                document.getElementById('forclo').style.display='none';
+                return;
+            }
+            if(role==='clo' || role === 'cc'){
+                document.getElementById('notforclo').style.display='none';
+                document.getElementById('forclo').style.display='block';
+            } else {
+                document.getElementById('forclo').style.display='none';
+                document.getElementById('notforclo').style.display='block';
+            }
+        });
+</script>
+<script type="module" src="js/ammo.js" defer></script>
+
+</body>
+</html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="../css/adduser.css">
+    <link rel="stylesheet" href="../css/card.css">
+    <link rel="stylesheet" href="../css/engrnco.css">
+    <link rel="stylesheet" href="../css/notification.css">
+    <link rel="stylesheet" href="../css/piechart.css">
+    <link rel="stylesheet" href="../css/ammodetails.css">
+    <script src ="https://unpkg.com/lucide@latest" ></script>
+    <link rel='icon' href='../static/logo_small.png' type='image/x-icon' />
+    <title>arms Inventory</title>
+</head>
+<body>
+    <nav id="notforclo">
+        <ul>
+            <li><a href="../lodashboard.html">Home</a></li>
+            <li><a href="ammodashboard.html"  class="active">arms Inventory</a></li>
+            <li><a href="ammo_change.html">Pending Changes</a></li>
+            <li><a href="../user_management.html">User Management</a></li>
+            <li><a href="#" onclick="popupmenu()"> User ▼ </a></li>
+        </ul>
+    </nav>
+    
+     <nav id="forclo">
+        <ul>
+            <li><a href="../clodashboard.html" class="active">Home</a></li>
+            <li><a href="../user_management.html">User Management</a></li>
+            <li><a href="../notifications.html">Notifications</a></li>       
+        </ul>
+    </nav>
+
+    <div id="notification-toast" class="notification-toast"></div>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Loading Inventory Data</div>
+        <div class="loading-subtext">Please wait...</div>
+    </div>
+
+    <div class="topdown-container" id="userInfoContainer" style="display: none;">
+        <h3 id ="username"></h3>
+        <h4 id ="rank"></h4>
+        <h4 id ="banumber"></h4>
+        <button class="btn primary" id="changePasswordBtn" onclick="passwordChangeModal()">Change Password</button>
+        <button class="btn secondary" id="logoutButton" onclick="logout()">Logout</button>        
+    </div>
+    
+    <h1>Details of</h1>
+    <h2 id="ammotypeheading"></h2>
+    <div class="button-group">
+        <button class="btn primary" id="addAmmoBtn">Add New Lot</button>
+        <button id="printAmmoBtn" class="btn btn-secondary">
+            <i class="fas fa-print"></i> Print Report
+        </button>
+        <button class="btn primary" onclick="window.history.back()">GO Back</button>
+    </div>
+
+    <br>
+    <table>
+        <thead>
+		<tr>
+            <th rowspan="2">Auth</th>
+			<th rowspan="2">Total Held</th>  
+			<th colspan="7">Kote</th>
+			<th colspan="4">Camp</th>
+            <th rowspan="2">Actions</th>
+		</tr>
+		<tr>
+			<th>Inf-1</th>
+			<th>Inf-2</th>
+			<th>Inf-3</th>
+			<th>Inf-4</th>
+			<th>Sp</th>
+            <th>Bn HQ</th>
+			<th>Total</th>
+			<th>BAYOO</th>
+			<th>DRODRO</th>
+			<th>RHOO</th>
+			<th>Total</th>
+		</tr>
+
+        </thead>
+        <tbody id="AmmoTableBody">
+            <!-- ammo items will be dynamically inserted here -->
+        </tbody>
+    </table>
+
+    <div id="addAmmoModal" class="modal hidden" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add lot</h2>
+                <button class="modal-close" id="closeaddmodal" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-grid">
+                <div class="form-group">
+                    <label for="auth" class="form-label">Auth *</label>
+                    <input type="text" id="auth" class="form-input" placeholder="Enter Auth" >
+                </div>
+                <div class="form-group">
+                    <label for="totalquantity" class="form-label">Total Held *</label>
+                    <input type="number" id="totalquantity" class="form-input" min="0" placeholder="Enter Total Held" >
+                </div>
+            </div>
+            <h3>Kote Distribution</h3>
+            <div class="modal-grid">
+                <div class="form-group">
+                    <label for="inf1quantity" class="form-label">Inf-1 Quantity *</label>
+                    <input type="number" id="inf1quantity" class="form-input" min="0" placeholder="Enter Inf-1 Quantity" >
+                </div>
+                <div class="form-group">
+                    <label for="inf2quantity" class="form-label">Inf-2 Quantity *</label>
+                    <input type="number" id="inf2quantity" class="form-input" min="0" placeholder="Enter Inf-2 Quantity" >
+                </div>
+                <div class="form-group">
+                    <label for="inf3quantity" class="form-label">Inf-3 Quantity *</label>
+                    <input type="number" id="inf3quantity" class="form-input" min="0" placeholder="Enter Inf-3 Quantity" >
+                </div>
+                <div class="form-group">
+                    <label for="inf4quantity" class="form-label">Inf-4 Quantity *</label>
+                    <input type="number" id="inf4quantity" class="form-input" min="0" placeholder="Enter Inf-4 Quantity" >
+                </div>
+                <div class="form-group">
+                    <label for="spquantity" class="form-label">Sp Quantity *</label>
+                    <input type="number" id="spquantity" class="form-input" min="0" placeholder="Enter Sp Quantity" >
+                </div>
+                <div class="form-group">
+                    <label for="bnhqquantity" class="form-label">Bn HQ Quantity *</label>
+                    <input type="number" id="bnhqquantity" class="form-input" min="0" placeholder="Enter Bn HQ Quantity" >
+                </div>
+            </div>
+            <h3>Camp Distribution</h3>
+            <div class="modal-grid">
+                <div class="form-group">
+                    <label for="bayooquantity" class="form-label">BAYOO Quantity *</label>
+                    <input type="number" id="bayooquantity" class="form-input" min="0" placeholder="Enter BAYOO Quantity" >
+                </div>
+                <div class="form-group">
+                    <label for="drodroquantity" class="form-label">DRODRO Quantity *</label>
+                    <input type="number" id="drodroquantity" class="form-input" min="0" placeholder="Enter DRODRO Quantity" >   
+                </div>
+                <div class="form-group">
+                    <label for="rhooquantity" class="form-label">RHOO Quantity *</label>
+                    <input type="number" id="rhooquantity" class="form-input" min="0" placeholder="Enter RHOO Quantity" >
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn secondary" id="addAmmoCloseBtn">Cancel</button>
+                <button id="addAmmoSubmitBtn" class="btn primary">Add Lot</button>
+            </div>  
+        </div>
+    </div>
+
+    <div id="lotdetailsmodal" class="modal hidden" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>lot </h2>
+                <button class="modal-close" id="closelotdetailsmodal" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-grid">
+                <div class="form-group">
+                    <label for="lotdetailsauth" class="form-label">Auth *</label>
+                    <input type="text" id="lotdetailsauth" class="form-input" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="totalquantity" class="form-label">Total Quantity *</label>
+                    <input type="number" id="lotdetailstotalquantity" class="form-input" min="0" placeholder="Enter Total Quantity" >
+                </div>  
+            </div>
+            <h3>Kote Distribution</h3>
+            <div class="modal-grid">
+                <div class="form-group">
+                    <label for="lotdetailsinf1quantity" class="form-label">Inf-1 Quantity *</label>
+                    <input type="number" id="lotdetailsinf1quantity" class="form-input" min="0" placeholder="Enter Inf-1 Quantity" >
+                </div>        
+                <div class="form-group">
+                    <label for="lotdetailsinf2quantity" class="form-label">Inf-2 Quantity *</label>
+                    <input type="number" id="lotdetailsinf2quantity" class="form-input" min="0" placeholder="Enter Inf-2 Quantity" >
+                </div>
+                <div class="form-group">
+                    <label for="lotdetailsinf3quantity" class="form-label">Inf-3 Quantity *</label>
+                    <input type="number" id="lotdetailsinf3quantity" class="form-input" min="0" placeholder="Enter Inf-3 Quantity" >
+                </div>
+                <div class="form-group">
+                    <label for="lotdetailsinf4quantity" class="form-label">Inf-4 Quantity *</label>
+                    <input type="number" id="lotdetailsinf4quantity" class="form-input" min="0" placeholder="Enter Inf-4 Quantity" >
+                </div>
+                <div class="form-group">
+                    <label for="lotdetailsspquantity" class="form-label">Sp Quantity *</label>
+                    <input type="number" id="lotdetailsspquantity" class="form-input" min="0" placeholder="Enter Sp Quantity" >
+                </div> 
+                <div class="form-group">
+                    <label for="lotdetailsbnhqquantity" class="form-label">Bn HQ Quantity *</label>
+                    <input type="number" id="lotdetailsbnhqquantity" class="form-input" min="0" placeholder="Enter Bn HQ Quantity" >
+                 </div>     
+            </div>
+            <h3>Camp Distribution</h3>
+            <div class="modal-grid">
+                <div class="form-group">
+                    <label for="lotdetailsbayooquantity" class="form-label">BAYOO Quantity *</label>
+                    <input type="number" id="lotdetailsbayooquantity" class="form-input" min="0" placeholder="Enter BAYOO Quantity" >
+                </div>
+                
+                <div class="form-group">
+                    <label for="lotdetailsdrodroquantity" class="form-label">DRODRO Quantity *</label>
+                    <input type="number" id="lotdetailsdrodroquantity" class="form-input" min="0" placeholder="Enter DRODRO Quantity" >   
+                </div>
+                <div class="form-group">
+                    <label for="lotdetailsrhooquantity" class="form-label">RHOO Quantity *</label>
+                    <input type="number" id="lotdetailsrhooquantity" class="form-input" min="0" placeholder="Enter RHOO Quantity" >
+                </div>    
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn secondary" id="addLotCloseBtn">Cancel</button>
+                <button id="addLotSubmitBtn" class="btn primary">Update</button>
+            </div>  
+        </div>
+    </div>
+
+    <div id="changePasswordModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Change Password</h2>
+                <button class="modal-close" onclick="closeModal()"  aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-grid">
+                <div class="form-group pass">
+                    <label for="password" class="form-label"> Current Password *</label>
+                    <input type="password" id="password" class="form-input" placeholder="Enter password" >
+                    <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+                <div class="form-group pass">
+                    <label for="new-password" class="form-label">New Password *</label>
+                    <input type="password" id="new-password" class="form-input" placeholder="Enter password" >
+                    <button type="button" class="password-toggle" onclick="togglePassword('new-password')">
+                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="form-group pass">
+                    <label for="confirm-password" class="form-label">Confirm Password *</label>
+                    <input type="password" id="confirm-password" class="form-input" placeholder="Confirm password">
+                    <button type="button" class="password-toggle" onclick="togglePassword('confirm-password')">
+                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn secondary" onclick="closeModal()">Cancel</button>
+                <button id="passwordChangeSubmitBtn" class="btn primary">Change Password</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+            lucide.createIcons();
+            function hideNotification() {
+                const toast = document.getElementById("notification-toast");
+                toast.classList.remove("show");
+            }
+            function popupmenu() {
+                const userInfoContainer = document.getElementById('userInfoContainer');
+                if (userInfoContainer.style.display === 'none' || userInfoContainer.style.display === '') {
+                    userInfoContainer.style.display = 'flex';
+                } else {
+                    userInfoContainer.style.display = 'none';
+                }
+            }
+            function togglePassword(inputId) {
+                const passwordInput = document.getElementById(inputId);
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+            }
+
+            function closeModal() {
+                const changePasswordModal = document.getElementById('changePasswordModal'); 
+                changePasswordModal.classList.add('hidden');
+            }
+            function passwordChangeModal() {
+                const changePasswordModal = document.getElementById('changePasswordModal');
+                changePasswordModal.classList.remove('hidden');
+                const userInfoContainer = document.getElementById('userInfoContainer');
+                userInfoContainer.style.display = 'none';
+                console.log('Password Change Modal Opened');
+            }
+            window.addEventListener('DOMContentLoaded', () => {
+                const role=sessionStorage.getItem('role');
+                if(role==='ammonco'){
+                    document.getElementById('notforclo').style.display='none';
+                    document.getElementById('forclo').style.display='none';
+                    return;
+                }
+                if(role==='clo' || role === 'cc'){
+                    document.getElementById('notforclo').style.display='none';
+                    document.getElementById('forclo').style.display='block';
+                } else{
+                    document.getElementById('forclo').style.display='none';
+                    document.getElementById('notforclo').style.display='block';
+                }
+            });
+    </script>
+    <script type="module" src="js/ammodetails.js" defer></script>
+
+</body>
+</html>
