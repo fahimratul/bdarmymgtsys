@@ -274,7 +274,7 @@
     flex-direction: column;
     gap: 10px;
     width: 500px;
-    height: 210px;
+    max-height: 210px;
     overflow: scroll;
 }
 .returnnotification::-webkit-scrollbar {

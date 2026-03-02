@@ -134,17 +134,11 @@ function populateItemSelect(rowId) {
     // Add inventory items to the dropdown
     for (const key in inventoryData) {
         const item = inventoryData[key];
-        const availableQty = (item.servicable || 0) - (item.issue || 0);
-        
-        // Only show items that have available quantity
-        if (availableQty > 0) {
-            const option = document.createElement('option');
-            option.value = key;
-            option.textContent = `${item.name || 'Unnamed Item'}`;
-            select.appendChild(option);
-        }
+        const option = document.createElement('option');
+        option.value = key;
+        option.textContent = `${item.name || 'Unnamed Item'}`;
+        select.appendChild(option);
     }
-    
 }
 function formatDate(date) {
     const d = new Date(date);
