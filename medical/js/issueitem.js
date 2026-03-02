@@ -263,7 +263,7 @@ function processIssueRequest() {
     const msg= itemsToIssue.map(item => `${item.quantity} x ${item.itemName}`).join(', ');
     set(issueRef, {
         msg: `Issue request: ${msg} to ${recipientLocation}`,
-        from: 'BKNCO Inventory',
+        from: 'Medical Inventory',
         date: new Date().toLocaleString()
     }).then(() => {
         showNotification('Items issued successfully! Opening print dialog...', 'success', 'Request Submitted');

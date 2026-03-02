@@ -401,8 +401,8 @@ function approveNewtotalItem(key) {
         console.error('Error approving new total item:', error);
     });
     set(ref(db, 'clo_cc_notification/' + Date.now()), {
-        from: 'BKNCO Inventory',
-        msg: `BKNCO Inventory item "${currentItem.name || ''}" total has been updated by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`,
+        from: 'Medical Inventory',
+        msg: `Medical Inventory item "${currentItem.name || ''}" total has been updated by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`,
         date: new Date().toLocaleString()
     }).then(() => {
         console.log('CLO/CC notified successfully about the update.');
@@ -474,7 +474,7 @@ function newPendingItemNotification(){
             let html = fixedNotification.innerHTML;
             const id = Date.now();
             html += `<div class="notification-content" id="pending_${id}">
-            <p id="notificationMessage"> You have a new <strong> Pending Issue item </strong>  From BKNCO.</p>
+            <p id="notificationMessage"> You have a new <strong> Pending Issue item </strong>  From Medical Store.</p>
             <button class="notification-close" onclick="hidefixedNotification('pending_${id}')" aria-label="Close">&times;</button>
             <button class="notification-view" id="viewPendingBtn" onclick="window.location.href='pendingIssue.html'">View</button>
         </div>`
@@ -486,7 +486,7 @@ function newPendingItemNotification(){
             let html = fixedNotification.innerHTML;
             const id = Date.now();
             html += `<div class="notification-content" id="pending_${id}">
-            <p id="notificationMessage">You have a new <strong>Unservicable</strong> item From BKNCO.</p>
+            <p id="notificationMessage">You have a new <strong>Unservicable</strong> item From Medical Store.</p>
             <button class="notification-close" onclick="hidefixedNotification('pending_${id}')" aria-label="Close">&times;</button>
             <button class="notification-view" id="viewPendingBtn" onclick="window.location.href='pendingunsvc.html'">View</button>
         </div>`

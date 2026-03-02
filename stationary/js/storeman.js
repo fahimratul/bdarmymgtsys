@@ -906,7 +906,7 @@ function printReport(tableRows, title, summaryData) {
                 </tbody>
             </table>
             <div class="footer">
-                <p>BANRDB Store Management System - BKNCO Inventory Report</p>
+                <p>BANRDB Store Management System - Stationary Inventory Report</p>
                 <p>This report was generated automatically on ${currentDate}</p>
             </div>
             

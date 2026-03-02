@@ -231,7 +231,7 @@ function returnItemToStore(recordKey) {
     set(ref(db, 'clonotification'), true);
     loaditemhistory();
     loaditemsdetails();
-    if(role === 'bknco'){
+    if(role === 'cimicnco'){
         const notificationPath = `notification/cimic/${Date.now()}`;
         set(ref(db, notificationPath), {
             from: 'cimic Store Inventory',
@@ -285,7 +285,7 @@ function markAsServicable(recordKey) {
     loaditemhistory();
     loaditemunsvc();
     loaditemsdetails();
-    if(role === 'bknco'){
+    if(role === 'cimicnco'){
         const notificationPath = `notification/cimic/${Date.now()}`;
         set(ref(db, notificationPath), {
             from: 'cimic Store Inventory',

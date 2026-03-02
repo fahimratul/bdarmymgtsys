@@ -231,7 +231,7 @@ function returnItemToStore(recordKey) {
     set(ref(db, 'clonotification'), true);
     loaditemhistory();
     loaditemsdetails();
-    if(role === 'bknco'){
+    if(role === 'stationarynco'){
         const notificationPath = `notification/stationary/${Date.now()}`;
         set(ref(db, notificationPath), {
             from: 'stationary Store Inventory',
@@ -285,7 +285,7 @@ function markAsServicable(recordKey) {
     loaditemhistory();
     loaditemunsvc();
     loaditemsdetails();
-    if(role === 'bknco'){
+    if(role === 'stationarynco'){
         const notificationPath = `notification/stationary/${Date.now()}`;
         set(ref(db, notificationPath), {
             from: 'stationary Store Inventory',
