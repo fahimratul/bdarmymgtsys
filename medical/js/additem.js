@@ -114,7 +114,7 @@ function writeInventoryItem(name, data) {
                     issue: data.issue,
                     instore: data.instore
                 });
-                set(ref(db, 'clo_cc_notifications/' + Date.now()),{
+                set(ref(db, 'clo_cc_notification/' + Date.now()),{
                     from: 'Medical Inventory',
                     date: new Date().toISOString(),
                     msg: `New inventory item "${name}" has been added by Medical Officer.`

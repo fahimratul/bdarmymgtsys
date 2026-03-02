@@ -443,7 +443,7 @@ function approveNewItem(key) {
         console.error('Error approving new item:', error);
     });
     set(ref(db, 'clo_cc_notification/' + Date.now()), {
-        from: 'cimic Store Inventory',
+        from: 'Cimic Store Inventory',
         msg: `New cimic Inventory item "${newItem.name || ''}" has been added by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`,
         date: new Date().toLocaleString()
     }).then(() => {
@@ -782,7 +782,7 @@ editForm?.addEventListener('submit', (e) => {
         });
 
         set(ref(db, 'clo_cc_notification/' + Date.now()), {
-            from: 'cimic Store Inventory',
+            from: 'Cimic Store Inventory',
             date: new Date().toLocaleString(),
             msg: `cimic Store Inventory item "${inputs.name.value.trim()}" has been updated by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`
         }).then(() => {

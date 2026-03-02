@@ -245,7 +245,7 @@ function processIssueRequest(key) {
     const issueRef = push(ref(db, 'clo_cc_notification/'));
     set(issueRef, {
         msg: msg,
-        from: 'cimic Inventory',
+        from: 'Cimic Inventory',
         time: new Date().toLocaleString()   
     }).then(() => {
         showNotification('Items issued successfully! Opening print dialog...', 'success', 'Request Submitted');

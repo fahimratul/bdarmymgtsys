@@ -224,7 +224,7 @@ function returnItemToStore(recordKey) {
         console.error('Error updating history record:', error);
     });
     set(ref(db, 'clo_cc_notification/'+Date.now()), {
-        from: 'cimic Store Inventory',
+        from: 'Cimic Store Inventory',
         date: new Date().toLocaleString(),
         msg: `Item Returned to Store: ${dataCache.name}, Quantity: ${quantity}, From Location: ${record.location}`,
     });
@@ -234,7 +234,7 @@ function returnItemToStore(recordKey) {
     if(role === 'cimicnco'){
         const notificationPath = `notification/cimic/${Date.now()}`;
         set(ref(db, notificationPath), {
-            from: 'cimic Store Inventory',
+            from: 'Cimic Store Inventory',
             date: new Date().toLocaleString(),
             msg: `Item Returned to Store: ${dataCache.name}, Quantity: ${quantity}, From Location: ${record.location}`,
         }).then(() => {
@@ -276,7 +276,7 @@ function markAsServicable(recordKey) {
         console.error('Error updating unservicable history record:', error);
     });
     set(ref(db, 'clo_cc_notification/'+Date.now()), {
-        from: 'cimic Store Inventory',
+        from: 'Cimic Store Inventory',
         date: new Date().toLocaleString(),
         msg: `Item Marked as Servicable: ${dataCache.name}, Quantity: ${quantity}`,
     });

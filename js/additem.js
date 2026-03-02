@@ -216,7 +216,7 @@ function writeInventoryItem(name, data) {
                         instore: data.instore
                     });
                     
-                    set(ref(db, 'clo_cc_notifications/' + Date.now()),{
+                    set(ref(db, 'clo_cc_notification/' + Date.now()),{
                         from: 'Engineering Inventory',
                         date: new Date().toISOString(),
                         msg: `New inventory item "${name}" has been added by Engineer Officer.`
@@ -233,7 +233,7 @@ function writeInventoryItem(name, data) {
                         issue: data.issue,
                         instore: data.instore
                     });
-                    set(ref(db, 'clo_cc_notifications/' + Date.now()),{
+                    set(ref(db, 'clo_cc_notification/' + Date.now()),{
                         from: 'BKNCO Inventory',
                         date: new Date().toISOString(),
                         msg: `New inventory item "${name}" has been added by BKNCO Officer.`
@@ -252,7 +252,7 @@ function writeInventoryItem(name, data) {
                     issue: data.issue,
                     instore: data.instore
                 });
-                set(ref(db, 'clo_cc_notifications/' + Date.now()),{
+                set(ref(db, 'clo_cc_notification/' + Date.now()),{
                     from: 'Signal Inventory',
                     date: new Date().toISOString(),
                     msg: `New inventory item "${name}" has been added by Signal Officer.`
@@ -269,7 +269,7 @@ function writeInventoryItem(name, data) {
                     issue: data.issue,
                     instore: data.instore
                 });
-                set(ref(db, 'clo_cc_notifications/' + Date.now()),{
+                set(ref(db, 'clo_cc_notification/' + Date.now()),{
                     from: 'MT Inventory',
                     date: new Date().toISOString(),
                     msg: `New inventory item "${name}" has been added by  MT Officer.`
@@ -286,7 +286,7 @@ function writeInventoryItem(name, data) {
                     issue: data.issue,
                     instore: data.instore
                 });
-                set(ref(db, 'clo_cc_notifications/' + Date.now()),{
+                set(ref(db, 'clo_cc_notification/' + Date.now()),{
                     from: 'BQMS Inventory',
                     date: new Date().toISOString(),
                     msg: `New inventory item "${name}" has been added by  Logistics Officer.`
@@ -303,7 +303,7 @@ function writeInventoryItem(name, data) {
                     issue: data.issue,
                     instore: data.instore
                 });
-                set(ref(db, 'clo_cc_notifications/' + Date.now()),{
+                set(ref(db, 'clo_cc_notification/' + Date.now()),{
                     from: 'Workshop Inventory',
                     date: new Date().toISOString(),
                     msg: `New inventory item "${name}" has been added by Workshop Officer.`

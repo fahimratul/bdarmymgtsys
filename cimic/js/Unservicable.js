@@ -252,7 +252,7 @@ function processIssueRequest() {
     set(ref(db, 'clo_cc_notification/'+ Date.now()), {
         msg: `New unservicable request processed with Voucher No: ${voucherNumber}`,
         date: new Date().toLocaleString(),
-        from: "cimic Inventory"
+        from: "Cimic Inventory"
     }).then(() => {
         showNotification(`Unservicable request processed successfully with Voucher No: ${voucherNumber}`, 'success', 'Request Processed');
         clearForm();

@@ -443,7 +443,7 @@ function approveNewItem(key) {
         console.error('Error approving new item:', error);
     });
     set(ref(db, 'clo_cc_notification/' + Date.now()), {
-        from: 'stationary Store Inventory',
+        from: 'Stationary Store Inventory',
         msg: `New stationary Inventory item "${newItem.name || ''}" has been added by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`,
         date: new Date().toLocaleString()
     }).then(() => {
@@ -782,9 +782,9 @@ editForm?.addEventListener('submit', (e) => {
         });
 
         set(ref(db, 'clo_cc_notification/' + Date.now()), {
-            from: 'stationary Store Inventory',
+            from: 'Stationary Store Inventory',
             date: new Date().toLocaleString(),
-            msg: `stationary Store Inventory item "${inputs.name.value.trim()}" has been updated by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`
+            msg: `Stationary Store Inventory item "${inputs.name.value.trim()}" has been updated by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`
         }).then(() => {
             console.log('CLO/CC notified successfully about the update.');
         }).catch((error) => {

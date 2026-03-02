@@ -114,8 +114,8 @@ function writeInventoryItem(name, data) {
                     issue: data.issue,
                     instore: data.instore
                 });
-                set(ref(db, 'clo_cc_notifications/' + Date.now()),{
-                    from: 'cimic Inventory',
+                set(ref(db, 'clo_cc_notification/' + Date.now()),{
+                    from: 'Cimic Inventory',
                     date: new Date().toISOString(),
                     msg: `New inventory item "${name}" has been added by cimic Officer.`
                 });
