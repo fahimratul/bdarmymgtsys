@@ -22,7 +22,7 @@ const db = getDatabase(app);
 console.log(db);
 console.log("Firebase Initialized");
 
-let allowedRoles = ['mtjco', 'mtnco', 'mto','cc', 'clo'];
+let allowedRoles = ['mtjco', 'mtnco', 'mto','cc', 'clo', 'guest']; // Define allowed roles for this page
 
 window.addEventListener('DOMContentLoaded', () => {
     let baNumber = sessionStorage.getItem('baNumber');
@@ -263,11 +263,19 @@ function loadvehicledata() {
         tableBody.querySelectorAll('.edit-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const key = btn.dataset.key;
+                if(role === 'guest'){
+                    showNotification('Guests are not authorized to take action on vehicles.', 'error', 'Unauthorized Action');
+                    return;
+                }
                 vehiclehistoryload(key);
             });
         });
         tableBody.querySelectorAll('.delete-btn').forEach(btn => {
             btn.addEventListener('click', () => {
+                if(role === 'guest'){
+                    showNotification('Guests are not authorized to delete vehicles.', 'error', 'Unauthorized Action');
+                    return;
+                }
                 const key = btn.dataset.key;
                 if (confirm('Are you sure you want to delete this vehicle?')) {
                     const dbRef = ref(db, `vehiclelist/main/` + key);

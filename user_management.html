@@ -62,6 +62,10 @@
         }
         
         function adduser() {
+            if(sessionStorage.getItem('role') === 'guest'){
+                alert('Guests are not authorized to add new users.');
+                return;
+            }
             window.location.href = 'adduser.html';
         }
     </script>

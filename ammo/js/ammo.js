@@ -22,7 +22,7 @@ const db = getDatabase(app);
 console.log(db);
 console.log("Firebase Initialized");
 
-let allowedRoles = ['lo', 'cc', 'clo', 'ammonco'];
+let allowedRoles = ['lo', 'cc', 'clo', 'ammonco', 'guest'];
 
 window.addEventListener('DOMContentLoaded', () => {
     let baNumber = sessionStorage.getItem('baNumber');
@@ -147,6 +147,10 @@ function loadammodata() {
 
 
 function deleteAmmoType(ammoKey) {
+    if(role === 'guest'){
+        showNotification('Guests are not authorized to delete ammo types.', 'error', 'Unauthorized Action');
+        return;
+    }
     if (confirm("Are you sure you want to delete this type of ammo? This action cannot be undone.")) {
         const ammoRef = ref(db, 'ammoindex/typesofammo/' + ammoKey);
         remove(ammoRef)
@@ -195,6 +199,10 @@ logoutButton?.addEventListener('click', () => {
 });
 const addAmmoModal = document.getElementById('addAmmoModal');
 function openAddAmmoModal() {
+    if(role === 'guest'){
+        showNotification('Guests are not authorized to add ammo types.', 'error', 'Unauthorized Action');
+        return;
+    }
     if (addAmmoModal) {
         addAmmoModal.classList.remove('hidden');
     }

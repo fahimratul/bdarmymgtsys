@@ -83,6 +83,7 @@ console.log("User management Script Loaded");
 
 let role = sessionStorage.getItem('role');
 
+
 function loaditemdata() {
     const dbRef = ref(db, 'users/');
     const loadingOverlay = document.getElementById('loadingOverlay');
@@ -268,6 +269,10 @@ document.getElementById('PendingUser')?.addEventListener('click', () => {
 });
 
 function approve(key) {
+    if(sessionStorage.getItem('role') === 'guest'){
+        showNotification('Guests are not authorized to approve users.', 'error', 'Unauthorized Action');
+        return;
+    }
     const userRef = ref(db, 'cloapproval/users/' + key);
     get(userRef).then((snapshot) => {
         const userData = snapshot.val();
@@ -295,6 +300,10 @@ function approve(key) {
 }   
 
 function reject(key) {
+    if(sessionStorage.getItem('role') === 'guest'){
+        showNotification('Guests are not authorized to reject users.', 'error', 'Unauthorized Action');
+        return;
+    }
     const userRef = ref(db, 'cloapproval/users/' + key);
     remove(userRef).then(() => {
         showNotification('User rejected successfully', 'success');
@@ -335,6 +344,10 @@ document.getElementById('itemTableBody')?.addEventListener('click', function(eve
 });
 
 function deleteUser(key) {
+    if(sessionStorage.getItem('role') === 'guest'){
+        showNotification('Guests are not authorized to delete users.', 'error', 'Unauthorized Action');
+        return;
+    }
     if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
         return;
     }   

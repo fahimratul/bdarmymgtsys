@@ -22,7 +22,7 @@ const db = getDatabase(app);
 console.log(db);
 console.log("Firebase Initialized");
 
-let allowedRoles = ['lo', 'cc', 'clo', 'ammonco'];
+let allowedRoles = ['lo', 'cc', 'clo', 'ammonco', 'guest'];
 
 window.addEventListener('DOMContentLoaded', () => {
     let baNumber = sessionStorage.getItem('baNumber');
@@ -187,6 +187,10 @@ function loadammodata() {
 
         tableBody.querySelectorAll('.ammo-row').forEach(row => {
             row.addEventListener('click', () => {
+                if(role === 'guest'){
+                    showNotification('Guests are not authorized to view ammo lot details.', 'error', 'Unauthorized Action');
+                    return;
+                }
                 const lotnokey = row.getAttribute('data-key');
                 showlotdetails(lotnokey);
             });
@@ -216,6 +220,10 @@ function loadammodata() {
 loadammodata();
 
 function deleteAmmo(lotnokey) {
+    if (role === 'guest') {
+        showNotification('Guests are not authorized to delete ammo lots.', 'error', 'Unauthorized Action');
+        return;
+    }
     if (confirm("Are you sure you want to delete this ammo lot? This action cannot be undone.")) {
         const ammoRef = ref(db, 'ammoindex/' + ammokey + '/' + lotnokey);
         remove(ammoRef)
@@ -240,6 +248,10 @@ logoutButton?.addEventListener('click', () => {
 });
 const addAmmoModal = document.getElementById('addAmmoModal');
 function openAddAmmoModal() {
+    if(role === 'guest'){
+        showNotification('Guests are not authorized to add ammo lots.', 'error', 'Unauthorized Action');
+        return;
+    }
     if (addAmmoModal) {
         addAmmoModal.classList.remove('hidden');
     }

@@ -125,6 +125,9 @@ window.addEventListener('DOMContentLoaded', () => {
         
         titleElement.textContent = 'Welcome , Cheif Logistic Officer';
     }
+        else if(role === 'guest'){
+        titleElement.textContent = 'Welcome, Guest';
+    }
     else {
         console.error('Invalid role:', role);
         showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");
@@ -151,6 +154,10 @@ logoutButton?.addEventListener('click', () => {
 
 
 document.getElementById('clear_notifications')?.addEventListener('click', () => {
+    if(role === 'guest'){
+        showNotification('Guests are not authorized to clear notifications.', 'error', 'Unauthorized Action');
+        return;
+    }
     const confirmClear = confirm("Are you sure you want to clear all notifications?");
     if (confirmClear) {
         let dbref = ref(db, `clo_cc_notification/`);

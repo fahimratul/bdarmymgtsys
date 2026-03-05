@@ -22,7 +22,7 @@ const db = getDatabase(app);
 console.log(db);
 console.log("Firebase Initialized");
 
-let allowedRoles = ['lo', 'cc', 'clo', 'ammonco'];
+let allowedRoles = ['lo', 'cc', 'clo', 'ammonco', 'guest'];
 
 window.addEventListener('DOMContentLoaded', () => {
     let baNumber = sessionStorage.getItem('baNumber');

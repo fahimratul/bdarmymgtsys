@@ -34,7 +34,7 @@
     <nav id="forclo">
         <ul>
             <li><a href="./../clodashboard.html" >Home</a></li>
-            <li><a href="./../user_management.html">User Management</a></li>
+            <li><a href="../user_management.html">User Management</a></li>
             <li><a href="./../notifications.html">Notifications</a></li>
             <li ><a href="#" onclick="popupmenu()"> User Info </a> </li>
         </ul>
@@ -427,10 +427,11 @@
                 const urlParams = new URLSearchParams(window.location.search);
                 const key = urlParams.get('key');
                 const role=sessionStorage.getItem('role');
-                if(role==='clo' || role === 'cc'){
+                if(role==='clo' || role === 'cc' || role === 'guest'){
                     document.getElementById('notforclo').style.display='none';
                     document.getElementById('forclo').style.display='block';
-                } else {
+                }
+                else {
                     document.getElementById('forclo').style.display='none';
                     document.getElementById('notforclo').style.display='block';
                 }
