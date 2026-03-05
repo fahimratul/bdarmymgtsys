@@ -23,6 +23,7 @@
                 <option value="officer">Officer</option>
                 <option value="bqms">Storeman</option>
                 <option value="mtjconco">MT</option>
+                <option value="guest">Guest</option>
             </select>
             <button onclick="handlelogin(document.getElementById('roleSelect').value)">Login</button>
         </div>
@@ -44,6 +45,9 @@
             }
             else if (role_type === 'clo') {
                 sessionStorage.setItem('role_type', 'clo');
+            }
+            else if (role_type === 'guest') {
+                sessionStorage.setItem('role_type', 'guest');
             }
             else {
                 alert('Invalid role selected');

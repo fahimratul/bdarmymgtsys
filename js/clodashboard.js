@@ -80,6 +80,9 @@ window.addEventListener('DOMContentLoaded', () => {
         
         titleElement.textContent = 'Welcome , Cheif Logistic Officer';
     }
+    else if(role === 'guest'){
+        titleElement.textContent = 'Welcome, Guest';
+    }
     else {
         console.error('Invalid role:', role);
         showNotification("Invalid role. Cannot load inventory data.", "error", "Load Failed");

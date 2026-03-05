@@ -70,6 +70,14 @@
             else if (roletype ==='cc') {
                 titleElement.textContent = 'Welcome, Contigent Commander';
             }
+            else if (roletype ==='guest') {
+                titleElement.textContent = 'Welcome, Guest';
+                sessionStorage.removeItem('role_type');
+                sessionStorage.setItem('role_type', 'clo');
+                document.getElementById('ba-number-label').textContent ='Please provide your authorization code';
+                document.getElementById('officer_signup').style.display = 'none';
+                console.log(roletype);
+            }
             else {
                 titleElement.textContent = 'Login';
             }

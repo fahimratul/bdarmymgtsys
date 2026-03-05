@@ -135,12 +135,17 @@
 
                     `;
                     roleSelect.innerHTML += `
-                        <option value="signco">Storeman (Signal)</option>
-                        <option value="engrnco">Storeman (Engineer)</option>
-                        <option value="bqms">Battlion Quartermaster Sergeant</option>
-                        <option value="bknco">Barrack NCO</option>
-                        <option value="mtnco">MT NCO</option>
-                        <option value="ammonco">Ammo NCO</option>
+                    <option value="">-- Select Role --</option>
+                    <option value="signco">Storeman (Signal)</option>
+                    <option value="engrnco">Storeman (Engineer)</option>
+                    <option value="bqms">BQMS</option>
+                    <option value="bknco">Barrack NCO</option>
+                    <option value="mtnco">MT NCO</option>
+                    <option value="ammonco">Ammo NCO</option>
+                    <option value="workshopnco">Workshop NCO</option>
+                    <option value="medicalnco">Storeman(Medical)</option>
+                    <option value="stationarynco">Storeman(Stationary)</option>
+                    <option value="cimicnco">Storeman(Cimic)</option>
                     `;
 
                 } else if (selectedType === 'jco') {
@@ -152,7 +157,12 @@
                     roleSelect.innerHTML += `
                         <option value="signco">Storeman (Signal)</option>
                         <option value="engrnco">Storeman (Engineer)</option>
-                        <option value="mtjco">MT JCO</option>
+                        <option value="mtjco">MT JCO</option>     
+                        <option value="ammonco">Ammo JCO</option>
+                        <option value="workshopnco">Workshop JCO</option>
+                        <option value="medicalnco">Storeman(Medical)</option>
+                        <option value="stationarynco">Storeman(Stationary)</option>
+                        <option value="cimicnco">Storeman(Cimic)</option>
                     `;
                 }
             });

@@ -34,7 +34,7 @@ console.log("Analytics Initialized");
 console.log(sessionStorage.getItem('role_type'));
 
 let ranklist={
-    officer:["lt","capt","Maj","major","ltcol","col","brig","majorgen","ltgen","gen"],
+    officer:["lt","capt","Maj","major","ltcol","col","brig","majorgen","ltgen","gen", "N/A"],
     bqms:["snk","lcpl","cpl","sgt","wo","swo","mwo"],
     mtjconco:["snk","lcpl","cpl","sgt","wo","swo","mwo"]
 }
