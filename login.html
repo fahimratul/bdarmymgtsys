@@ -66,6 +66,7 @@
             } 
             else if (roletype ==='clo') {
                 titleElement.textContent = 'Welcome Cheif Logisitics Officer';
+                document.getElementById('ba-number-label').textContent ='Army No';
             } 
             else if (roletype ==='cc') {
                 titleElement.textContent = 'Welcome, Contigent Commander';
@@ -74,8 +75,8 @@
                 titleElement.textContent = 'Welcome, Guest';
                 sessionStorage.removeItem('role_type');
                 sessionStorage.setItem('role_type', 'clo');
-                document.getElementById('ba-number-label').textContent ='Please provide your authorization code';
-                document.getElementById('officer_signup').style.display = 'none';
+                document.getElementById('ba-number-label').textContent ='Army No';
+                document.getElementById('officer_signup').style.display = 'block';
                 console.log(roletype);
             }
             else {

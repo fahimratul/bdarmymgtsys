@@ -159,7 +159,7 @@ document.getElementById('clear_notifications')?.addEventListener('click', () => 
         return;
     }
     const confirmClear = confirm("Are you sure you want to clear all notifications?");
-    if (confirmClear) {
+    if (confirmClear) {  
         let dbref = ref(db, `clo_cc_notification/`);
         remove(dbref).then(() => {
             showNotification("All notifications cleared successfully.", "success", "Notifications Cleared");
