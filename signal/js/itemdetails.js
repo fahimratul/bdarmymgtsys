@@ -298,6 +298,10 @@ issueForm.addEventListener('submit', (e) => {
 
 
 function returnItemToStore(recordKey) {
+    if(role === 'guest'){
+        showNotification('Error: You do not have permission to perform this action', 'error');
+        return;
+    }
     console.log(recordKey);
     const record = itemhistoryCache[recordKey];
     console.log('Return Record:', record); 
@@ -445,6 +449,10 @@ unsvcForm.addEventListener('submit', (e) => {
 
 
 function markAsServicable(recordKey) {
+    if(role === 'guest'){
+        showNotification('Error: You do not have permission to perform this action', 'error');
+        return;
+    }
     const record = itemunsvccache[recordKey];
     if (!record) {
         showNotification('Error: History record not found', 'error');
