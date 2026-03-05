@@ -172,11 +172,13 @@ function loaditemdata() {
         // Attach edit handlers
         tableBody.querySelectorAll('.edit-btn').forEach(btn => {
             btn.addEventListener('click', () => {
+                if(isSelectionMode) return;
                 const key = btn.dataset.key;
                 console.log("Edit button clicked for key:", key);
                 openEditModal(key);
             });
         });
+ 
 
         tableBody.querySelectorAll('.row-data').forEach(row => {
             row.addEventListener('click', (e) => {

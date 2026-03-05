@@ -189,6 +189,11 @@ function loaditemdata() {
             // Attach edit handlers
             tableBody.querySelectorAll('.edit-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
+                    if(isSelectionMode) return;
+                    if(role === 'guest'){
+                        showNotification('You do not have permission to edit items.', 'error', 'Access Denied');
+                        return;
+                    } 
                     const key = btn.dataset.key;
                     console.log("Edit button clicked for key:", key);
                     openEditModal(key);
