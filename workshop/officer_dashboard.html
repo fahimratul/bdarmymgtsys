@@ -169,7 +169,8 @@
                     <p></p>
                 </div>
             </div>
-            <div class="card" onclick="window.location.href='unservicable.html'" style="cursor: pointer;">
+
+            <div class="card" onclick="window.location.href='unservicable.html'" style="cursor: pointer;" id="addunservicable">
                 <div class="card-icon">
                     <i data-lucide="x-circle"></i>
                 </div>
@@ -376,13 +377,13 @@
                 document.getElementById('notforclo').style.display='block';
             }
             if(role === 'guest'){
-                const addItemBtn = document.getElementById('addItems');
-                const issueItemBtn = document.getElementById('issueItemBtn');
-                const unservicableItemsDiv = document.getElementById('unservicableitemsDiv');
-                addItemBtn.parentElement.parentElement.style.display = 'none';
-                issueItemBtn.style.display = 'none';
-                unservicableItemsDiv.style.display = 'none';
-            }
+                    const addItemBtn = document.getElementById('addItems');
+                    const issueItemBtn = document.getElementById('issueItemBtn');
+                    const unservicableItemsDiv = document.getElementById('addunservicable');
+                    addItemBtn.parentElement.parentElement.style.display = 'none';
+                    issueItemBtn.style.display = 'none';
+                    unservicableItemsDiv.style.display = 'none';
+                }
         });
         function hidefixedNotification(notificationId){
             const fixedNotification = document.getElementById(notificationId);
