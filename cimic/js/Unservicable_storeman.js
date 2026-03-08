@@ -42,6 +42,7 @@ function loadInventoryData() {
     const loadingOverlay = document.getElementById('loadingOverlay');
     const dbRef = ref(db, 'cimic/main/');
     
+    inventoryData = {};
     get(dbRef).then((snapshot) => {
         inventoryData = snapshot.val() || {};
         console.log('Inventory data loaded:', inventoryData);
@@ -249,10 +250,11 @@ function processIssueRequest() {
         issueDate
     };
     const dbref = ref(db, `unservicable_storeman/cimic/${voucherNumber}`);
-    set(dbref, issueRequest).then(() => {
+        set(dbref, issueRequest).then(() => {
         showNotification('Unservicable request submitted successfully.', 'success', 'Request Submitted');
         printUnservicableVoucher(voucherNumber, issueDate, itemsToIssue);
         clearForm();
+        loadInventoryData(); // Refresh inventory data to reflect changes
     }).catch((error) => {
         console.error('Error submitting unservicable request:', error);
         showNotification('Error submitting request. Please try again.', 'error', 'Submission Failed');

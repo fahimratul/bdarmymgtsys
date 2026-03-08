@@ -42,6 +42,7 @@ function loadInventoryData() {
     const loadingOverlay = document.getElementById('loadingOverlay');
     const dbRef = ref(db, 'workshop/main/');
     
+    inventoryData = {};
     get(dbRef).then((snapshot) => {
         inventoryData = snapshot.val() || {};
         console.log('Inventory data loaded:', inventoryData);
@@ -256,6 +257,7 @@ function processIssueRequest() {
     }).then(() => {
         showNotification(`Unservicable request processed successfully with Voucher No: ${voucherNumber}`, 'success', 'Request Processed');
         clearForm();
+        loadInventoryData(); // Refresh inventory data to reflect changes
     }).catch((error) => {
         console.error('Error processing unservicable request:', error);
         showNotification('Error processing unservicable request. Please try again.', 'error', 'Request Failed');

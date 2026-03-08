@@ -42,6 +42,7 @@ function loadInventoryData() {
     const loadingOverlay = document.getElementById('loadingOverlay');
     const dbRef = ref(db, 'bkncoinventory/main/');
     
+    inventoryData = {};
     get(dbRef).then((snapshot) => {
         inventoryData = snapshot.val() || {};
         console.log('Inventory data loaded:', inventoryData);
@@ -253,6 +254,7 @@ function processIssueRequest() {
         showNotification('Unservicable request submitted successfully.', 'success', 'Request Submitted');
         printUnservicableVoucher(voucherNumber, issueDate, itemsToIssue);
         clearForm();
+        loadInventoryData(); // Refresh inventory data to reflect changes
     }).catch((error) => {
         console.error('Error submitting unservicable request:', error);
         showNotification('Error submitting request. Please try again.', 'error', 'Submission Failed');

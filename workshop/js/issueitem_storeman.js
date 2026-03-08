@@ -43,6 +43,7 @@ function loadInventoryData() {
     const loadingOverlay = document.getElementById('loadingOverlay');
     const dbRef = ref(db, 'workshop/main/');
     
+    inventoryData = {};
     get(dbRef).then((snapshot) => {
         inventoryData = snapshot.val() || {};
         console.log('Inventory data loaded:', inventoryData);
@@ -263,9 +264,11 @@ function processIssueRequest() {
         // Generate print document after successful submission
         printIssueRequest(issueRequest, itemsToIssue, voucherNumber, issueDate);
         
+        
         // Clear form after a brief delay to allow print dialog to open
         setTimeout(() => {
             clearForm();
+            loadInventoryData(); // Refresh inventory data to reflect changes
         }, 1000);
     }).catch((error) => {
         console.error('Error submitting issue request:', error);

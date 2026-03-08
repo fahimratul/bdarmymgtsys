@@ -43,6 +43,7 @@ function loadInventoryData() {
     const loadingOverlay = document.getElementById('loadingOverlay');
     const dbRef = ref(db, 'cimic/main/');
     
+    inventoryData = {};
     get(dbRef).then((snapshot) => {
         inventoryData = snapshot.val() || {};
         console.log('Inventory data loaded:', inventoryData);
@@ -260,9 +261,11 @@ function processIssueRequest() {
         date: new Date().toLocaleString()
     }).then(() => {
         showNotification('Items issued successfully! Opening print dialog...', 'success', 'Request Submitted');
+        
         // Clear form after a brief delay to allow print dialog to open
         setTimeout(() => {
             clearForm();
+            loadInventoryData(); // Refresh inventory data to reflect changes
         }, 1000);
     }).catch((error) => {
         console.error('Error submitting issue request:', error);
