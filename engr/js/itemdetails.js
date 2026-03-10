@@ -517,6 +517,10 @@ function printItemDetails() {
                         <span class="summary-label">Measurement Unit:</span>
                         <span class="summary-value">${unit}</span>
                     </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Total Held:</span>
+                        <span class="summary-value">${held}</span>
+                    </div>
                     
                     <div class="summary-item">
                         <span class="summary-label">Total Issued:</span>

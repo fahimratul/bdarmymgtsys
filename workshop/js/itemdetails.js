@@ -529,6 +529,10 @@ function printItemDetails() {
                         <span class="summary-value">${authorized}</span>
                     </div>
                     <div class="summary-item">
+                        <span class="summary-label">Total Held:</span>
+                        <span class="summary-value">${held}</span>
+                    </div>
+                    <div class="summary-item">
                         <span class="summary-label">Section:</span>
                         <span class="summary-value">${section}</span>
                     </div>
