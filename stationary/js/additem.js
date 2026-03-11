@@ -20,7 +20,7 @@ const analytics = getAnalytics(app);
 const db = getDatabase(app);
 console.log("Firebase Initialized");
 
-import {showNotification} from './notification.js';
+import {showNotification} from '../../js/notification.js';
 
 console.log("Add Item Script Loaded");
 

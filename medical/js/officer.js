@@ -381,9 +381,8 @@ function approveNewtotalItem(key) {
     const currentItem = newtotalitemCache[key] || {};
     if (!currentItem) return;
     
-    const total = dataCache[key]?.total || 0;
-    const instore = dataCache[key]?.instore || 0;
-    const newinstore = currentItem.total - total + instore;
+       const total = dataCache[key]?.issue || 0;
+    const newinstore = currentItem.total - total;
     const newservicable = newinstore - (dataCache[key]?.unservicable || 0);
 
     update(ref(db, 'medical/main/' + key), {
@@ -763,9 +762,8 @@ modal?.addEventListener('click', (e) => {
 editForm?.addEventListener('submit', (e) => {
     e.preventDefault();
     if (!currentEditKey) return;
-    const total = dataCache[currentEditKey]?.total || 0;
-    const instore = dataCache[currentEditKey]?.instore || 0;
-    const newinstore = (parseInt(inputs.total.value, 10) || 0) - total + instore;
+    const issue = dataCache[currentEditKey]?.issue || 0;
+    const newinstore = (parseInt(inputs.total.value, 10) || 0) - issue;
     const newservicable = newinstore - (dataCache[currentEditKey]?.unservicable || 0);
     const updated = {
         ...dataCache[currentEditKey],
@@ -775,7 +773,7 @@ editForm?.addEventListener('submit', (e) => {
         total: parseInt(inputs.total.value, 10) || 0,
         instore: newinstore,
         servicable: newservicable
-    }; 
+    };
     update(ref(db, 'medical/main/' + currentEditKey), updated)
         .then(() => {
             console.log('Data updated successfully');
@@ -819,6 +817,22 @@ deleteItemBtn?.addEventListener('click', (e) => {
         console.error('Error deleting data:', error);
         showNotification('Error deleting item. Please try again.', 'error', 'Deletion Failed');
     });
+    remove(ref(db, 'medical/' + currentEditKey)).then(() => {
+        console.log('Item deleted from inventory');
+        loaditemdata();
+    }).catch((error) => {
+        console.error('Error deleting item from inventory:', error);
+    });
+    set(ref(db, 'clo_cc_notification/' + Date.now()), {
+        from: 'Medical Store Inventory',
+        date: new Date().toLocaleString(),
+        msg: `Medical Store Inventory item "${inputs.name.value.trim()}" has been deleted by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`
+    }).then(() => {
+        console.log('CLO/CC notified successfully about the deletion.');
+    }).catch((error) => {
+        console.error('Error notifying CLO/CC about the deletion:', error);
+    });
+    set(ref(db, 'clonotification'), true);
     closeEditModal();
 });
 
