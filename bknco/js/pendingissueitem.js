@@ -96,7 +96,7 @@ function pendingitems(){
                                     <input type="text" id="itemSelect-${key}-${itemkey}" name="itemSelect" value="${item.itemName}" disabled>
                                 </div>
                                 <div class="form-group">
-                                    <label for="itemSelect-${key}-${itemkey}">Instore & Servicable</label>
+                                    <label for="itemSelect-${key}-${itemkey}">Instore & Serviceable</label>
                                     <input type="text" id="availableQty-${key}-${itemkey}" name="itemSelect" value="${item.availableQty}" disabled>
                                 </div>
                                 <div class="form-group">

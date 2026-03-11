@@ -105,7 +105,7 @@ function addItemRow() {
                 </select>
             </div>
             <div class="form-group">
-                <label for="availableQty-${itemCounter}">Instore & Servicable</label>
+                <label for="availableQty-${itemCounter}">Instore & Serviceable</label>
                 <input type="text" id="availableQty-${itemCounter}" name="availableDisplay" readonly>
             </div>
             <div class="form-group">

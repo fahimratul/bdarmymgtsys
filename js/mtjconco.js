@@ -55,7 +55,7 @@ const inputs = {
     name: document.getElementById('editName'),
     authorized: document.getElementById('editAuthorized'),
     total: document.getElementById('edittotal'),
-    servicable: document.getElementById('editServicable'),
+    servicable: document.getElementById('editServiceable'),
     unservicable: document.getElementById('editunservicable'),
     issue: document.getElementById('editIssue'),
     instore: document.getElementById('editInstore'),
@@ -626,11 +626,11 @@ function closeEditModal() {
 
 function recalcModalTotals() {
     if(Number(inputs.servicable.value) > Number(inputs.total.value)) {
-        showNotification('Servicable quantity cannot exceed Total quantity. Adjusting Servicable to match Total.', 'warning', 'Input Adjusted');
+        showNotification('Serviceable quantity cannot exceed Total quantity. Adjusting Serviceable to match Total.', 'warning', 'Input Adjusted');
         inputs.servicable.value = inputs.total.value;
     }
     if(Number(inputs.issue.value) > Number(inputs.servicable.value)) {
-        showNotification('Issued quantity cannot exceed Servicable quantity. Adjusting Issued to match Servicable.', 'warning', 'Input Adjusted');
+        showNotification('Issued quantity cannot exceed Serviceable quantity. Adjusting Issued to match Serviceable.', 'warning', 'Input Adjusted');
         inputs.issue.value = inputs.servicable.value;
     }
     const unservicable = (Number(inputs.total.value) || 0) - (Number(inputs.servicable.value) || 0);

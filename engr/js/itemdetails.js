@@ -161,10 +161,10 @@ function loaditemunsvc() {
                     <td>${record.reason || ''}</td>
                     <td>${record.quantity || ''}</td>`
                 if(record.markedsvc){
-                    html += `<td>Servicable now</td>`;
+                    html += `<td>Serviceable now</td>`;
                 }
                 else{
-                    html += `<td><button class="edit-btn" data-key="${key}">Mark as Servicable</button></td>`;
+                    html += `<td><button class="edit-btn" data-key="${key}">Mark as Serviceable</button></td>`;
                 }
                 html += `</tr>`;
             }
@@ -177,7 +177,7 @@ function loaditemunsvc() {
         editButtons.forEach((button) => {
             button.addEventListener('click', (e) => {
                 const recordKey = e.target.getAttribute('data-key');
-                markAsServicable(recordKey);
+                markAsServiceable(recordKey);
             });
         });   
         if (loadingOverlay) {
@@ -252,7 +252,7 @@ function returnItemToStore(recordKey) {
 
 
 
-function markAsServicable(recordKey) {
+function markAsServiceable(recordKey) {
     if(role === 'guest'){
         showNotification('Error: You do not have permission to perform this action', 'error');
         return;
@@ -263,12 +263,12 @@ function markAsServicable(recordKey) {
         return;
     }
     const quantity = parseInt(record.quantity, 10);
-    const newUnservicable = (dataCache.unservicable || 0) - quantity;
-    const newServicable = (dataCache.servicable || 0) + quantity;
+    const newUnserviceable = (dataCache.unservicable || 0) - quantity;
+    const newServiceable = (dataCache.servicable || 0) + quantity;
     let dbRef = ref(db, `engrinventory/main/`+ itemKey);
     const updates = {};
-    updates['unservicable'] = newUnservicable;
-    updates['servicable'] = newServicable;
+    updates['unservicable'] = newUnserviceable;
+    updates['servicable'] = newServiceable;
     update(dbRef, updates).then(() => {
         showNotification('Item marked as servicable successfully', 'success');
     })
@@ -278,13 +278,13 @@ function markAsServicable(recordKey) {
     });
     const path = `engrinventory/${itemKey}/unsvc/${recordKey}`;
     update(ref(db, path), { markedsvc: true }).then(() => {
-        console.log('Unservicable history record updated successfully');
+        console.log('Unserviceable history record updated successfully');
     })
     .catch((error) => {
         console.error('Error updating unservicable history record:', error);
     });
     set(ref(db, 'clo_cc_notification/'+Date.now()), {
-        msg: `Item Marked as Servicable: ${dataCache.name}, Quantity: ${quantity}`,
+        msg: `Item Marked as Serviceable: ${dataCache.name}, Quantity: ${quantity}`,
     });
     
         set(ref(db, 'clonotification'), true);
@@ -361,8 +361,8 @@ function printItemDetails() {
             const cells = row.querySelectorAll('td');
             unsvcHistoryHTML += '<tr>';
             cells.forEach(cell => {
-                if(cell.textContent === 'Mark as Servicable'){
-                    unsvcHistoryHTML += `<td style="border: 1px solid #dee2e6; padding: 8px;">Not Servicable</td>`;
+                if(cell.textContent === 'Mark as Serviceable'){
+                    unsvcHistoryHTML += `<td style="border: 1px solid #dee2e6; padding: 8px;">Not Serviceable</td>`;
                 }
                 else{
                     unsvcHistoryHTML += `<td style="border: 1px solid #dee2e6; padding: 8px;">${cell.textContent}</td>`;
@@ -531,11 +531,11 @@ function printItemDetails() {
                         <span class="summary-value">${instore}</span>
                     </div>
                     <div class="summary-item">
-                        <span class="summary-label">Servicable:</span>
+                        <span class="summary-label">Serviceable:</span>
                         <span class="summary-value">${servicable}</span>
                     </div>
                     <div class="summary-item">
-                        <span class="summary-label">Unservicable:</span>
+                        <span class="summary-label">Unserviceable:</span>
                         <span class="summary-value">${unservicable}</span>
                     </div>
                 </div>
@@ -547,7 +547,7 @@ function printItemDetails() {
             </div>
 
             <div class="section">
-                <h2>Unservicable History</h2>
+                <h2>Unserviceable History</h2>
                 ${unsvcHistoryHTML}
             </div>
 

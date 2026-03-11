@@ -104,7 +104,7 @@ function addItemRow() {
                 </select>
             </div>
             <div class="form-group">
-                <label for="availableQty-${itemCounter}">Held & Servicable</label>
+                <label for="availableQty-${itemCounter}">Held & Serviceable</label>
                 <input type="text" id="availableQty-${itemCounter}" name="availableQty" value="Available: 0" readonly>
             </div>
             <div class="form-group">
@@ -251,8 +251,8 @@ function processIssueRequest() {
     };
     const dbref = ref(db, `unservicable_storeman/stationary/${voucherNumber}`);
         set(dbref, issueRequest).then(() => {
-        showNotification('Unservicable request submitted successfully.', 'success', 'Request Submitted');
-        printUnservicableVoucher(voucherNumber, issueDate, itemsToIssue);
+        showNotification('Unserviceable request submitted successfully.', 'success', 'Request Submitted');
+        printUnserviceableVoucher(voucherNumber, issueDate, itemsToIssue);
         clearForm();
         loadInventoryData(); // Refresh inventory data to reflect changes
     }).catch((error) => {
@@ -275,7 +275,7 @@ window.removeItemRow = removeItemRow;
 window.updateAvailableQuantity = updateAvailableQuantity;
 window.validateQuantity = validateQuantity;
 
-function printUnservicableVoucher(voucherNumber, issueDate, itemsToIssue) {
+function printUnserviceableVoucher(voucherNumber, issueDate, itemsToIssue) {
     const currentDate = new Date().toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
@@ -304,7 +304,7 @@ function printUnservicableVoucher(voucherNumber, issueDate, itemsToIssue) {
             <!DOCTYPE html>
         <html>
         <head>
-            <title> Unservicable Items Voucher-${voucherNumber}</title>
+            <title> Unserviceable Items Voucher-${voucherNumber}</title>
             <style>
                 @media print {
                     @page {
@@ -504,7 +504,7 @@ function printUnservicableVoucher(voucherNumber, issueDate, itemsToIssue) {
         <body>
             <div class="header">
                 <h1>BANRDB Store Management System</h1>
-                <h2> Unservicable Items Voucher</h2>
+                <h2> Unserviceable Items Voucher</h2>
                 <p>Generated on ${currentDate}</p>
             </div>
             

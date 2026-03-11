@@ -492,7 +492,7 @@ function newPendingItemNotification(){
             let html = fixedNotification.innerHTML;
             const id = Date.now();
             html += `<div class="notification-content" id="pending_${id}">
-            <p id="notificationMessage">You have a new <strong>Unservicable</strong> item From Workshop.</p>
+            <p id="notificationMessage">You have a new <strong>Unserviceable</strong> item From Workshop.</p>
             <button class="notification-close" onclick="hidefixedNotification('pending_${id}')" aria-label="Close">&times;</button>
             <button class="notification-view" id="viewPendingBtn" onclick="window.location.href='pendingunsvc.html'">View</button>
         </div>`
@@ -1248,11 +1248,11 @@ function printReport(tableRows, title, summaryData) {
                 </div>
                 <div class="summary-item">
                     <div class="summary-value servicable">${summaryData.servicableItems}</div>
-                    <div class="summary-label">Servicable</div>
+                    <div class="summary-label">Serviceable</div>
                 </div>
                 <div class="summary-item">
                     <div class="summary-value unservicable">${summaryData.unservicableItems}</div>
-                    <div class="summary-label">Unservicable</div>
+                    <div class="summary-label">Unserviceable</div>
                 </div>
                 <div class="summary-item">
                     <div class="summary-value issued">${summaryData.issuedItems}</div>
@@ -1277,8 +1277,8 @@ function printReport(tableRows, title, summaryData) {
                         <th>Held</th>
                         <th>Issued</th>
                         <th>In Store</th>
-                        <th>Servicable</th>
-                        <th>Unservicable</th>
+                        <th>Serviceable</th>
+                        <th>Unserviceable</th>
                     </tr>
                 </thead>
                 <tbody>

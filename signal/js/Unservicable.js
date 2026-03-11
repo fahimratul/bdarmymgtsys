@@ -104,7 +104,7 @@ function addItemRow() {
                 </select>
             </div>
             <div class="form-group">
-                <label for="availableQty-${itemCounter}">Held & Servicable</label>
+                <label for="availableQty-${itemCounter}">Held & Serviceable</label>
                 <input type="text" id="availableQty-${itemCounter}" name="availableQty" value="Available: 0" readonly>
             </div>
             <div class="form-group">
@@ -255,7 +255,7 @@ function processIssueRequest() {
         date: new Date().toLocaleString(),
         from: "Signal Inventory"
     }).then(() => {
-        showNotification(`Unservicable request processed successfully with Voucher No: ${voucherNumber}`, 'success', 'Request Processed');
+        showNotification(`Unserviceable request processed successfully with Voucher No: ${voucherNumber}`, 'success', 'Request Processed');
         clearForm();
         loadInventoryData(); // Refresh inventory data to reflect changes
     }).catch((error) => {

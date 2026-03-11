@@ -883,11 +883,11 @@ function printReport(tableRows, title, summaryData) {
                 </div>
                 <div class="summary-item">
                     <div class="summary-value servicable">${summaryData.servicableItems}</div>
-                    <div class="summary-label">Servicable</div>
+                    <div class="summary-label">Serviceable</div>
                 </div>
                 <div class="summary-item">
                     <div class="summary-value unservicable">${summaryData.unservicableItems}</div>
-                    <div class="summary-label">Unservicable</div>
+                    <div class="summary-label">Unserviceable</div>
                 </div>
                 <div class="summary-item">
                     <div class="summary-value issued">${summaryData.issuedItems}</div>
@@ -909,8 +909,8 @@ function printReport(tableRows, title, summaryData) {
                         <th>Held</th>
                         <th>Issued</th>
                         <th>In Store</th>
-                        <th>Servicable</th>
-                        <th>Unservicable</th>
+                        <th>Serviceable</th>
+                        <th>Unserviceable</th>
                     </tr>
                 </thead>
                 <tbody>
