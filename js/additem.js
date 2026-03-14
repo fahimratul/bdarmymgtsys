@@ -234,9 +234,9 @@ function writeInventoryItem(name, data) {
                         instore: data.instore
                     });
                     set(ref(db, 'clo_cc_notification/' + Date.now()),{
-                        from: 'BKNCO Inventory',
+                        from: 'BK NCO Inventory',
                         date: new Date().toISOString(),
-                        msg: `New inventory item "${name}" has been added by BKNCO Officer.`
+                        msg: `New inventory item "${name}" has been added by BK NCO Officer.`
                     });
                 }
 

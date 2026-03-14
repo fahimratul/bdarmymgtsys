@@ -242,7 +242,7 @@ function processIssueRequest(key) {
     const issueRef = push(ref(db, 'clo_cc_notification/'));
     set(issueRef, {
         msg: msgforclo,
-        from: 'BKNCO Inventory',
+        from: 'BK NCO Inventory',
         time: formatDate(new Date())   
     }).then(() => {
         showNotification('Items marked as unserviceable successfully! Opening print dialog...', 'success', 'Request Submitted');

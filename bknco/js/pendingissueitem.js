@@ -245,7 +245,7 @@ function processIssueRequest(key) {
     const issueRef = push(ref(db, 'clo_cc_notification/'));
     set(issueRef, {
         msg: msg,
-        from: 'BKNCO Inventory',
+        from: 'BK NCO Inventory',
         time: new Date().toLocaleString()   
     }).then(() => {
         showNotification('Items issued successfully! Opening print dialog...', 'success', 'Request Submitted');

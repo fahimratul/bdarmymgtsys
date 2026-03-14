@@ -405,8 +405,8 @@ function approveNewtotalItem(key) {
         console.error('Error approving new total item:', error);
     });
     set(ref(db, 'clo_cc_notification/' + Date.now()), {
-        from: 'BKNCO Inventory',
-        msg: `BKNCO Inventory item "${currentItem.name || ''}" total has been updated by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`,
+        from: 'BK NCO Inventory',
+        msg: `BK NCO Inventory item "${currentItem.name || ''}" total has been updated by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`,
         date: new Date().toLocaleString()
     }).then(() => {
         console.log('CLO/CC notified successfully about the update.');
@@ -447,8 +447,8 @@ function approveNewItem(key) {
         console.error('Error approving new item:', error);
     });
     set(ref(db, 'clo_cc_notification/' + Date.now()), {
-        from: 'BKNCO Inventory',
-        msg: `New BKNCO Inventory item "${newItem.name || ''}" has been added by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`,
+        from: 'BK NCO Inventory',
+        msg: `New BK NCO Inventory item "${newItem.name || ''}" has been added by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`,
         date: new Date().toLocaleString()
     }).then(() => {
         console.log('CLO/CC notified successfully about the new item.');
@@ -478,7 +478,7 @@ function newPendingItemNotification(){
             let html = fixedNotification.innerHTML;
             const id = Date.now();
             html += `<div class="notification-content" id="pending_${id}">
-            <p id="notificationMessage"> You have a new <strong> Pending Issue item </strong>  From BKNCO.</p>
+            <p id="notificationMessage"> You have a new <strong> Pending Issue item </strong>  From BK NCO.</p>
             <button class="notification-close" onclick="hidefixedNotification('pending_${id}')" aria-label="Close">&times;</button>
             <button class="notification-view" id="viewPendingBtn" onclick="window.location.href='pendingIssue.html'">View</button>
         </div>`
@@ -502,7 +502,7 @@ function newPendingItemNotification(){
             let html = fixedNotification.innerHTML;
             const id = Date.now();
             html += `<div class="notification-content" id="pending_${id}">
-            <p id="notificationMessage">You have a new <strong>Unserviceable</strong> item From BKNCO.</p>
+            <p id="notificationMessage">You have a new <strong>Unserviceable</strong> item From BK NCO.</p>
             <button class="notification-close" onclick="hidefixedNotification('pending_${id}')" aria-label="Close">&times;</button>
             <button class="notification-view" id="viewPendingBtn" onclick="window.location.href='pendingunsvc.html'">View</button>
         </div>`
@@ -811,9 +811,9 @@ editForm?.addEventListener('submit', (e) => {
         });
 
         set(ref(db, 'clo_cc_notification/' + Date.now()), {
-            from: 'BKNCO Inventory',
+            from: 'BK NCO Inventory',
             date: new Date().toLocaleString(),
-            msg: `BKNCO Inventory item "${inputs.name.value.trim()}" has been updated by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`
+            msg: `BK NCO Inventory item "${inputs.name.value.trim()}" has been updated by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`
         }).then(() => {
             console.log('CLO/CC notified successfully about the update.');
         }).catch((error) => {
@@ -849,9 +849,9 @@ deleteItemBtn?.addEventListener('click', (e) => {
         console.error('Error deleting item from inventory:', error);
     });
     set(ref(db, 'clo_cc_notification/' + Date.now()), {
-        from: 'BKNCO Inventory',
+        from: 'BK NCO Inventory',
         date: new Date().toLocaleString(),
-        msg: `BKNCO Inventory item "${inputs.name.value.trim()}" has been deleted by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`
+        msg: `BK NCO Inventory item "${inputs.name.value.trim()}" has been deleted by ${sessionStorage.getItem('username')} (BA Number: ${sessionStorage.getItem('baNumber')}).`
     }).then(() => {
         console.log('CLO/CC notified successfully about the deletion.');
     }).catch((error) => {

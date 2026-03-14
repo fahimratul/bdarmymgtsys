@@ -475,7 +475,7 @@ function newPendingItemNotification(){
             let html = fixedNotification.innerHTML;
             const id = Date.now();
             html += `<div class="notification-content" id="pending_${id}">
-            <p id="notificationMessage"> You have a new <strong> Pending Issue item </strong>  From BKNCO.</p>
+            <p id="notificationMessage"> You have a new <strong> Pending Issue item </strong>  From BK NCO.</p>
             <button class="notification-close" onclick="hidefixedNotification('pending_${id}')" aria-label="Close">&times;</button>
             <button class="notification-view" id="viewPendingBtn" onclick="window.location.href='./../bknco/pendingIssue.html'">View</button>
         </div>`
@@ -499,7 +499,7 @@ function newPendingItemNotification(){
             let html = fixedNotification.innerHTML;
             const id = Date.now();
             html += `<div class="notification-content" id="pending_${id}">
-            <p id="notificationMessage">You have a new <strong>Unserviceable</strong> item From BKNCO.</p>
+            <p id="notificationMessage">You have a new <strong>Unserviceable</strong> item From BK NCO.</p>
             <button class="notification-close" onclick="hidefixedNotification('pending_${id}')" aria-label="Close">&times;</button>
             <button class="notification-view" id="viewPendingBtn" onclick="window.location.href='./../bknco/pendingunsvc.html'">View</button>
         </div>`

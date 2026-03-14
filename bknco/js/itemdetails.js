@@ -228,7 +228,7 @@ function returnItemToStore(recordKey) {
         console.error('Error updating history record:', error);
     });
     set(ref(db, 'clo_cc_notification/'+Date.now()), {
-        from: 'BKNCO Inventory',
+        from: 'BK NCO Inventory',
         date: new Date().toLocaleString(),
         msg: `Item Returned to Store: ${dataCache.name}, Quantity: ${quantity}, From Location: ${record.location}`,
     });
@@ -238,7 +238,7 @@ function returnItemToStore(recordKey) {
     if(role === 'bknco'){
         const notificationPath = `notification/eo/${Date.now()}`;
         set(ref(db, notificationPath), {
-            from: 'BKNCO Inventory',
+            from: 'BK NCO Inventory',
             date: new Date().toLocaleString(),
             msg: `Item Returned to Store: ${dataCache.name}, Quantity: ${quantity}, From Location: ${record.location}`,
         }).then(() => {
@@ -284,7 +284,7 @@ function markAsServiceable(recordKey) {
         console.error('Error updating unservicable history record:', error);
     });
     set(ref(db, 'clo_cc_notification/'+Date.now()), {
-        from: 'BKNCO Inventory',
+        from: 'BK NCO Inventory',
         date: new Date().toLocaleString(),
         msg: `Item Marked as Serviceable: ${dataCache.name}, Quantity: ${quantity}`,
     });
@@ -296,7 +296,7 @@ function markAsServiceable(recordKey) {
     if(role === 'bknco'){
         const notificationPath = `notification/eo/${Date.now()}`;
         set(ref(db, notificationPath), {
-            from: 'BKNCO Inventory',
+            from: 'BK NCO Inventory',
             date: new Date().toLocaleString(),
             msg: `Item Marked as Serviceable: ${dataCache.name}, Quantity: ${quantity}`,
         }).then(() => {
