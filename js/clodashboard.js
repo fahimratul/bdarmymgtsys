@@ -78,7 +78,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
     else if(role === 'clo'){
         
-        titleElement.textContent = 'Welcome , Cheif Logistic Officer';
+        titleElement.textContent = 'Welcome , Chief Logistic Officer';
     }
     else if(role === 'guest'){
         titleElement.textContent = 'Welcome, Guest';

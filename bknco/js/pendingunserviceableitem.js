@@ -210,7 +210,7 @@ function processIssueRequest(key) {
             showNotification('Please specify valid quantities for all items.', 'error', 'Validation Failed');
             return;
         }
-        const mainitem = get(ref(db, `engrinventory/main/${itemkey}`));
+        const mainitem = get(ref(db, `bkncoinventory/main/${itemkey}`));
         mainitem.then((snapshot) => {
             const itemData = snapshot.val();
             const availableQty = (itemData.instore || 0) - (itemData.unservicable || 0);

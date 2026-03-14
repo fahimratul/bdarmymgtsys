@@ -51,7 +51,7 @@ let userrole ={
     mtnco:"MT NCO",
     mtjco:"MT JCO",
     cc:"Contingent Commander",
-    clo:"Cheif Logistics Officer",
+    clo:"Chief Logistics Officer",
     lo:"Logistics Officer",
     so:"Signals Officer",
     eo:"Engineer Officer",
