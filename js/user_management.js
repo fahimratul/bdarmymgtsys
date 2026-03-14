@@ -104,6 +104,15 @@ function loaditemdata() {
     else if( role === 'workshop'){
         undercommandrole = ['workshopnco'];
     }
+    else if(role === 'cimic'){
+        undercommandrole = ['cimicnco'];
+    }
+    else if(role === 'medical'){
+        undercommandrole = ['medicalnco'];
+    }
+    else if(role === 'stationary'){
+        undercommandrole = ['stationarynco'];
+    }
     else{
         undercommandrole = null; // CLO and above can see all
     }
