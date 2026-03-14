@@ -55,7 +55,15 @@ let userrole ={
     lo:"Logistics Officer",
     so:"Signals Officer",
     eo:"Engineer Officer",
-    mto:"Military Transport Officer"
+    mto:"Military Transport Officer",
+    cimic:"CIMIC Officer",
+    workshop:"Workshop Officer",
+    medical:"Medical Officer",
+    stationary:"Stationary Officer",
+    cimicnco:"CIMIC NCO",
+    workshopnco:"Workshop NCO",
+    medicalnco:"Medical NCO",
+    stationarynco:"Stationary NCO"
 }
 
 let ranklist ={
